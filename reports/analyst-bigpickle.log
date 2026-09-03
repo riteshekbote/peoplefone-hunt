@@ -1,0 +1,77 @@
+===== ANALYST bigpickle 2026-09-03 17:08:53 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'll analyze the current state and follow the structured 8-step process for the peoplefone GmbH bug bounty program.
+
+## Step 1: DELTA
+
+NO_DELTA. All inventory matches previous scan results. No new hosts discovered, no changes in service banners or response patterns.
+
+## Step 2: PRIORITIZE
+
+| Host | Attack Surface | Business Value | Tech Exposure | Gate Ease | Cloud Surface | Freshness | **Priority** |
+|------|---------------|----------------|---------------|-----------|---------------|-----------|--------------|
+| `api.peoplefone.com` | 7 | 9 | 8 | 5 | 8 | 10 | **7.35** |
+| `support.peoplefone.com` | 5 | 6 | 4 | 7 | 7 | 10 | **5.80** |
+| `peoplefone.com` | 6 | 7 | 5 | 8 | 6 | 10 | **6.45** |
+| `auth.peoplefone.com` | 8 | 9 | 9 | 3 | 8 | 10 | **7.70** |
+| `www.peoplefone.com` | 5 | 7 | 4 | 8 | 6 | 10 | **5.95** |
+
+**Top 3:** `auth.peoplefone.com` (7.70), `api.peoplefone.com` (7.35), `peoplefone.com` (6.45)
+
+## Step 3: HYPOTHESES
+
+[HYP] Developer Portal Hidden API Endpoints
+class: IDOR
+asset: api.peoplefone.com
+confidence: 72
+reasoning: 302 redirect to developer portal suggests API documentation/keys; developer portals often expose internal API endpoints not protected same as public
+evidence_needed: Actual developer portal content, any exposed API keys or endpoints
+verify_steps: GET https://www.peoplefone.com/en-ch/developer, follow redirects, enumerate subpaths
+impact: Cross-tenant data access via exposed API, severity HIGH
+testability: PASSIVE
+
+[HYP] OAuth/Session Management Weakness
+class: AUTH
+asset: auth.peoplefone.com
+confidence: 65
+reasoning: Dedicated auth subdomain suggests centralized authentication; potential for OAuth flaws, token manipulation, or session hijacking
+evidence_needed: OAuth flows, token validation logic, session management implementation
+verify_steps: HEAD/OPTIONS https://auth.peoplefone.com, enumerate auth endpoints, check for common OAuth paths
+impact: Account takeover, severity CRITICAL
+testability: AUTH_HELPED
+
+[HYP] Support Portal Information Disclosure
+class: MISCONFIG
+asset: support.peoplefone.com
+confidence: 58
+reasoning: Support portals often contain internal documentation, credentials, or system details inadvertently exposed
+evidence_needed: Support portal content, any internal URLs or credentials exposed
+verify_steps: GET https://support.peoplefone.com/che/willkommen/, enumerate support paths, check for debug modes
+impact: Internal system information disclosure, severity MEDIUM
+testability: PASSIVE
+
+## Step 4: SELF-CRITIQUE
+
+[PARKED] Support Portal Information Disclosure: Confidence 58 below threshold, support portals typically low-value targets
+
+[FINAL] Survivors:
+1. Developer Portal Hidden API Endpoints (72)
+2. OAuth/Session Management Weakness (65)
+
+## Step 5: NEXT ACTION
+
+[NEXT] PROBE: GET https://www.peoplefone.com/en-ch/developer (read-only, follow redirects, capture response content for developer portal analysis)
+
+## Step 6: LEARNING
+
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: Dedicated auth subdomains high-value for session/token flaws
+[LEARN] ACCEPTED IDOR @ api.peoplefone.com: Developer portals common source of API exposure
+[LEARN] REJECTED MISCONFIG @ support.peoplefone.com: Low confidence, support portals typically non-critical
+
+## Step 7: RISK
+
+[RISK] peoplefone GmbH: 25/100 - Limited surface discovered so far; primarily CDN-backed infrastructure with minimal direct attack surface. Requires deeper developer portal analysis to identify higher-risk targets.
+
+**Summary:** Focused on developer portal and auth subdomains as primary investigation targets. Next action probes the developer portal to identify potential API exposure or documentation leaks.
