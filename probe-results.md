@@ -34,3 +34,11 @@ https://www.peoplefone.com/en-ch/developer -> 200 len=?
 https://www.peoplefone.com/en-ch/developer/graphql -> 200 len=?
 https://auth.peoplefone.com -> HTTP 404
 https://support.peoplefone.com/che/willkommen/ -> 200 len=?
+
+## 2026-09-03 22:39:49 UTC
+https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid&state=<captured_state -> HTTP 404
+https://configuration-api.peoplefone.com/customer/voip/v1/virtualUsers/{other_tenant_id -> HTTP 401
+https://call-api.peoplefone.com/customer/call-management/v1/call -> HTTP 401
+https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://attacker.com/callback&response_type=code&scope=openid&state=<fresh_state_from_portal_login -> HTTP 404
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+https://auth.peoplefone.com -> HTTP 404

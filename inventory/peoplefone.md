@@ -44,3 +44,11 @@ www.peoplefone.com
 ## 2026-09-03 17:08:53 UTC
 
 ## 2026-09-03 19:45:21 UTC
+
+## 2026-09-03 22:39:38 UTC
+- NEW Developer portal content retrieved - reveals SMS API documentation at `api.peoplefone.com/services/api-doc/`
+- NEW API is explicitly public "available to all developers" - confirms attack surface is intentional
+- NEW Full API backend surface discovered via Swagger UI: `configuration-api.peoplefone.com`, `call-api.peoplefone.com` — two un-inventoried subdomains
+- NEW SMS API live at `api.peoplefone.com/customer/sms/v1` with documented `{messageId}` IDOR candidate + attacker-controlled `callbackUrl` (SSRF)
+- NEW Smart Routing webhook accepts attacker-controlled `url` with 2-min single-use `X-Track-Id` — SSRF + webhook hijack candidate
+- NEW Consuming APIs enforce bearer auth (401 confirmed live) — uaCSTA remote call control endpoints exposed (`/device/call/*`)

