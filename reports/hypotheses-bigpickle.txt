@@ -1,4 +1,7 @@
-## 2026-09-03 16:58:35 UTC [target] (model bigpickle)
+## 2026-09-03 19:43:55 UTC [target] (model bigpickle)
+[PRIO] api.peoplefone.com,7.35,attack_surface:8 business_value:9 tech_exposure:7 gate_ease:5 cloud_surface:7 freshness:6
+[PRIO] auth.peoplefone.com,7.35,attack_surface:7 business_value:10 tech_exposure:9 gate_ease:3 cloud_surface:7 freshness:6
+[PRIO] www.peoplefone.com,6.35,attack_surface:6 business_value:7 tech_exposure:5 gate_ease:7 cloud_surface:7 freshness:6
 [HYP] Developer Portal Hidden API Endpoints
 class: IDOR
 asset: api.peoplefone.com
