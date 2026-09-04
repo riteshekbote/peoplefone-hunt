@@ -60,3 +60,7 @@ https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://configuration-api.peoplefone.com/services/api-doc/ -> HTTP 404
 https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://api.peoplefone.com/services/api-doc/api/ -> HTTP 403
+
+## 2026-09-04 17:48:51 UTC
+https://configuration-api.peoplefone.com/services/api-doc/ -> HTTP 404
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
