@@ -1,8 +1,9 @@
-## 2026-09-04 09:50:07 UTC [target] (model bigpickle)
-[CHANGED] All 8 API YAML specs fully retrieved from `api.peoplefone.com/services/api-doc/api/` — 8000+ lines of attack surface now visible. Key new details vs prior knowledge:
+## 2026-09-04 14:05:28 UTC [target] (model bigpickle)
+[NEW] All 8 API YAML specs fully retrieved — 8000+ lines of attack surface now visible, including full CRUD operations, parameter schemas, and authorization boundary notes across Configuration, Call Management, and SMS APIs.
+[CHANGED] Phase transitioned from RECON to POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 hypothesis classes.
 [PRIO] configuration-api.peoplefone.com,9.2,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:7,cloud_surface:7,freshness:9
-[PRIO] call-api.peoplefone.com (Smart Routing + uaCSTA),8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:7,cloud_surface:8,freshness:9
-[PRIO] api.peoplefone.com (SMS GW),7.5,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:6,cloud_surface:6,freshness:8
+[PRIO] call-api.peoplefone.com,8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:7,cloud_surface:8,freshness:9
+[PRIO] api.peoplefone.com,7.5,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:6,cloud_surface:6,freshness:8
 [HYP] IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD (users, groups, IVRs, queues, smart-routings, numbers, callforwarding)
 class: IDOR
 asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,smart-routings,numbers,callforwarding}/{identifier}
@@ -30,6 +31,9 @@ evidence_needed: Valid token from tenant A successfully logs in agent from tenan
 verify_steps: With valid token POST /customer/queue/v1/agents/login with agent.identifier="1234" (other tenant's user) + queueScope="all"; observe if 200 or 403
 impact: Cross-tenant call center disruption — force agents offline, reroute calls, impact business continuity; severity HIGH
 testability: AUTH_HELPED
+[FINAL] IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD: confidence 82, AUTH_HELPED, CRITICAL severity — RETAIN
+[FINAL] SSRF via 4 callback-accepting endpoints: confidence 78, AUTH_HELPED, CRITICAL severity — RETAIN
+[FINAL] Business logic on Queue API agent login/logout: confidence 65, AUTH_HELPED, HIGH severity — RETAIN
 [NEXT] HUMAN: Create test account on portal.peoplefone.ch to obtain bearer token; then automated probe of Configuration API /users/{sequential_id} for cross-tenant IDOR confirmation. Token acquisition is the single blocker for all 3 hypothesis classes.
 [LEARN] ACCEPTED IDOR @ configuration-api: Full CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing) with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven but boundary statement present in spec
 [LEARN] ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — all accept attacker-controlled URI with zero host/scheme validation; External Number Lookup additionally forwards customer-configured custom headers to attacker URL

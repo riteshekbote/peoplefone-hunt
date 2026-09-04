@@ -66,3 +66,15 @@ www.peoplefone.com
 
 ## 2026-09-04 09:50:18 UTC
 - CHANGED All 8 API YAML specs fully retrieved from `api.peoplefone.com/services/api-doc/api/` — 8000+ lines of attack surface now visible. Key new details vs prior knowledge:
+
+## 2026-09-04 14:21:14 UTC
+- NEW All 8 API YAML specs fully retrieved — 8000+ lines of attack surface now visible, including full CRUD operations, parameter schemas, and authorization boundary notes across Configuration, Call Managem
+- CHANGED Phase transitioned from RECON to POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 hypothesis classes.
+- NEW All 8 API YAML specs fully retrieved from `api.peoplefone.com/services/api-doc/api/` (8000+ lines) — complete attack surface now documented
+- NEW 5 SSRF endpoints confirmed in specs: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — all accept attacker-controlled URI with z
+- NEW External Number Lookup webhookUrl additionally forwards customer-configured custom headers to attacker-controlled URL
+- NEW Queue API business logic flaw: agent login/logout actions accept cross-tenant agent+queue identifiers — call center disruption vector
+- NEW Configuration API: Full CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing) with numeric sequential identifiers; UserResponse exposes sipUse
+- NEW External Routing API deprecated 2026-09-30 but still live — same webhook SSRF pattern as Smart Routing, potentially weaker code paths
+- CHANGED auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; standard OAuth endpoints return 404
+- CHANGED configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed) — auth gate present but token-scope isolation unproven

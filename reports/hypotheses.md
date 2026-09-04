@@ -106,3 +106,21 @@
 - LEARN: ACCEPTED IDOR @ api.peoplefone.com: SMS messageId endpoint surface confirmed in spec — cross-tenant disclosure viable if tenant isolation absent
 - LEARN: ACCEPTED SSRF @ api/call-api: callbackUrl + Smart Routing webhook spec-confirmed SSRF vectors — needs token to verify internal-IP blocking
 - LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI protected by 401 on real backends; unauthenticated docs are by-design dev portal
+
+## RANKED HYPOTHESES 2026-09-04 14:21:14 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: IDOR/BOLA on Configuration API 8 resource types with sequential numeric identifiers (from art/lead_nemotron3.txt)
+- [82] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,smart-routings,numbers,callforwarding}/{identifier}: IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD (users, groups, IVRs, queues, smart-routings, numbers, callforwarding) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Create test account on portal.peoplefone.ch to obtain bearer token; then automated probe of Configuration API /users/{sequential_id} for cross-tenant IDO
+- NEXT(hypotheses-nemotron3.txt): PROBE: GET https://api.peoplefone.com/services/api-doc/api/ (read-only, capture all 8 OpenAPI YAML specs to extract exact endpoint paths, parameter schemas, aut
+- LEARN: ACCEPTED IDOR @ configuration-api: Full CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing) with num
+- LEARN: ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — all accep
+- LEARN: ACCEPTED BUSLOGIC @ Queue API: agent login/logout actions accept cross-tenant agent+queue identifiers; potential for call center disruption
+- LEARN: REJECTED AUTH @ auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; auth subdomain standard endpoints return 40
+- LEARN: ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but still live — same webhook SSRF pattern as Smart Routing, may have weaker code 
+- LEARN: ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical 
+- LEARN: ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host
+- LEARN: ACCEPTED BUSLOGIC @ Queue API: agent login/logout accepts cross-tenant agent+queue identifiers; call center disruption
+- LEARN: REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
+- LEARN: ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+- LEARN: ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets

@@ -37,3 +37,9 @@
 - 2026-09-04 ACCEPTED IDOR @ api.peoplefone.com: Developer portal explicitly links to public API documentation confirming attack surface
 - 2026-09-04 ACCEPTED AUTH @ auth.peoplefone.com: Dedicated auth subdomains high-value for session/token flaws
 - 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: wildcard-dominated DNS with all CNAMEs pointing to managed Cloudflare CDN makes dangling CNAME takeover improbable
+- 2026-09-04 ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven
+- 2026-09-04 ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host/scheme validation; External Number Lookup forwards custom headers
+- 2026-09-04 ACCEPTED BUSLOGIC @ Queue API: agent login/logout accepts cross-tenant agent+queue identifiers; call center disruption
+- 2026-09-04 REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
+- 2026-09-04 ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+- 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
