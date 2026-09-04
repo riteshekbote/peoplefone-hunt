@@ -63,3 +63,6 @@ www.peoplefone.com
 - CHANGED configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed live) — auth gate present but token scope isolation unproven
 
 ## 2026-09-04 05:12:08 UTC
+
+## 2026-09-04 09:50:18 UTC
+- CHANGED All 8 API YAML specs fully retrieved from `api.peoplefone.com/services/api-doc/api/` — 8000+ lines of attack surface now visible. Key new details vs prior knowledge:
