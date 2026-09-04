@@ -88,3 +88,9 @@ www.peoplefone.com
 - CHANGED auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; standard OAuth endpoints return 404
 - CHANGED configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed) — auth gate present but token-scope isolation unproven
 - CHANGED Phase transitioned from RECON to POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 hypothesis classes
+
+## 2026-09-04 19:59:08 UTC
+- NEW probe-results.md last entry 2026-09-04 17:48:51 UTC shows `api.peoplefone.com/services/api-doc/` returns 200 (dev portal accessible) while `configuration-api.peoplefone.com/services/api-doc/` returns 
+- NEW Knowledge base 2026-09-04 17:48:47 UTC documents all 8 OpenAPI YAML specs retrieved (8000+ lines) but probe-results shows `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC —
+- CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes (Configuration API IDOR/BOLA, SMS BOLA+SSRF, 5-endpoint SSRF)
+- CHANGED External Routing API deprecated 2026-09-30 but still live — same SSRF pattern as Smart Routing, potentially weaker code paths (26 days from deprecation)

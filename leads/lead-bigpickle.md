@@ -299,3 +299,4 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but still live — same webhook SSRF pattern as Smart Routing, may have weaker code paths
 [RISK] peoplefone GmbH: 88/100 — 8 fully-documented API specs reveal 3 CRITICAL-severity hypothesis classes (IDOR/BOLA across 8 resource types with PII, SSRF across 5 callback endpoints including credential exfiltration, agent login/logout business logic) plus a deprecated API still live. Single blocker is bearer token acquisition via portal. Attack surface is extensive: SIP credentials, physical addresses, emails, phone numbers, call forwarding rules, IVR menus, queue configs, call metadata all accessible via IDOR. SSRF enables cloud metadata theft + customer credential exfiltration.
 ## 2026-09-04 17:41:24 UTC [target] (model bigpickle)
+## 2026-09-04 19:53:40 UTC [target] (model bigpickle)

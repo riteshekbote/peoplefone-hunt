@@ -1946,3 +1946,231 @@ Analysis committed to `analyst-out.txt`. Summary of this delta cycle:
 `[NEXT] HUMAN: Create test account on portal.peoplefone.ch` — SMS API is "free for all developers"; a scoped free-tier token unblocks all 3 CRITICAL classes. Passively unconfirmable.
 
 **STEP 7 — RISK** 88/100 — 3 CRITICAL hypothesis classes over a publicly-documented 8-spec attack surface; single blocker is bearer token.
+===== ANALYST bigpickle 2026-09-04 19:59:08 UTC =====
+== PEOPLEFONE ANALYST OUTPUT - big-pickle ==
+
+STEP 1 - DELTA
+[CHANGED] Deprecated External Routing API confirmed NOT a weaker code path: GET /customer/voip/v1/external-routings returns 401 identical to all config-api endpoints; no unauthenticated legacy bypass observable.
+[CHANGED] Auth-gate uniformity re-confirmed: config-api virtualUsers + api sms/messages all 401 - every real backend requires bearer token.
+NO_DELTA on inventory/surface - no new hosts/endpoints discoverable without auth.
+
+STEP 2 - PRIORITIZE
+[PRIO] configuration-api.peoplefone.com,9.2,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:0,cloud_surface:7,freshness:9
+[PRIO] call-api.peoplefone.com,8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:0,cloud_surface:8,freshness:9
+[PRIO] api.peoplefone.com,7.3,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:1,cloud_surface:6,freshness:8
+
+STEP 3 - HYPOTHESES
+[HYP] IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{resources}/{identifier}
+confidence: 82
+reasoning: 235KB spec, 8 resource types keyed by numeric sequential {identifier}; boundary note "user must be part of account bound to bearer token"; UserResponse exposes sipUserName/physical address/email; cross-tenant object-level auth unproven.
+evidence_needed: Token from tenant A returns tenant B data via adjacent sequential {identifier}.
+verify_steps: With token GET /users (list own IDs) then GET /users/{neighbor_id}; observe 200 vs 403.
+impact: Cross-tenant PBX takeover; SIP creds, addresses, emails, routing, IVR, queue configs; CRITICAL.
+testability: AUTH_HELPED
+[HYP] SSRF via 4 callback-accepting endpoints
+class: SSRF
+asset: SMS callbackUrl + Smart Routing webhook + uaCSTA callbackUrls + External Number Lookup webhookUrl
+confidence: 78
+reasoning: 5 endpoints accept attacker-controlled uri w/ zero host/scheme validation; External Number Lookup forwards custom Authorization/X-API-Key headers to attacker webhookUrl; uaCSTA sends call events+SIP usernames to attacker.
+evidence_needed: Callback reaches external host; metadata/loopback not blocked; headers forwarded.
+verify_steps: With token POST sms callbackUrl=attacker + http://169.254.169.254; register smart-routing webhook; uaCSTA monitorStart.
+impact: Cloud metadata/IAM theft, internal pivot, credential exfiltration; CRITICAL.
+testability: AUTH_HELPED
+[HYP] Business logic - agent login/logout on cross-tenant queue identifiers
+class: BUSLOGIC
+asset: call-api.peoplefone.com/customer/queue/v1/agents/login + /agents/logout
+confidence: 65
+reasoning: login/logout accept agent identifier + queueScope + queues; if validated against token scope but not queue membership attacker can login/logout other-tenant agents; sequential queue IDs.
+evidence_needed: Token from tenant A logs in/out tenant B agent to tenant B queue.
+verify_steps: With token POST /agents/login agent.identifier=other-tenant queueScope=all; observe 200 vs 403.
+impact: Cross-tenant call center disruption; HIGH.
+testability: AUTH_HELPED
+
+STEP 4 - SELF-CRITIQUE
+[FINAL] IDOR/BOLA Configuration API 8 resources: conf 82 AUTH_HELPED CRITICAL - RETAIN
+[FINAL] SSRF 4 callback endpoints: conf 78 AUTH_HELPED CRITICAL - RETAIN
+[FINAL] BUSLOGIC agent login/logout: conf 65 AUTH_HELPED HIGH - RETAIN
+[PARKED] OAuth redirect_uri bypass @ auth: authorize 404, path unknown, token flow via portal not auth.
+[PARKED] Deprecated External Routing weak path: 401-uniformity disproved weaker gate.
+
+STEP 5 - NEXT ACTION
+[NEXT] HUMAN: Register test account on portal.peoplefone.ch, obtain bearer token, hand to agent to run AUTH_HELPED verify_steps for IDOR (Configuration API /users/{sequential_id}). Token is sole blocker for all 3 retained hypotheses.
+
+STEP 6 - LEARNING
+[LEARN] REJECTED IDOR @ configuration-api: Deprecated External Routing API returns 401 identical to live - no weaker/unauth code path via status differential.
+[LEARN] ACCEPTED AUTH @ portal.peoplefone.ch: Token issuance via portal, not auth.peoplefone.com or any API spec; portal is mandatory auth gate.
+[LEARN] ACCEPTED IDOR @ configuration-api: 8 resources sequential numeric IDs + PII (sipUserName,address,email); cross-tenant auth unproven - CRITICAL BOLA awaiting token.
+[LEARN] ACCEPTED SSRF @ 5 endpoints: callback/webhook URLs zero validation; External Number Lookup exfiltrates custom headers - CRITICAL, token-gated.
+
+STEP 7 - RISK
+[RISK] peoplefone GmbH: 88/100 - 8 OpenAPI specs confirm 3 CRITICAL hypothesis classes (cross-tenant IDOR/BOLA w/ PII, SSRF w/ credential exfil, queue agent disruption). Auth gate uniform 401 (confirmed no legacy bypass) so all gated behind one portal token; single weak registration/login compromises entire multi-tenant PBX surface. Deprecated-but-live External Routing API adds risk.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [0m$ [0mcat > analyst-out.txt << 'EOF'
+== PEOPLEFONE ANALYST OUTPUT - big-pickle ==
+
+STEP 1 - DELTA
+[CHANGED] Deprecated External Routing API confirmed NOT a weaker code path: GET /customer/voip/v1/external-routings returns 401 identical to all config-api endpoints; no unauthenticated legacy bypass observable.
+[CHANGED] Auth-gate uniformity re-confirmed: config-api virtualUsers + api sms/messages all 401 - every real backend requires bearer token.
+NO_DELTA on inventory/surface - no new hosts/endpoints discoverable without auth.
+
+STEP 2 - PRIORITIZE
+[PRIO] configuration-api.peoplefone.com,9.2,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:0,cloud_surface:7,freshness:9
+[PRIO] call-api.peoplefone.com,8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:0,cloud_surface:8,freshness:9
+[PRIO] api.peoplefone.com,7.3,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:1,cloud_surface:6,freshness:8
+
+STEP 3 - HYPOTHESES
+[HYP] IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{resources}/{identifier}
+confidence: 82
+reasoning: 235KB spec, 8 resource types keyed by numeric sequential {identifier}; boundary note "user must be part of account bound to bearer token"; UserResponse exposes sipUserName/physical address/email; cross-tenant object-level auth unproven.
+evidence_needed: Token from tenant A returns tenant B data via adjacent sequential {identifier}.
+verify_steps: With token GET /users (list own IDs) then GET /users/{neighbor_id}; observe 200 vs 403.
+impact: Cross-tenant PBX takeover; SIP creds, addresses, emails, routing, IVR, queue configs; CRITICAL.
+testability: AUTH_HELPED
+[HYP] SSRF via 4 callback-accepting endpoints
+class: SSRF
+asset: SMS callbackUrl + Smart Routing webhook + uaCSTA callbackUrls + External Number Lookup webhookUrl
+confidence: 78
+reasoning: 5 endpoints accept attacker-controlled uri w/ zero host/scheme validation; External Number Lookup forwards custom Authorization/X-API-Key headers to attacker webhookUrl; uaCSTA sends call events+SIP usernames to attacker.
+evidence_needed: Callback reaches external host; metadata/loopback not blocked; headers forwarded.
+verify_steps: With token POST sms callbackUrl=attacker + http://169.254.169.254; register smart-routing webhook; uaCSTA monitorStart.
+impact: Cloud metadata/IAM theft, internal pivot, credential exfiltration; CRITICAL.
+testability: AUTH_HELPED
+[HYP] Business logic - agent login/logout on cross-tenant queue identifiers
+class: BUSLOGIC
+asset: call-api.peoplefone.com/customer/queue/v1/agents/login + /agents/logout
+confidence: 65
+reasoning: login/logout accept agent identifier + queueScope + queues; if validated against token scope but not queue membership attacker can login/logout other-tenant agents; sequential queue IDs.
+evidence_needed: Token from tenant A logs in/out tenant B agent to tenant B queue.
+verify_steps: With token POST /agents/login agent.identifier=other-tenant queueScope=all; observe 200 vs 403.
+impact: Cross-tenant call center disruption; HIGH.
+testability: AUTH_HELPED
+
+STEP 4 - SELF-CRITIQUE
+[FINAL] IDOR/BOLA Configuration API 8 resources: conf 82 AUTH_HELPED CRITICAL - RETAIN
+[FINAL] SSRF 4 callback endpoints: conf 78 AUTH_HELPED CRITICAL - RETAIN
+[FINAL] BUSLOGIC agent login/logout: conf 65 AUTH_HELPED HIGH - RETAIN
+[PARKED] OAuth redirect_uri bypass @ auth: authorize 404, path unknown, token flow via portal not auth.
+[PARKED] Deprecated External Routing weak path: 401-uniformity disproved weaker gate.
+
+STEP 5 - NEXT ACTION
+[NEXT] HUMAN: Register test account on portal.peoplefone.ch, obtain bearer token, hand to agent to run AUTH_HELPED verify_steps for IDOR (Configuration API /users/{sequential_id}). Token is sole blocker for all 3 retained hypotheses.
+
+STEP 6 - LEARNING
+[LEARN] REJECTED IDOR @ configuration-api: Deprecated External Routing API returns 401 identical to live - no weaker/unauth code path via status differential.
+[LEARN] ACCEPTED AUTH @ portal.peoplefone.ch: Token issuance via portal, not auth.peoplefone.com or any API spec; portal is mandatory auth gate.
+[LEARN] ACCEPTED IDOR @ configuration-api: 8 resources sequential numeric IDs + PII (sipUserName,address,email); cross-tenant auth unproven - CRITICAL BOLA awaiting token.
+[LEARN] ACCEPTED SSRF @ 5 endpoints: callback/webhook URLs zero validation; External Number Lookup exfiltrates custom headers - CRITICAL, token-gated.
+
+STEP 7 - RISK
+[RISK] peoplefone GmbH: 88/100 - 8 OpenAPI specs confirm 3 CRITICAL hypothesis classes (cross-tenant IDOR/BOLA w/ PII, SSRF w/ credential exfil, queue agent disruption). Auth gate uniform 401 (confirmed no legacy bypass) so all gated behind one portal token; single weak registration/login compromises entire multi-tenant PBX surface. Deprecated-but-live External Routing API adds risk.
+EOF
+echo "written"; wc -l analyst-out.txt
+written
+59 analyst-out.txt
+[0m
+All three return 401 — confirming the auth gate is uniformly enforced (no weaker legacy path observable via 401 differential). The deprecated External Routing API does not present an unauthenticated weak path.
+
+I have sufficient information. The delta is minimal: nothing new passively discoverable, and the 401-uniformity confirms the sole blocker remains token acquisition. Let me output the structured blocks.
+
+STEP 1 — DELTA:
+- No new surface discovered. The only live probes (external-routings, virtualUsers, sms) all returned 401 — confirming uniform auth gate, no legacy weak path. State is unchanged from last run.
+
+This run has essentially **NO_DELTA** on surface, but the one confirming probe (401-uniformity on deprecated External Routing) is a genuine [CHANGED] data point.
+
+STEP 2 — PRIORITIZE: The assets are unchanged; re-scoring confirms config-api as top. But since gate is blocked, the actionable priority is the token-acquisition path (portal.peoplefone.ch) which I should note.
+
+Here is my structured output:
+
+---
+
+STEP 1 — DELTA
+- [CHANGED] Deprecated External Routing API confirmed NOT a weaker code path — GET /customer/voip/v1/external-routings returns 401 identical to all other config-api endpoints; no unauthenticated legacy bypass observable. (Single live probe this cycle.)
+- [CHANGED] Auth-gate uniformity re-confirmed: config-api virtualUsers + api sms/messages all 401 — every real backend requires bearer token; no passive surface change.
+- NO_DELTA on inventory/surface — no new hosts, no new endpoints discoverable without auth.
+
+STEP 2 — PRIORITIZE
+- [PRIO] configuration-api.peoplefone.com,9.2,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:0,cloud_surface:7,freshness:9
+- [PRIO] call-api.peoplefone.com,8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:0,cloud_surface:8,freshness:9
+- [PRIO] api.peoplefone.com,7.3,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:1,cloud_surface:6,freshness:8
+- NOTE: gate_ease dropped to 0-1 for all real backends — uniform 401 confirmed; intrinsic value unchanged but verifiability blocked until token.
+- [PRIO] portal.peoplefone.ch,8.5,attack_surface:8,business_value:9,tech_exposure:8,gate_ease:4,cloud_surface:5,freshness:9 — the actual gate; token issuance occurs here, not on auth.peoplefone.com (specs never reference token endpoint).
+
+STEP 3 — HYPOTHESES
+[HYP] IDOR/BOLA on Configuration API tenant-scoped {identifier} CRUD (users, groups, IVRs, queues, smart-routings, numbers, callforwarding, manual-routing)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{resources}/{identifier}
+confidence: 82
+reasoning: 235KB spec, 8 resource types keyed by numeric sequential {identifier} path params; bearer auth validates token but spec boundary note "user must be part of account bound to bearer token" = authorization boundary statement; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven.
+evidence_needed: Valid token from tenant A returns tenant B's user/group/number data via adjacent sequential {identifier}; sequential enumeration yields cross-tenant PII.
+verify_steps: With token GET /customer/voip/v1/users to list own IDs, then GET /customer/voip/v1/users/{neighbor_id} for adjacent IDs; observe 200 vs 403.
+impact: Cross-tenant PBX takeover — SIP credentials, addresses, emails, call routing, IVR, queue configs; CRITICAL.
+testability: AUTH_HELPED
+[HYP] SSRF via 4 callback-accepting endpoints (SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl)
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages + call-api.peoplefone.com/customer/smart-routing/v1/... + uaCSTA + configuration-api.peoplefone.com/customer/voip/v1/external-number-lookup
+confidence: 78
+reasoning: 5 endpoints accept attacker-controlled `type: string format: uri` with zero host/scheme allowlist; External Number Lookup forwards customer-configured Authorization/X-API-Key headers to attacker webhookUrl (credential exfiltration); uaCSTA monitorStart sends call events + SIP usernames + phone numbers to attacker URL.
+evidence_needed: Callback POST reaches external host; internal/169.254.169.254 not blocked; custom headers forwarded.
+verify_steps: With token POST sms callbackUrl=https://attacker + test http://169.254.169.254/latest/meta-data/; register Smart Routing webhook; uaCSTA monitorStart monitoringCallbackUrl.
+impact: Cloud metadata/IAM theft, internal network pivot, customer credential exfiltration; CRITICAL.
+testability: AUTH_HELPED
+[HYP] Business logic — agent login/logout on cross-tenant queue identifiers (Queue API)
+class: BUSLOGIC
+asset: call-api.peoplefone.com/customer/queue/v1/agents/login + /agents/logout
+confidence: 65
+reasoning: Login/logout accept agent identifier (type: user) + queueScope + queues array; if identifier validated against token scope but not queue membership, attacker can login/logout agents on other tenants' queues; numeric sequential queue IDs (2000,2001...).
+evidence_needed: Valid token from tenant A logs in/out tenant B's agent to tenant B's queue.
+verify_steps: With token POST /agents/login with agent.identifier=other-tenant + queueScope="all"; observe 200 vs 403.
+impact: Cross-tenant call center disruption — force agents offline, reroute calls; HIGH.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] IDOR/BOLA on Configuration API 8 resource types: confidence 82, AUTH_HELPED, CRITICAL — RETAIN (top-ranked, retains across runs).
+- [FINAL] SSRF via 4 callback endpoints: confidence 78, AUTH_HELPED, CRITICAL — RETAIN.
+- [FINAL] BUSLOGIC agent login/logout: confidence 65, AUTH_HELPED, HIGH — RETAIN.
+- [PARKED] OAuth redirect_uri bypass @ auth.peoplefone.com: standard authorize endpoint returns 404; endpoint path unknown and token flow runs through portal, not auth; cannot verify without valid client_id + session.
+- [PARKED] Deprecated External Routing API weak-path: 401-uniformity probe disproved weaker auth gate this cycle; no passive bypass.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Register a test account on portal.peoplefone.ch, complete dev-portal onboarding to obtain a bearer token (API key), then hand token to this agent to run the AUTH_HELPED verify_steps for IDOR (Configuration API /users/{sequential_id}) — token acquisition is the sole blocker for all 3 RETAINED hypotheses and cannot be done passively (all backends return uniform 401).
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED IDOR @ configuration-api.peoplefone.com: Deprecated External Routing API (deprecated 2026-09-30) returns 401 identical to live endpoints — no observable weaker/unauth code path via status-code differential.
+- [LEARN] ACCEPTED AUTH @ portal.peoplefone.ch: Token issuance occurs through portal (not auth.peoplefone.com, not any API spec); portal is the mandatory auth gate for all backends.
+- [LEARN] ACCEPTED IDOR @ configuration-api: 8 resource types with sequential numeric IDs + PII exposure (sipUserName, address, email); cross-tenant auth unproven — CRITICAL BOLA candidate awaiting token.
+- [LEARN] ACCEPTED SSRF @ 5 endpoints: callback/webhook URLs with zero validation; External Number Lookup exfiltrates custom headers — CRITICAL, token-gated.
+
+STEP 7 — RISK
+- [RISK] peoplefone GmbH: 88/100 — 8 fully-documented OpenAPI specs confirm 3 CRITICAL hypothesis classes (cross-tenant IDOR/BOLA across 8 resource types exposing SIP creds/physical addresses/emails, SSRF across 5 callback endpoints including credential exfiltration, queue agent-login/logout disruption). Auth gate is uniformly 401 on all backends (confirmed this cycle, no legacy bypass), meaning all three are gated behind one portal token — a single weak registration/login path compromises the entire PBX multi-tenant surface. Deprecated-but-live External Routing API adds maintenance risk. Extensive PII + call metadata + SIP credential exposure if IDOR confirmed.
+Output written to analyst-out.txt.
+
+**STEP 1 — DELTA**
+- [CHANGED] Deprecated External Routing API confirmed NOT a weaker code path: `GET /customer/voip/v1/external-routings` → 401 identical to all config-api endpoints; no unauthenticated legacy bypass.
+- [CHANGED] Auth-gate uniformity re-confirmed: config-api `virtualUsers` + api sms `messages` all 401.
+- NO_DELTA on inventory/surface.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] configuration-api.peoplefone.com,9.2,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:0,cloud_surface:7,freshness:9
+- [PRIO] call-api.peoplefone.com,8.8,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:0,cloud_surface:8,freshness:9
+- [PRIO] api.peoplefone.com,7.3,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:1,cloud_surface:6,freshness:8
+
+**STEP 3 — HYPOTHESES** (top 3, all AUTH_HELPED)
+1. IDOR/BOLA Configuration API 8 resource types `{identifier}` CRUD — conf 82, CRITICAL
+2. SSRF via 4 callback endpoints (SMS/SmartRouting/uaCSTA/ExternalNumberLookup, custom-header exfil) — conf 78, CRITICAL
+3. BUSLOGIC agent login/logout cross-tenant queue — conf 65, HIGH
+
+**STEP 4 — SELF-CRITIQUE**: all 3 RETAINED above; [PARKED] OAuth redirect_uri bypass (authorize 404, path unknown) and Deprecated External Routing weak-path (401-uniformity disproved it this cycle).
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: Register test account on portal.peoplefone.ch, obtain bearer token, hand to agent for IDOR probe of Configuration API `/customer/voip/v1/users/{sequential_id}`. Token acquisition is the sole blocker for all 3 retained hypotheses — passive recon is exhausted (all backends uniform 401, confirmed live this cycle).
+
+**STEP 6 — LEARNING**
+- REJECTED IDOR @ configuration-api: Deprecated External Routing returns 401 identical to live — no weaker/unauth path.
+- ACCEPTED AUTH @ portal.peoplefone.ch: token issuance via portal only; portal is mandatory auth gate.
+- ACCEPTED IDOR @ configuration-api: 8 resources sequential numeric IDs + PII (sipUserName/address/email); cross-tenant unproven — CRITICAL awaiting token.
+- ACCEPTED SSRF @ 5 endpoints: zero-validated callback URLs; External Number Lookup exfiltrates custom headers — CRITICAL, token-gated.
+
+**STEP 7 — RISK**: [RISK] peoplefone GmbH: 88/100 — 8 OpenAPI specs confirm 3 CRITICAL hypothesis classes, all gated behind one portal token; uniform 401 confirmed no legacy bypass; single weak registration/login compromises the full multi-tenant PBX surface.
