@@ -43,3 +43,8 @@
 - 2026-09-04 REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
 - 2026-09-04 ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
 - 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
+- 2026-09-04 ACCEPTED IDOR @ configuration-api: cross-model convergence (bigpickle+nemotron3) both rank {identifier} CRUD as top candidate; no counter-evidence surfaced — retains top slot
+- 2026-09-04 ACCEPTED SSRF @ 5 endpoints: no new counter-evidence since spec harvest; retained pending token
+- 2026-09-04 ACCEPTED BUSLOGIC @ call-api queue agents: retained at lowest rank — weakest evidence class, spec-silent on membership validation
+- 2026-09-04 REJECTED AUTH @ auth.peoplefone.com: re-confirmed token issuance outside all 8 specs and standard endpoints 404 — agent-side token acquisition impossible; human+portal required
+- 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated

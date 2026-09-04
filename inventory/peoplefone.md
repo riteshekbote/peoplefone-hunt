@@ -94,3 +94,10 @@ www.peoplefone.com
 - NEW Knowledge base 2026-09-04 17:48:47 UTC documents all 8 OpenAPI YAML specs retrieved (8000+ lines) but probe-results shows `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC —
 - CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes (Configuration API IDOR/BOLA, SMS BOLA+SSRF, 5-endpoint SSRF)
 - CHANGED External Routing API deprecated 2026-09-30 but still live — same SSRF pattern as Smart Routing, potentially weaker code paths (26 days from deprecation)
+
+## 2026-09-04 22:17:33 UTC
+- CHANGED Two independent model runs (bigpickle, nemotron3) converged on the identical top hypothesis — configuration-api {identifier} CRUD IDOR — cross-model corroboration strengthens its priority ranking.
+- NEW probe-results.md 2026-09-04 19:59:10 UTC: `api.peoplefone.com/services/api-doc/` returns 200 (dev portal accessible) while `configuration-api.peoplefone.com/services/api-doc/` returns 404 — confirms r
+- NEW Knowledge base 2026-09-04 17:48:47 UTC: all 8 OpenAPI YAML specs retrieved (8000+ lines) but `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC — spec directory listing block
+- CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes
+- CHANGED External Routing API deprecated 2026-09-30 but still live — same SSRF pattern as Smart Routing, potentially weaker code paths (26 days from deprecation)

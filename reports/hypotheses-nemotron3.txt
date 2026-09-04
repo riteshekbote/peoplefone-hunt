@@ -1,7 +1,7 @@
-## 2026-09-04 19:58:46 UTC [target] (model nemotron3)
-[NEW] probe-results.md last entry 2026-09-04 17:48:51 UTC shows `api.peoplefone.com/services/api-doc/` returns 200 (dev portal accessible) while `configuration-api.peoplefone.com/services/api-doc/` returns 404 (backend Swagger UI protected by auth) — confirms knowledge base claim that real API backends enforce 401 on docs
-[NEW] Knowledge base 2026-09-04 17:48:47 UTC documents all 8 OpenAPI YAML specs retrieved (8000+ lines) but probe-results shows `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC — spec directory listing may be blocked, individual YAML files likely accessible via known paths
-[CHANGED] Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes (Configuration API IDOR/BOLA, SMS BOLA+SSRF, 5-endpoint SSRF)
+## 2026-09-04 22:16:50 UTC [target] (model nemotron3)
+[NEW] probe-results.md 2026-09-04 19:59:10 UTC: `api.peoplefone.com/services/api-doc/` returns 200 (dev portal accessible) while `configuration-api.peoplefone.com/services/api-doc/` returns 404 — confirms real API backends enforce 401 on docs
+[NEW] Knowledge base 2026-09-04 17:48:47 UTC: all 8 OpenAPI YAML specs retrieved (8000+ lines) but `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC — spec directory listing blocked, individual YAML files likely accessible via known paths
+[CHANGED] Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes
 [CHANGED] External Routing API deprecated 2026-09-30 but still live — same SSRF pattern as Smart Routing, potentially weaker code paths (26 days from deprecation)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
@@ -38,9 +38,9 @@ evidence_needed: Whether callbacks reach external host; whether internal/private
 verify_steps: With valid token POST each endpoint with attacker-controlled URL (https://attacker-collab.host/callback); if external callback works, test http://169.254.169.254/latest/meta-data/iam/security-credentials/; test External Number Lookup with custom headers (e.g., X-Forwarded-For: 127.0.0.1) to attacker URL
 impact: Cloud metadata/IAM keys theft, internal network pivot to SIP/PBX/internal APIs, header injection via External Number Lookup; severity CRITICAL
 testability: AUTH_HELPED
-[PARKED] OAuth redirect_uri validation bypass on auth service: Standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; confidence 45 pending endpoint discovery — no verify steps without token
-[PARKED] GraphQL introspection: REJECTED — portal uses OpenAPI/Swagger
-[PARKED] Subdomain takeover via dangling CNAME: REJECTED — wildcard DNS dominated by Cloudflare CDN
+[PARKED] OAuth redirect_uri validation bypass on auth service: confidence 45 — standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; no verify steps possible without token
+[PARKED] GraphQL introspection: REJECTED — portal uses OpenAPI/Swagger, not GraphQL
+[PARKED] Subdomain takeover via dangling CNAME: REJECTED — wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
 [FINAL] 1. Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (confidence 85)
 [FINAL] 2. Cross-tenant SMS disclosure + cloud metadata theft via SMS API dual vector (confidence 80)
 [FINAL] 3. Cloud metadata/IAM keys theft via 5 webhook/callback endpoints with zero host validation (confidence 78)
