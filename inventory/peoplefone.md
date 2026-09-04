@@ -61,3 +61,5 @@ www.peoplefone.com
 - NEW uaCSTA remote call control endpoints exposed at `/device/call/*` on consuming APIs
 - CHANGED auth.peoplefone.com OAuth endpoints return 404 at expected paths (`/.well-known/oauth-authorization-server`, `/oauth/authorize`) — authorization server metadata and authorize endpoint not at standard 
 - CHANGED configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed live) — auth gate present but token scope isolation unproven
+
+## 2026-09-04 05:12:08 UTC

