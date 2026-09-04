@@ -42,3 +42,7 @@ https://call-api.peoplefone.com/customer/call-management/v1/call -> HTTP 401
 https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://attacker.com/callback&response_type=code&scope=openid&state=<fresh_state_from_portal_login -> HTTP 404
 https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://auth.peoplefone.com -> HTTP 404
+
+## 2026-09-04 00:31:55 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+https://configuration-api.peoplefone.com/services/api-doc/ -> HTTP 404

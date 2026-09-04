@@ -153,3 +153,31 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not standalone finding
 [RISK] peoplefone GmbH: 58/100 - Exposed developer Swagger surfaced a large real API estate (SMS, PBX config, call control, routing) enforcing bearer auth; primary risk now hinges on token-scope isolation (BOLA/IDOR) and callback/webhook SSRF. Substantial PII (SMS content, phone numbers, PBX configs) makes any authorization flaw CRITICAL. Requires credentialed (free public token) testing to confirm.
+## 2026-09-04 00:26:30 UTC [target] (model bigpickle)
+[HYP] SMS API OpenAPI spec exposes self-service token-issuance flow and messageId format
+class: OTHER
+asset: api.peoplefone.com/services/api-doc/
+confidence: 62
+reasoning: The unauthenticated API docs endpoint returned HTTP 200; the portal states the SMS API is "free for all developers"; the Swagger/OpenAPI spec likely documents the exact auth header and token-registration endpoint (and may embed example messageId values) needed to unblock credentialed testing — reposcan confirms no sample credentials in the repo, so the docs are the only documented acquisition path.
+evidence_needed: presence of an unauthenticated OpenAPI JSON, an auth/token-obtain path, example messageId values, callbackUrl validation constraints
+verify_steps: GET https://api.peoplefone.com/services/api-doc/ (read-only, already 200) then locate and GET the raw OpenAPI/Swagger JSON (e.g. /services/api-doc/swagger.json, /swagger.json, <path from page>) WITHOUT auth; extract auth scheme, token endpoint, example messageId, callbackUrl schema.
+impact: Enables credentialed BOLA/SSRF/IDOR confirmation → cross-tenant SMS/PBX PII, metadata SSRF; severity HIGH (development leverage)
+testability: PASSIVE
+[HYP] OAuth redirect_uri bypass on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize
+confidence: 85
+reasoning: Spec/flow (nemotron3) shows arbitrary redirect_uri accepted and preserved for client_id=1 through /de_CH/login; authorization code delivery to attacker URL → ATO.
+evidence_needed: a live portal session/test account to observe code delivery
+verify_steps: needs credentialed portal login on portal.peoplefone.ch — not passively confirmable
+impact: ATO of any portal user → calls/recordings/PBX/billing; severity CRITICAL
+testability: HUMAN_ONLY
+[HYP] IDOR on configuration-api tenant-scoped {identifier} resources
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,numbers,virtualUsers}/{identifier}
+confidence: 68
+reasoning: 235KB OpenAPI, {identifier} CRUD paths keyed by bearer token, spec notes "user must be part of account bound to bearer token" = authorization boundary; numeric sequential identifiers likely.
+evidence_needed: valid token + cross-tenant identifier read
+verify_steps: blocked on valid bearer token (401 confirmed live)
+impact: Cross-tenant PBX takeover, routing/billing fraud; severity CRITICAL
+testability: HUMAN_ONLY

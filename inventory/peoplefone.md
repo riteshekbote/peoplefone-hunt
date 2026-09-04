@@ -52,3 +52,12 @@ www.peoplefone.com
 - NEW SMS API live at `api.peoplefone.com/customer/sms/v1` with documented `{messageId}` IDOR candidate + attacker-controlled `callbackUrl` (SSRF)
 - NEW Smart Routing webhook accepts attacker-controlled `url` with 2-min single-use `X-Track-Id` — SSRF + webhook hijack candidate
 - NEW Consuming APIs enforce bearer auth (401 confirmed live) — uaCSTA remote call control endpoints exposed (`/device/call/*`)
+
+## 2026-09-04 00:31:51 UTC
+- NEW configuration-api.peoplefone.com — discovered via Swagger UI at api.peoplefone.com/services/api-doc/; tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD endpoints; returns 401 w
+- NEW call-api.peoplefone.com — discovered via Swagger UI; Call Management API (`/customer/call-management/v1`) with call control endpoints accepting owner.identifier; returns 401 without bearer token
+- NEW SMS API at api.peoplefone.com/customer/sms/v1 — documented `{messageId}` BOLA candidate + attacker-controlled `callbackUrl` (SSRF vector); public "free for all developers" per portal
+- NEW Smart Routing webhook — accepts attacker-controlled `url` with 2-min single-use `X-Track-Id`; SSRF + webhook hijack candidate
+- NEW uaCSTA remote call control endpoints exposed at `/device/call/*` on consuming APIs
+- CHANGED auth.peoplefone.com OAuth endpoints return 404 at expected paths (`/.well-known/oauth-authorization-server`, `/oauth/authorize`) — authorization server metadata and authorize endpoint not at standard 
+- CHANGED configuration-api.peoplefone.com and call-api.peoplefone.com enforce bearer auth (401 confirmed live) — auth gate present but token scope isolation unproven

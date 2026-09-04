@@ -1365,3 +1365,221 @@ All three require a valid bearer token (AUTH_HELPED) — I have no credentials, 
 ```
 
 **Summary:** The Swagger UI at `api.peoplefone.com/services/api-doc/` revealed the complete API surface including two un-inventoried subdomains (`configuration-api`, `call-api`), a public SMS API, PBX configuration CRUD, call control (uaCSTA), and Smart Routing webhooks. All backends enforce bearer auth (confirmed live 401s). This yields three strong AUTH_HELPED hypotheses: **SMS BOLA on messageId** (70), **configuration-api tenant IDOR** (68), and **SSRF via callbackUrl/webhook url** (64). Next step is RAG to find a legitimate test-token acquisition path, since the SMS API is advertised as free for all developers.
+===== ANALYST bigpickle 2026-09-04 00:31:51 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "inventory/*"[90m 1 match[0m
+[0m✱ [0mGlob "art/*"[90m 0 matches[0m
+[0m✱ [0mGlob "scope*"[90m 1 match[0m
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/ && echo "---" && ls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/art 2>/dev/null; echo "---"; find /home/runner/work/peoplefone-hunt/peoplefone-hunt -name "*.txt" 2>/dev/null
+total 132
+drwxr-xr-x 12 runner runner  4096 Sep  4 00:23 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 00:23 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 00:23 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 00:23 .github
+-rw-r--r--  1 runner runner  1772 Sep  4 00:23 README.md
+-rw-r--r--  1 runner runner   167 Sep  4 00:25 analyst-out.txt
+-rw-r--r--  1 runner runner 20973 Sep  4 00:23 analyst-prompt.txt
+-rw-r--r--  1 runner runner 17118 Sep  4 00:23 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 leads
+-rw-r--r--  1 runner runner  1987 Sep  4 00:23 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 reposcan-raw
+-rw-r--r--  1 runner runner  3268 Sep  4 00:23 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 00:23 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 triage
+---
+---
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/ctx.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/analyst-out.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/hypotheses-nemotron3.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/hypotheses-laguna.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/hypotheses-bigpickle.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/hypotheses-ling3.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/hypotheses-longcat.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/analyst-prompt.txt
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reposcan-raw/summary.txt
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/ /home/runner/work/peoplefone-hunt/peoplefone-hunt/knowledge/ /home/runner/work/peoplefone-hunt/peoplefone-hunt/triage/ /home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/ /home/runner/work/peoplefone-hunt/peoplefone-hunt/recon-notes/
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/knowledge/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  4 00:23 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 00:23 ..
+-rw-r--r--  1 runner runner 2396 Sep  4 00:23 index.md
+
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/:
+total 60
+drwxr-xr-x  2 runner runner  4096 Sep  4 00:23 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 00:23 ..
+-rw-r--r--  1 runner runner 13475 Sep  4 00:23 lead-bigpickle.md
+-rw-r--r--  1 runner runner   153 Sep  4 00:23 lead-laguna.md
+-rw-r--r--  1 runner runner   150 Sep  4 00:23 lead-ling3.md
+-rw-r--r--  1 runner runner   156 Sep  4 00:23 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  4 00:23 lead-mimo.md
+-rw-r--r--  1 runner runner 14517 Sep  4 00:23 lead-nemotron3.md
+-rw-r--r--  1 runner runner   436 Sep  4 00:23 reposcan-peoplefone.md
+
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  4 00:23 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 00:23 ..
+-rw-r--r--  1 runner runner  823 Sep  4 00:23 DEDICATED-DEEP.md
+
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/reports/:
+total 248
+drwxr-xr-x  2 runner runner   4096 Sep  4 00:23 .
+drwxr-xr-x 12 runner runner   4096 Sep  4 00:23 ..
+-rw-r--r--  1 runner runner  59609 Sep  4 00:23 analyst-bigpickle.log
+-rw-r--r--  1 runner runner    651 Sep  4 00:23 analyst-laguna.log
+-rw-r--r--  1 runner runner    648 Sep  4 00:23 analyst-ling3.log
+-rw-r--r--  1 runner runner    654 Sep  4 00:23 analyst-longcat.log
+-rw-r--r--  1 runner runner 126781 Sep  4 00:23 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   8318 Sep  4 00:23 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  4 00:23 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  4 00:23 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  4 00:23 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   5971 Sep  4 00:23 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner   5060 Sep  4 00:23 hypotheses.md
+-rw-r--r--  1 runner runner    961 Sep  4 00:23 valid-bugs.md
+
+/home/runner/work/peoplefone-hunt/peoplefone-hunt/triage/:
+total 48
+drwxr-xr-x  2 runner runner 4096 Sep  4 00:23 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 00:23 ..
+-rw-r--r--  1 runner runner    0 Sep  4 00:23 .gitkeep
+-rw-r--r--  1 runner runner  146 Sep  4 00:23 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner 2035 Sep  4 00:23 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner  934 Sep  4 00:23 run-2026-09-03-02-51.md
+-rw-r--r--  1 runner runner  143 Sep  4 00:23 run-2026-09-03-07-45.md
+-rw-r--r--  1 runner runner  181 Sep  4 00:23 run-2026-09-03-12-34.md
+-rw-r--r--  1 runner runner  174 Sep  4 00:23 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner  187 Sep  4 00:23 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner  186 Sep  4 00:23 run-2026-09-03-21-53.md
+-rw-r--r--  1 runner runner 6531 Sep  4 00:23 run-2026-09-03-23-46.md
+[0m
+Let me look at the leads directory and latest state files.
+[0m→ [0mRead triage/run-2026-09-03-23-46.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead state_bigpickle.json
+I'm the bigpickle analyst. Let me check my state and recent triage/leads to know where I stand. My last leads say phase=POC, target=api. Let me check the latest triage run and my leads file, plus probe-results.
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+Let me read my lead file and the latest hypotheses reports to understand the current state of my own findings.
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead reposcan-raw/summary.txt
+[0m→ [0mRead reports/valid-bugs.md
+My LAST state shows the [NEXT] was to do a RAG search for whether a test bearer token can be legitimately obtained (free public SMS API). This is the key blocker. Let me research the program notes for token issuance, and check whether there are sample credentials. Let me look at the knowledge index, recon notes, and reposcan.
+[0m→ [0mRead reports/hypotheses-nemotron3.txt
+[0m→ [0mRead scope.yml
+[0m→ [0mRead leads/lead-nemotron3.md
+Let me check the nemotron3 hypotheses file and the other leads for any sample credentials or API key issuance info, and read the scope.yml and nemotron3's log to see if there's any token/credential data already discovered.
+Now I have a complete picture. My last state's [NEXT] was to RAG about whether a test bearer token could be legitimately obtained for the free public SMS API. I've now reviewed the knowledge base, reposcan (which found nothing—`TARGET_ORG not configured`), scope, and other leads. There's no sample credentials or token issuance documentation available in the program material.
+
+Key delta: The triage (run-2026-09-03-23-46) held all my active-test hypotheses because no credentialed proof exists. My three AUTH_HELPED hypotheses (SMS BOLA, SSRF, configuration-api IDOR) are all blocked on token acquisition. The reposcan found no org config, so there's no documented free-token issuance path I can credibly act on without creating an account (restricted—only test/sandbox).
+
+Let me think about what passive-value next step I can actually take. The SMS API docs are at api.peoplefone.com/services/api-doc/. My prior probe confirmed HTTP 200 on that path. Rather than retreading, let me consider what passive recon could disambiguate the highest-value hypothesis.
+
+Actually, one thing worth checking: the SMS messageId BOLA hinges on messageId predictability. If I can fetch the actual Swagger/OpenAPI spec of the SMS API passively (200 confirmed), I might find messageId format/example values, callbackUrl binding details, and the OAuth client registration → how tokens are obtained. Let me look at whether the api-doc endpoint exposes the raw OpenAPI JSON. But per rules, live probing is allowed when scoped (passive_first: false), though I must stay read-only GET and <=1 rps, no auth-bypass.
+
+Given my role as analyst outputting structured blocks, and that I have not been instructed to execute more probes in this turn (the system provided me context; the previous [NEXT] was RAG for a token), I should update my state. The RAG turned up nothing for token issuance. This is the key learning: there is no documented legitimate path to a test token within program material, and account creation is restricted to sandbox assets. Therefore the AUTH_HELPED hypotheses remain blocked/testability for unassisted me is HUMAN_ONLY (need human/program-provided test account).
+
+Let me write my structured analyst output. I'll emit the structured blocks per the 8 steps.
+
+Let me determine the analysis output:
+
+STEP 1 — DELTA: Since my last run (2026-09-03 22:26 last leads), the new thing is the triage run-2026-09-03-23-46 which held all hypotheses pending credentialed testing. No new surface discovered. reposcan found nothing. So NEW = triage result confirmation.
+
+Actually the "knowledge base" and leads I'm given ARE the same as my last. The delta is: triage run confirms all leads HOLD without credentialed testing, and reposcan/`TARGET_ORG not configured` confirms no sample credentials/org config in program repo. So the RAG for token returned negative.
+
+STEP 2: PRIO — keep the established priorities. I'll re-emit the top ones.
+
+STEP 3: HYPOTHESES — top 3 assets. Given all AUTH_HELPED are blocked, I should focus on what's confirmable passively. The strongest remaining PASSIVE-verifiable angle: I could pivot to something not requiring creds. Let me think: the OAuth redirect_uri issue is AUTH_HELPED. The IDORs AUTH_HELPED. 
+
+What passive avenue remains? The SMS API docs endpoint is 200-unauthenticated. Its Swagger spec (235KB config spec was fetched, SMS spec presumably too) is already known. No new passive hypothesis is strong.
+
+Actually, one valuable PASSIVE hypothesis I haven't fully pursued: the `configuration-api` and `call-api` Swagger specs might contain the API key/token issuance flow documented (how to obtain a bearer token from the free SMS developer portal). Obtaining the SMS API OpenAPI spec passively to extract the exact auth flow/endpoint could unblock credential-led testing via documentation without needing me to create accounts. And portal.peoplefone.ch was discovered by nemotron3 as an asset — the login portal. 
+
+Let me keep my hypothesis set but adjust: primary help now is a PASSIVE probe of the full SMS API OpenAPI spec to extract (a) auth/token issuance endpoints, (b) messageId format (for BOLA predictability), (c) callbackUrl validation constraints. That's the highest-value passive action.
+
+Let me output the blocks accordingly.
+
+STEP 4: SELF-CRITIQUE — park the AUTH_HELPED IDOR/SSRF since unreachable without credentials and reposcan confirms no sample token. Keep the passive-doc-extraction one.
+
+Let me be careful — the previous run already emitted those hypotheses and they were held by triage. I shouldn't just re-emit stale blocked hypotheses. The honest move: mark them PARKED (blocked on credentialed access, HUMAN_ONLY) and add one NEW passive hypothesis: extract full OpenAPI auth/token flow from the unauthenticated api-doc to locate a legitimate token-issuance self-service path.
+
+Let me write the final output blocks.
+
+For the risk assessment, I'll keep it moderate since everything is held.
+
+Let me finalize.Based on my review of the knowledge base, my lead file, the triage run, reposcan output, and the scope, here is my analyst output.
+
+---
+
+STEP 1 — DELTA
+- [NEW] Triage 2026-09-03-23:46 confirmed all credentialed hypotheses (OAuth redirect_uri, config-api IDOR, call-api IDOR, SMS BOLA, SSRF) are HOLD pending a test bearer token — none provable passively.
+- [NEW] reposcan-raw summary shows `TARGET_ORG not configured for peoplefone` — no org config, sample credentials, or token-issuance docs exist in the program repository.
+- [NEW] nemotron3 surfaced a new in-scope asset: `portal.peoplefone.ch` (OAuth portal login, `/de_CH/login`) — not in my inventory.
+
+STEP 2 — PRIORITIZE
+- [PRIO] auth.peoplefone.com,8.8,attack_surface:9 business_value:10 tech_exposure:9 gate_ease:5 cloud_surface:8 freshness:8
+- [PRIO] configuration-api.peoplefone.com,8.7,attack_surface:9 business_value:9 tech_exposure:10 gate_ease:5 cloud_surface:8 freshness:9
+- [PRIO] api.peoplefone.com,8.4,attack_surface:9 business_value:8 tech_exposure:9 gate_ease:8 cloud_surface:8 freshness:8
+- [PRIO] call-api.peoplefone.com,8.3,attack_surface:8 business_value:9 tech_exposure:10 gate_ease:5 cloud_surface:8 freshness:9
+
+STEP 3 — HYPOTHESES
+[HYP] SMS API OpenAPI spec exposes self-service token-issuance flow and messageId format
+class: OTHER
+asset: api.peoplefone.com/services/api-doc/
+confidence: 62
+reasoning: The unauthenticated API docs endpoint returned HTTP 200; the portal states the SMS API is "free for all developers"; the Swagger/OpenAPI spec likely documents the exact auth header and token-registration endpoint (and may embed example messageId values) needed to unblock credentialed testing — reposcan confirms no sample credentials in the repo, so the docs are the only documented acquisition path.
+evidence_needed: presence of an unauthenticated OpenAPI JSON, an auth/token-obtain path, example messageId values, callbackUrl validation constraints
+verify_steps: GET https://api.peoplefone.com/services/api-doc/ (read-only, already 200) then locate and GET the raw OpenAPI/Swagger JSON (e.g. /services/api-doc/swagger.json, /swagger.json, <path from page>) WITHOUT auth; extract auth scheme, token endpoint, example messageId, callbackUrl schema.
+impact: Enables credentialed BOLA/SSRF/IDOR confirmation → cross-tenant SMS/PBX PII, metadata SSRF; severity HIGH (development leverage)
+testability: PASSIVE
+[HYP] OAuth redirect_uri bypass on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize
+confidence: 85
+reasoning: Spec/flow (nemotron3) shows arbitrary redirect_uri accepted and preserved for client_id=1 through /de_CH/login; authorization code delivery to attacker URL → ATO.
+evidence_needed: a live portal session/test account to observe code delivery
+verify_steps: needs credentialed portal login on portal.peoplefone.ch — not passively confirmable
+impact: ATO of any portal user → calls/recordings/PBX/billing; severity CRITICAL
+testability: HUMAN_ONLY
+[HYP] IDOR on configuration-api tenant-scoped {identifier} resources
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,numbers,virtualUsers}/{identifier}
+confidence: 68
+reasoning: 235KB OpenAPI, {identifier} CRUD paths keyed by bearer token, spec notes "user must be part of account bound to bearer token" = authorization boundary; numeric sequential identifiers likely.
+evidence_needed: valid token + cross-tenant identifier read
+verify_steps: blocked on valid bearer token (401 confirmed live)
+impact: Cross-tenant PBX takeover, routing/billing fraud; severity CRITICAL
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] SMS BOLA messageId: confidence 70 but no token obtainable; reposcan confirms no sample creds; needs HUMAN test account.
+- [PARKED] SSRF via callbackUrl/webhook: confidence 64 but requires POST + external collab observation; HUMAN_ONLY; cannot prove server fetches URL passively.
+- [PARKED] configuration-api & call-api IDOR: 401 confirmed live; blocked on bearer token; HUMAN_ONLY.
+- [FINAL] 1. SMS API OpenAPI token-issuance/messageId extraction (62, PASSIVE, doable now) → 2. OAuth redirect_uri bypass (85, HUMAN_ONLY) → 3. config-api IDOR (68, HUMAN_ONLY).
+
+STEP 5 — NEXT ACTION
+- [NEXT] RAG: Given reposcan found no org config/sample creds, pivot the single unblocked action to PASSIVE OpenAPI extraction — locate and fetch the raw SMS OpenAPI JSON reachable from the already-200 `/services/api-doc/` page (enumerate swagger paths: /services/api-doc/swagger.json, /services/api-doc/openapi.json, /api-doc/swagger.json) to extract the token-issuance endpoint + example messageId + callbackUrl constraints. Human report channel stands ready for the credentialed proofs.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED OTHER @ api.peoplefone.com: Program repo contains no sample credentials or token-issuance docs (reposcan `TARGET_ORG not configured`); the free-developer SMS token must be sourced from live docs or a human test account.
+- [LEARN] ACCEPTED MISCONFIG @ portal.peoplefone.ch: New in-scope login portal discovered by nemotron3; host of the OAuth `/de_CH/login` flow — primary authenticated-test surface.
+- [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: No dedicated subdomain surface (wildcard/CDN-dominated per DEDICATED-DEEP) — confirmed again, no new takeover targets.
+
+STEP 7 — RISK
+- [RISK] peoplefone GmbH: 58/100 — Large, bearer-auth-enforced API estate (SMS, PBX config, call control) with documented per-{identifier} access and attacker-controlled callback/webhook URLs; real PII (SMS content, numbers, PBX config) makes any confirmation CRITICAL. All credentialed hypotheses currently HOLD because no test token is obtainable from repo material and account creation is restricted to sandbox; risk is contingent on a human/program-provided test account to convert the spec-derived candidates into PoC.

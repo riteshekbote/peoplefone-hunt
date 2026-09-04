@@ -14,3 +14,8 @@
 - 2026-09-03 ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth)
 - 2026-09-03 ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
 - 2026-09-03 REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not standalone finding
+- 2026-09-04 ACCEPTED IDOR @ api.peoplefone.com: Exposed Swagger UI reveals full SMS/BOLA messageId endpoint surface with per-{messageId} access — high-value BOLA candidate
+- 2026-09-04 ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth)
+- 2026-09-04 ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
+- 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not standalone finding
+- 2026-09-04 REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints (/.well-known/oauth-authorization-server, /oauth/authorize) return 404 — authorize endpoint likely at non-standard path or requires portal.peoplefone.ch session first

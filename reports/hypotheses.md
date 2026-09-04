@@ -50,3 +50,13 @@
 - LEARN: ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth
 - LEARN: ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
 - LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not stand
+
+## RANKED HYPOTHESES 2026-09-04 00:31:51 UTC
+- [75] api.peoplefone.com/customer/sms/v1/sms/messages/{messageId}: BOLA on SMS messageId (cross-tenant SMS disclosure) (from art/lead_nemotron3.txt)
+- [62] api.peoplefone.com/services/api-doc/: SMS API OpenAPI spec exposes self-service token-issuance flow and messageId format (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-nemotron3.txt): PROBE: GET https://api.peoplefone.com/services/api-doc/ (read-only, capture full OpenAPI/Swagger JSON spec for SMS, Configuration, and Call Management APIs to e
+- LEARN: ACCEPTED IDOR @ api.peoplefone.com: Exposed Swagger UI reveals full SMS/BOLA messageId endpoint surface with per-{messageId} access — high-value BOLA candidate
+- LEARN: ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth
+- LEARN: ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not stand
+- LEARN: REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints (/.well-known/oauth-authorization-server, /oauth/authorize) return 404 — authorize endpoint likely
