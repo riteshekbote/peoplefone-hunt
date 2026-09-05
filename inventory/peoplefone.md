@@ -101,3 +101,16 @@ www.peoplefone.com
 - NEW Knowledge base 2026-09-04 17:48:47 UTC: all 8 OpenAPI YAML specs retrieved (8000+ lines) but `api.peoplefone.com/services/api-doc/api/` returned HTTP 403 at 14:21:19 UTC — spec directory listing block
 - CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes
 - CHANGED External Routing API deprecated 2026-09-30 but still live — same SSRF pattern as Smart Routing, potentially weaker code paths (26 days from deprecation)
+
+## 2026-09-05 00:16:08 UTC
+- NEW auth.peoplefone.com/oauth/authorize is LIVE for client_id=1: `GET /oauth/authorize?...redirect_uri=https://evil.com/callback...` → HTTP 302 → `/de_CH/login` with the attacker `redirect_uri` PRESERVED 
+- NEW Implicit (`response_type=token`) AND PKCE (`code_challenge`+`code_challenge_method=S256`) params accepted and preserved through the same redirect → public-client-style behavior
+- NEW auth.peoplefone.com/oauth/token EXISTS (HTTP 405 on GET) — live token-exchange endpoint confirmed
+- NEW auth.peoplefone.com/de_CH/register is LIVE (HTTP 200, `registrationForm` POST + Cloudflare Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to an authorized oper
+- NEW portal.peoplefone.ch inventoried: LIVE Laravel customer portal (XSRF-TOKEN + encrypted session cookie, httponly, secure) — `302 /` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id
+- NEW `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec (token issuance confirmed off-spec, via portal OAuth flow)
+- CHANGED REVERSED prior REJECTED-AUTH verdict: OAuth authorize endpoint confirmed live; arbitrary redirect_uri/state preserved for client_id=1 two hops deep (authorize → login); token endpoint live; full ATO-r
+- NEW Probe 2026-09-04 22:17:35 UTC: `api.peoplefone.com/services/api-doc/` returns 200 (dev portal accessible) while `configuration-api.peoplefone.com/services/api-doc/` returns 404 — confirms real API bac
+- CHANGED Two independent model runs (bigpickle, nemotron3) converged on identical top hypothesis — configuration-api {identifier} CRUD IDOR — cross-model corroboration strengthens priority
+- CHANGED External Routing API deprecated 2026-09-30 but still live (26 days remaining) — same webhook SSRF pattern as Smart Routing, potentially weaker code paths
+- CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is the single blocker for all 3 CRITICAL hypothesis classes

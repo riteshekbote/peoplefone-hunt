@@ -164,3 +164,21 @@
 - LEARN: ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
 - LEARN: ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
 - LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
+
+## RANKED HYPOTHESES 2026-09-05 00:16:08 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (from art/lead_nemotron3.txt)
+- [78] auth.peoplefone.com/oauth/authorize: OAuth arbitrary redirect_uri / implicit-token theft on auth service (client_id=1) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: In authorized scope, create a test account via the live self-service `auth.peoplefone.com/de_CH/register` (Turnstile-protected, verified 200), complete t
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Create test account on portal.peoplefone.ch to obtain valid bearer token; then automated probe of Configuration API /customer/voip/v1/users/{sequential_i
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: authorize endpoint CONFIRMED LIVE for client_id=1 (302→/de_CH/login preserving arbitrary redirect_uri, implicit+PKCE params
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: oauth/token live (405 on GET) — token-exchange endpoint exists adjacent to unrestricted redirect_uri; final severity turns 
+- LEARN: ACCEPTED AUTH @ portal.peoplefone.ch: in-scope customer portal inventoried; Laravel (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain
+- LEARN: ACCEPTED OTH @ api.peoplefone.com: swagger-initializer.js lists exactly 8 specs, moving all token/passport/session issuance firmly OFF-spec — OAuth URI flow is 
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+- LEARN: ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical 
+- LEARN: ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host
+- LEARN: ACCEPTED BUSLOGIC @ Queue API: agent login/logout accepts cross-tenant agent+queue identifiers; call center disruption
+- LEARN: REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
+- LEARN: ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+- LEARN: ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets

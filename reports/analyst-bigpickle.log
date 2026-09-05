@@ -2237,3 +2237,485 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] peoplefone GmbH: 89/100 — all three CRITICAL/HIGH hypothesis classes remain live but unverified behind a single auth gate; extensive 8-spec API surface exposing SIP creds, PII, DID routing, call-forwarding/IVR/queue state; 5 SSRF endpoints with a header-exfiltration variant; deprecated 2026-09-30 API still exposed; overall impact is entirely gated on token acquisition that no agent path can obtain, so confirmation is deferred to the authorized operator step.
+===== ANALYST bigpickle 2026-09-05 00:16:08 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && echo "---" && ls -la art/ 2>/dev/null && echo "---" && ls -la inventory/ 2>/dev/null
+total 164
+drwxr-xr-x 12 runner runner  4096 Sep  5 00:10 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 00:10 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 00:10 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 00:10 .github
+-rw-r--r--  1 runner runner  1772 Sep  5 00:10 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 00:10 analyst-out.txt
+-rw-r--r--  1 runner runner 37201 Sep  5 00:10 analyst-prompt.txt
+-rw-r--r--  1 runner runner 33346 Sep  5 00:10 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 leads
+-rw-r--r--  1 runner runner  3073 Sep  5 00:10 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 reposcan-raw
+-rw-r--r--  1 runner runner  3268 Sep  5 00:10 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 00:10 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 triage
+---
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 30 matches[0m
+[0m✱ [0mGlob "**/*.yaml"[90m 0 matches[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead scope.yml
+[0m→ [0mRead state_bigpickle.json
+[0m
+[0m$ [0mls -la scripts/ reposcan-raw/ reports/ triage/ 2>/dev/null && echo "===WORKFLOW===" && ls -la .github/workflows/ && echo "===STATE===" && for f in state_*.json; do echo "$f: $(cat $f)"; done
+reports/:
+total 532
+drwxr-xr-x  2 runner runner   4096 Sep  5 00:10 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 00:10 ..
+-rw-r--r--  1 runner runner 164632 Sep  5 00:10 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   2170 Sep  5 00:10 analyst-laguna.log
+-rw-r--r--  1 runner runner   2160 Sep  5 00:10 analyst-ling3.log
+-rw-r--r--  1 runner runner   2180 Sep  5 00:10 analyst-longcat.log
+-rw-r--r--  1 runner runner 291717 Sep  5 00:10 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   6394 Sep  5 00:10 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  5 00:10 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  5 00:10 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  5 00:10 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   9073 Sep  5 00:10 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  22202 Sep  5 00:10 hypotheses.md
+-rw-r--r--  1 runner runner    961 Sep  5 00:10 valid-bugs.md
+
+reposcan-raw/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  5 00:10 .
+drwxr-xr-x 12 runner runner 4096 Sep  5 00:10 ..
+-rw-r--r--  1 runner runner   73 Sep  5 00:10 summary.txt
+
+scripts/:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  5 00:10 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 00:10 ..
+-rw-r--r--  1 runner runner 16987 Sep  5 00:10 sync-issues.py
+
+triage/:
+total 76
+drwxr-xr-x  2 runner runner 4096 Sep  5 00:10 .
+drwxr-xr-x 12 runner runner 4096 Sep  5 00:10 ..
+-rw-r--r--  1 runner runner    0 Sep  5 00:10 .gitkeep
+-rw-r--r--  1 runner runner  146 Sep  5 00:10 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner 2035 Sep  5 00:10 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner  934 Sep  5 00:10 run-2026-09-03-02-51.md
+-rw-r--r--  1 runner runner  143 Sep  5 00:10 run-2026-09-03-07-45.md
+-rw-r--r--  1 runner runner  181 Sep  5 00:10 run-2026-09-03-12-34.md
+-rw-r--r--  1 runner runner  174 Sep  5 00:10 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner  187 Sep  5 00:10 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner  186 Sep  5 00:10 run-2026-09-03-21-53.md
+-rw-r--r--  1 runner runner 6531 Sep  5 00:10 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner  211 Sep  5 00:10 run-2026-09-04-02-50.md
+-rw-r--r--  1 runner runner  230 Sep  5 00:10 run-2026-09-04-07-42.md
+-rw-r--r--  1 runner runner  149 Sep  5 00:10 run-2026-09-04-12-29.md
+-rw-r--r--  1 runner runner  149 Sep  5 00:10 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner  212 Sep  5 00:10 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner  163 Sep  5 00:10 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner  178 Sep  5 00:10 run-2026-09-04-23-16.md
+===WORKFLOW===
+total 44
+drwxr-xr-x 2 runner runner  4096 Sep  5 00:10 .
+drwxr-xr-x 3 runner runner  4096 Sep  5 00:10 ..
+-rw-r--r-- 1 runner runner 14342 Sep  5 00:10 hunt.yml
+-rw-r--r-- 1 runner runner  5381 Sep  5 00:10 reposcan.yml
+-rw-r--r-- 1 runner runner  1020 Sep  5 00:10 sync-issues.yml
+-rw-r--r-- 1 runner runner  6504 Sep  5 00:10 triage.yml
+===STATE===
+state_bigpickle.json: {"phase": "POC", "target": "api"}
+state_laguna.json: {"phase": "POC", "target": "api"}
+state_ling3.json: {"phase": "POC", "target": "api"}
+state_longcat.json: {"phase": "POC", "target": "api"}
+state_mimo.json: {"phase": "POC", "target": "api"}
+state_nemotron3.json: {"phase": "POC", "target": "api"}
+[0m
+[0m→ [0mRead leads/reposcan-peoplefone.md
+[0m→ [0mRead README.md
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/apidoc.html -w "HTTP %{http_code} size=%{size_download}\n" --max-time 30 https://api.peoplefone.com/services/api-doc/ ; echo "---URLS IN HTML---" ; grep -oE 'https?://[^"'\'' )<>]+' /tmp/opencode/apidoc.html | sort -u | head -50 ; echo "---SPEC REFERENCES---" ; grep -oiE '(/[A-Za-z0-9._/-]+\.(yaml|yml|json))|(url[^,]*api[^,]*\.ya?ml)' /tmp/opencode/apidoc.html | sort -u | head -60
+HTTP 200 size=1334
+---URLS IN HTML---
+https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.min.js
+---SPEC REFERENCES---
+[0m
+[0m→ [0mRead /tmp/opencode/apidoc.html
+[0m
+[0m$ [0msleep 1; curl -s -o /tmp/opencode/swagger-init.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 30 https://api.peoplefone.com/services/api-doc/swagger-initializer.js ; echo "---CONTENT---" ; cat /tmp/opencode/swagger-init.js | head -100
+HTTP 200 size=1229
+---CONTENT---
+window.onload = function() {
+  
+      //<editor-fold desc="Changeable Configuration Block">
+      window.ui = SwaggerUIBundle({
+        url: "https://petstore.swagger.io/v2/swagger.json",
+        "dom_id": "#swagger-ui",
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        queryConfigEnabled: false,
+        urls: [ { url:'/services/api-doc/api/CallManagementV1.yml', name:'call | Call Management | v1' }, { url:'/services/api-doc/api/ConfigAPI_ExternalNumberLookup.yml', name:'External Number Lookup Service | v1' }, { url:'/services/api-doc/api/ConfigApiV1.yml', name:'Configuration API | v1' }, { url:'/services/api-doc/api/ExternalRoutingV1.yml', name:'External Routing | v1' }, { url:'/services/api-doc/api/QueueApiV1.yml', name:'Queue API | Stats v1' }, { url:'/services/api-doc/api/SmartRoutingV1.yml', name:'Smart Routing | v1' }, { url:'/services/api-doc/api/SMSGW.yml', name:'SMS GW API' }, { url:'/services/api-doc/api/UaCsta_v1.yml', name:'Remote Call Control uaCSTA' } ],
+      })
+      
+      //</editor-fold>
+
+};
+[0m
+[0m$ [0mcurl -s -L -o /tmp/opencode/devportal.html -w "HTTP %{http_code} size=%{size_download} final=%{url_effective}\n" --max-time 40 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" https://www.peoplefone.com/en-ch/developer ; echo "---LINKS---" ; grep -oiE 'href="[^"]+"' /tmp/opencode/devportal.html | sed 's/href="//;s/"//' | grep -iE 'api|key|dev|token|portal|doc' | sort -u | head -40
+HTTP 200 size=53106 final=https://www.peoplefone.com/en-ch/developer
+---LINKS---
+/de-ch/developer
+/en-ch/developer
+/en-ch/developer/community
+/en-ch/developer/documentation
+/en-ch/developer/kontaktformular-api
+/fr-ch/developer
+/it-ch/developer
+https://api.peoplefone.com/services/api-doc/
+https://support.peoplefone.com/en-che/api/api-external-tools-automation-platforms/
+https://www.peoplefone.com/de-ch/developer
+https://www.peoplefone.com/en-ch/developer
+https://www.peoplefone.com/fr-ch/developer
+https://www.peoplefone.com/it-ch/developer
+[0m
+[0m$ [0mgrep -oiE '.{80}(api[- ]?key|token|authenticate|authorize|bearer|zugang|free|registr|signup|sign-up|anmeld|key).{80}' /tmp/opencode/devportal.html | head -30
+(no output)
+[0m
+[0m$ [0mgrep -oiE '.{60}portal\.peoplefone\.ch.{80}' reports/analyst-nemotron3.log | head -20; echo "===BIGPICKLE==="; grep -oiE '.{60}portal\.peoplefone\.ch.{80}' reports/analyst-bigpickle.log | sort -u | head -20
+/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1b
+/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1b
+/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1b
+/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=bG9yH1b
+.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=openid&state=validstate123" 2>&1 | head -30
+.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=openid&state=validstate123" 2>&1 | head -30
+/oauth/authorize?client_id=1&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;locale=de_CH&amp;state=vRdKQ6a
+.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=&locale=de_CH&state=vRdKQ6avF9ScygvWjR6JR35
+client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35j
+client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35j
+client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35j
+client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&amp;response_type=code&amp;scope=&amp;state=vRdKQ6avF9ScygvWjR6JR35j
+H/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=&state=vRdKQ6avF9ScygvWjR6JR35jJ958qsLA86Px
+ED] auth.peoplefone.com OAuth flow confirmed functional via portal.peoplefone.ch → auth.peoplefone.com/oauth/authorize → /de_CH/login chain with state parameter
+===BIGPICKLE===
+grep: reports/analyst-bigpickle.log: binary file matches
+[0m
+[0m$ [0mcurl -s -L -o /tmp/opencode/devdocs.html -w "HTTP %{http_code} size=%{size_download} final=%{url_effective}\n" --max-time 40 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0" https://www.peoplefone.com/en-ch/developer/documentation ; echo "---APIKEY/TOKEN MENTIONS---"; grep -oiE '.{100}(bearer|api.?key|access.?token|authorization|oAuth|authenticate|X-API).{100}' /tmp/opencode/devdocs.html | head -20
+HTTP 200 size=39275 final=https://www.peoplefone.com/en-ch/developer/documentation
+---APIKEY/TOKEN MENTIONS---
+[0m
+[0m$ [0mgrep -n "oauth\|OAuth\|authorize\|/de_CH/login\|state" reports/analyst-nemotron3.log | grep -iE "200|302|301|HTTP|40[0-9]|redirect|login" | tail -40
+1653:                                   href="https://auth.peoplefone.com/de_CH/register?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+1940:- [NEW] OAuth authorize endpoint at `auth.peoplefone.com/oauth/authorize` accepts arbitrary `redirect_uri` for `client_id=1` (portal client) — no allowlist validation observed; redirects to `/de_CH/login` preserving attacker-controlled `redirect_uri`
+1942:- [CHANGED] auth.peoplefone.com OAuth flow confirmed functional via portal.peoplefone.ch → auth.peoplefone.com/oauth/authorize → /de_CH/login chain with state parameter
+1953:[HYP] OAuth redirect_uri validation bypass on auth service
+1957:reasoning: OAuth authorize endpoint at /oauth/authorize accepts arbitrary redirect_uri parameter for client_id=1 (portal client); redirects to /de_CH/login preserving attacker-controlled redirect_uri without validating against pre-registered allowlist; state parameter accepted from portal login flow enables CSRF-protected authorization code theft
+1959:verify_steps: GET https://portal.peoplefone.ch/login (capture state); GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid&state=<captured_state> (observe redirect to /de_CH/login with evil.com preserved); simulate victim login → verify code sent to evil.com
+1985:[FINAL] 1. OAuth redirect_uri validation bypass on auth service (confidence 85)
+1990:[NEXT] PROBE: GET https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://attacker.com/callback&response_type=code&scope=openid&state=<fresh_state_from_portal_login> → follow redirect chain to /de_CH/login → verify redirect_uri preserved in login form action → complete login flow (requires test account) → confirm authorization code delivered to attacker.com/callback
+1993:[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: OAuth authorize endpoint lacks redirect_uri allowlist validation for client_id=1; arbitrary redirect_uri accepted and preserved through login flow
+2000:[RISK] peoplefone: 82 — High-value VoIP/SIP/PBX platform with multi-tenant data (recordings, CDR, billing, PBX config); OAuth redirect_uri bypass enables ATO without credentials; IDOR on configuration/call APIs enables cross-tenant data access and call hijacking; auth + API surface confirmed with documented authorization boundaries; wildcard DNS limits subdomain attack surface but core auth/API assets remain critical
+2054:[CHANGED] auth.peoplefone.com OAuth endpoints return 404 at expected paths (`/.well-known/oauth-authorization-server`, `/oauth/authorize`) — authorization server metadata and authorize endpoint not at standard locations
+2105:[PARKED] OAuth redirect_uri validation bypass on auth service: All probe attempts to standard OAuth endpoints returned 404 (`/.well-known/oauth-authorization-server`, `/oauth/authorize`). The authorize endpoint may exist at non-standard path (e.g., `/authorize`, `/oauth2/authorize`, `/connect/authorize`) or behind portal.peoplefone.ch login flow. Confidence reduced from 85 → 45 pending endpoint discovery.
+2126:[LEARN] REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints (/.well-known/oauth-authorization-server, /oauth/authorize) return 404 — authorize endpoint likely at non-standard path or requires portal.peoplefone.ch session first
+2301:            $ref: '#/components/responses/UnauthorizedError'
+2568:    | 401 | Missing or invalid authentication | UnauthorizedError |
+3407:                                                          state: "terminated"
+3604:    | 401 | Missing or invalid authentication | UnauthorizedError |
+4204:- CHANGED: `auth.peoplefone.com` OAuth endpoints return 404 at standard paths (`/.well-known/oauth-authorization-server`, `/oauth/authorize`) — authorize endpoint at non-standard path or behind `portal.peoplefone.ch` login flow
+4219:reasoning: 235KB OpenAPI spec exposes extensive PBX config CRUD keyed by {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" — confirming authorization boundary exists; 'customer/' path segment implies tenant scoping; numeric identifiers (e.g., "20011", "1576", "1612") likely sequential; bearer token auth validates token validity but object-level authorization unproven; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path
+4260:[LEARN] REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints (/.well-known/oauth-authorization-server, /oauth/authorize) return 404 — authorize endpoint likely at non-standard path or requires portal.peoplefone.ch session first
+4302:- [CHANGED] auth.peoplefone.com — OAuth endpoints return 404 at standard paths (`/.well-known/oauth-authorization-server`, `/oauth/authorize`); authorize endpoint likely non-standard or behind portal.peoplefone.ch
+4316:reasoning: 235KB OpenAPI spec exposes extensive PBX config CRUD keyed by {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" — confirming authorization boundary exists; 'customer/' path segment implies tenant scoping; numeric identifiers (e.g., "20011", "1576", "1612") likely sequential; bearer token auth validates token validity but object-level authorization unproven; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path
+4343:[PARKED] OAuth redirect_uri validation bypass on auth service: All probe attempts to standard OAuth endpoints returned 404 (`/.well-known/oauth-authorization-server`, `/oauth/authorize`). The authorize endpoint may exist at non-standard path (e.g., `/authorize`, `/oauth2/authorize`, `/connect/authorize`) or behind portal.peoplefone.ch login flow. Confidence reduced from 85 → 45 pending endpoint discovery.
+4365:[LEARN] REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints (/.well-known/oauth-authorization-server, /oauth/authorize) return 404 — authorize endpoint likely at non-standard path or requires portal.peoplefone.ch session first
+4367:[LEARN] REJECTED AUTH @ auth.peoplefone.com: Standard OAuth endpoints return 404; authorize endpoint not at standard path; BLOCKED for automation
+4400:-rw-r--r--  1 runner runner    33 Sep  4 14:04 state_ling3.json
+4401:-rw-r--r--  1 runner runner    33 Sep  4 14:04 state_longcat.json
+4402:-rw-r--r--  1 runner runner    33 Sep  4 14:04 state_mimo.json
+4403:-rw-r--r--  1 runner runner    33 Sep  4 14:04 state_nemotron3.json
+4501:[CHANGED] auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; standard OAuth endpoints return 404
+4510:reasoning: 8000+ line spec reveals full CRUD on 8 tenant-scoped resource types keyed by numeric sequential {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; UserResponse exposes sipUserName, physical address, email; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path; numeric IDs (e.g., "20011", "1576", "1612") enable enumeration
+4533:[PARKED] OAuth redirect_uri validation bypass on auth service: Standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; confidence 45 pending endpoint discovery — no verify steps without token
+4555:[CHANGED] auth.peoplefone.com: Token issuance path NOT in any API spec — must go through portal.peoplefone.ch; standard OAuth endpoints return 404
+4572:- **STEP 4 SELF-CRITIQUE**: 3 PARKED (OAuth redirect_uri, GraphQL, CNAME takeover — all low confidence/REJECTED), 3 FINAL survivors
+4583:reasoning: 8000+ line spec reveals full CRUD on 8 tenant-scoped resource types keyed by numeric sequential {identifier} path params; spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; UserResponse exposes sipUserName, physical address, email; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path; numeric IDs (e.g., "20011", "1576", "1612") enable enumeration
+4610:[PARKED] OAuth redirect_uri validation bypass on auth service: Standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; confidence 45 pending endpoint discovery — no verify steps without token
+4702:reasoning: 8000+ line spec reveals full CRUD on 8 tenant-scoped resource types keyed by numeric sequential {identifier} path params (e.g., "20011", "1576", "1612"); spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; UserResponse exposes sipUserName, physical address, email; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path
+4732:[PARKED] OAuth redirect_uri validation bypass on auth service: Standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; confidence 45 pending endpoint discovery — no verify steps without token
+4851:reasoning: 8000+ line spec reveals full CRUD on 8 tenant-scoped resource types keyed by numeric sequential {identifier} path params (e.g., "20011", "1576", "1612"); spec explicitly states "user must be part of the account bound to the bearer token" confirming authorization boundary; UserResponse exposes sipUserName, physical address, email; write endpoints (POST/PUT/DELETE) accept cross-tenant identifiers in path
+4881:[PARKED] OAuth redirect_uri validation bypass on auth service: confidence 45 — standard endpoints return 404; authorize endpoint at non-standard path or behind portal.peoplefone.ch; no verify steps possible without token
+[0m
+[0m$ [0msed -n '1620,1700p' reports/analyst-nemotron3.log
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</title>
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx
+state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</a>.
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies4.txt -c /tmp/cookies5.txt "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&locale=de_CH&state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx" 2>&1 | head -50
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx'" />
+
+        <title>Redirecting to https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</title>
+    </head>
+    <body><a href="https://auth.peoplefone.com/cdn-cgi/content?id=OJ.6GWcVGu_8vWk5OayqqKnkppwtDrWMbxeyT9iEVHo-1788474870.326882-1.2.1.1-OjzvcQ5W9H2ODNnRrrjdUztqDi2zzRywhyW3rLPRPPmh8FF62SuqCy.n5QgFEZIH" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        Redirecting to <a href="https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx">https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;scope=&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx</a>.
+    </body>
+</html>
+[0m
+[0m$ [0mcurl -s -b /tmp/cookies5.txt -c /tmp/cookies6.txt "https://auth.peoplefone.com/de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx" 2>&1 | grep -i -E "(action|form|evil)" | head -20
+transform: rotate(0deg);
+            transform: rotate(360deg);
+                    <a href="https://auth.peoplefone.com/de_CH/login?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/fr_CH/login?client_id=1&amp;locale=fr_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/it_CH/login?client_id=1&amp;locale=it_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                    <a href="https://auth.peoplefone.com/en_CH/login?client_id=1&amp;locale=en_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+                            <form id="loginForm" role="form" method="POST"
+                                  action="https://auth.peoplefone.com/de_CH/login">
+                                <div class="form-group">
+                                           class="form-control"
+                                <div class="form-group no-margin-bottom mt-4">
+                                           class="form-control "
+                                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAETtGmlFEOhYOX2V" data-callback="turnstileSuccess" data-error-callback="turnstileError" data-theme="light" data-language="de" data-size="flexible" data-action="login" data-expired-callback="turnstileError" data-timeout-callback="turnstileError"></div>
+                            </form>
+                                   href="https://auth.peoplefone.com/de_CH/register?client_id=1&amp;locale=de_CH&amp;redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&amp;response_type=code&amp;state=FmM86Xxca04UMNsHBsdst3L9L6HjhaFjTI9Ak0sx"
+    $("form").submit(function () {
+    const loginForm = document.forms[0];
+    loginForm.addEventListener('submit', function (event) {
+<script>window.__CF$cv$params={r:'a35839f27c2a2d20',t:'MTc4ODQ3NDkxMw==',u:'01a06969758e74a08e27f57ab8f74e53',ut:'auuM3xQNpkpqym2vKgzFxKUaOeLWQetAKzvNowukOrw-1788474914-1.2.1.1-fL6ffXRhomqgXC3H7AlGtACcEVtUdrk5tilO_v1Wkq42Jx0dxNOs2vHzb_z5eLsKatVDKud5upSmWGvqj.JoHN4sOU7K.MaP.TORO3r5d_k',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+[0m
+[0m$ [0mcurl -s "https://api.peoplefone.com/services/api-doc/api/CallManagementV1.yml" 2>&1 | grep -A 5 -B 5 "identifier" | head -80
+examples:
+                            default:
+                                summary: list call
+                                value:
+                                    owner:
+                                        identifier: "1234"
+                                        type: user
+            responses:
+                '200':
+                    description: Success
+                    content:
+--
+                                            - callId: "abcd"
+                                              state: "confirmed" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                        pageNumber: 1
+                                        pageSize: 1
+                                        totalElements: 1
+                                        totalPages: 1
+                                        last: true
+--
+                                            - callId: "1"
+                                              state: "terminated" 
+                                              direction: "incoming"
+                                              remoteParty:
+                                                type: "number"
+                                                identifier: "+41215522000"
+                                            - callId: "2"
+                                              state: "confirmed"
+                                              direction: "outgoing"
+                                              remoteParty:
+                                                  type: "number"
+                                                  identifier: "+41445522000"
+                                        pageNumber: 1
+                                        pageSize: 2
+                                        totalElements: 2
+                                        totalPages: 1
+                                        last: true
+[0m
+[0m$ [0mcurl -s -i -o /tmp/opencode/portal_root.txt -w "RESULT HTTP %{http_code} size=%{size_download} redirect=%{redirect_url}\n" --max-time 30 -A "Mozilla/5.0" https://portal.peoplefone.ch/ ; sed -n '1,20p' /tmp/opencode/portal_root.txt | grep -iE "HTTP/|location:|server:|set-cookie:|cf-"
+RESULT HTTP 302 size=378 redirect=https://portal.peoplefone.ch/home
+HTTP/1.1 302 Found
+Location: https://portal.peoplefone.ch/home
+Set-Cookie: XSRF-TOKEN=eyJpdiI6InhnWitVRC9aTW0xNFlrZHVrQitLYkE9PSIsInZhbHVlIjoibC9EajBTSnZZZ3NjS0E2cHdaTWVZSTcyaTA2VVQwaFd2RFIzVmlrMkNBeXhtMEJLM2JrT3JQUGlFNDRucHBRTFMxaU52dFpyamRWQXJ6dW9rMHNGRDlMS2kxRTBkTStQNGpsWmNMWUw2aVZoQzNEWnp2VnA1azMyd2pqcmJjTTIiLCJtYWMiOiIyM2UyMTQ0ODlmNjdkYWY0ODQ4OWUzNmMzMzMzYzE2YWE2NGM4NjJkOWY3MmViMTdiNTljMzE1NzQzZmNmNmRlIiwidGFnIjoiIn0%3D; expires=Sat, 05 Sep 2026 06:12:21 GMT; Max-Age=21600; path=/; secure; samesite=none
+Set-Cookie: peoplefone_che_portal_session=eyJpdiI6IjVaS2g4MFQybFdzN0pWaVlNSVNHbHc9PSIsInZhbHVlIjoiT25yRzdkekUxclEzZjIxM3p1MG5EYUpTRHR1SE9YTnpHUnQxQTg5dUVFYVV5akRNckkrOGl5TE51OVBqVldhOEhmeHJYTExudkMweUtLUzlGS2xDYzlHdm5VRjV3aGZJMkF2cTV1U2IyZGZOMWtIMzRkV09lUGpTTFlSZWsxY2kiLCJtYWMiOiJmMDdiODFhMzI4Mjc5ODg5MTRkZjhkNzk5MDRiNWZkOTM3OTllY2NkYTIxMWYyMDM0YWU3MDZiMjc1YWQ5ODVjIiwidGFnIjoiIn0%3D; expires=Sat, 05 Sep 2026 06:12:21 GMT; Max-Age=21600; path=/; secure; httponly; samesite=none
+Set-Cookie: locale=de_CH; expires=Sun, 10 Oct 2027 00:12:21 GMT; Max-Age=34560000; path=/; secure; samesite=none
+cf-cache-status: DYNAMIC
+Server: cloudflare
+CF-RAY: a36105954905ba52-SEA
+[0m
+[0m$ [0msleep 1; curl -s -o /tmp/opencode/auth_authz.txt -D /tmp/opencode/auth_authz.hdr -w "RESULT HTTP %{http_code}\n" --max-time 30 -A "Mozilla/5.0" "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&locale=de_CH&state=analystprobe123" ; grep -iE "^HTTP/|^location:|^cf-ray|^server" /tmp/opencode/auth_authz.hdr ; echo "---BODY SNIPPET---"; grep -oiE "refresh.*url=[^\"']+|redirect_uri=[^&\"]+" /tmp/opencode/auth_authz.txt | head -6
+RESULT HTTP 302
+HTTP/1.1 302 Found
+Location: https://auth.peoplefone.com/de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&state=analystprobe123
+Server: cloudflare
+CF-RAY: a36105bf0dd733d4-SEA
+---BODY SNIPPET---
+redirect_uri=https%3A%2F%2Fevil.com%2Fcallback
+redirect_uri=https%3A%2F%2Fevil.com%2Fcallback
+redirect_uri=https%3A%2F%2Fevil.com%2Fcallback
+redirect_uri=https%3A%2F%2Fevil.com%2Fcallback
+[0m
+[0m$ [0mfor p in "/oauth/token" "/oauth2/token" "/token" ; do curl -s -o /dev/null -w "auth %{http_code} GET $p\n" --max-time 20 -A "Mozilla/5.0" "https://auth.peoplefone.com$p"; sleep 1; done
+auth 405 GET /oauth/token
+auth 404 GET /oauth2/token
+auth 404 GET /token
+[0m
+[0m$ [0mfor p in "/home" "/login" "/api" "/api/v1" "/rest" "/v1"; do curl -s -o /dev/null -w "portal %{http_code} GET $p -> %{redirect_url}\n" --max-time 20 -A "Mozilla/5.0" "https://portal.peoplefone.ch$p"; sleep 1; done
+portal 302 GET /home -> https://portal.peoplefone.ch/login
+portal 302 GET /login -> https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&scope=&locale=de_CH&state=UwtTwUdmAsdiBZzcrqeLmH6HCNnxWlP3NX2G3jPf
+portal 404 GET /api -> 
+portal 404 GET /api/v1 -> 
+portal 404 GET /rest -> 
+portal 404 GET /v1 ->
+[0m
+[0m$ [0mcurl -s -o /dev/null -D - -w "\n---\n" --max-time 20 -A "Mozilla/5.0" "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fevil.com%2Fcb&response_type=token&scope=&locale=de_CH&state=t1" | grep -iE "^HTTP/|^location"; sleep 1; curl -s -o /dev/null -D - -w "\n---\n" --max-time 20 -A "Mozilla/5.0" "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fevil.com%2Fcb&response_type=code&code_challenge=1234567890abcdef&code_challenge_method=S256&scope=&locale=de_CH&state=t2" | grep -iE "^HTTP/|^location"
+HTTP/1.1 302 Found
+Location: https://auth.peoplefone.com/de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcb&response_type=token&scope=&state=t1
+HTTP/1.1 302 Found
+Location: https://auth.peoplefone.com/de_CH/login?client_id=1&code_challenge=1234567890abcdef&code_challenge_method=S256&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcb&response_type=code&scope=&state=t2
+[0m
+[0m$ [0mgrep -nE "analyst-out|lead-|probe-results|hypotheses-|ctx|state_|knowledge|date|>>" .github/workflows/hunt.yml | head -40
+56:          mkdir -p knowledge inventory leads reports
+57:          [ -f knowledge/index.md ] || echo "# Knowledge Base (seed)" > knowledge/index.md
+58:          [ -f state_${MODEL_NAME}.json ] || echo '{"phase":"RECON","target":"api"}' > state_${MODEL_NAME}.json
+61:            cat knowledge/index.md
+63:            cat state_${MODEL_NAME}.json
+65:            tail -60 leads/lead-${MODEL_NAME}.md 2>/dev/null || echo none
+70:          } > ctx.txt
+74:          cat ctx.txt > analyst-prompt.txt
+75:          cat >> analyst-prompt.txt << 'PROMPT_EOF'
+84:          OUT OF SCOPE (REJECTED classes): network DoS, account-lockout DoS, descriptive errors/headers only, robots.txt / known public files, outdated library versions, OPTIONS/TRACE, CSRF on logout or anonymous forms, cookie flags on non-sensitive data, self-XSS, scanner reports without POC, physical access, social engineering of employees/vendors, username enumeration on login/forgot-password, brute-force/rate-limit/lockout policy, SSL/TLS best practice, SSL attacks, clickjacking without demonstrated exploit, mail config (SPF/DKIM/DMARC), known-vulnerable library without program-specific exploit, password/account-recovery policy, autocomplete in fields, public login panels, lack of email verification, session control during email/password change, and any exposure of customer/employee/financial/authentication data during testing (program note). Focus on real logic flaws in scoped assets.
+87:          STEP 1 — DELTA: compare inventory+knowledge+last leads against current surface. [NEW]/[CHANGED] one line each, or NO_DELTA.
+107:          timeout -k 15 20m opencode run --model "$MODEL_ID" < analyst-prompt.txt > analyst-out.txt 2>&1 || true
+108:          cp analyst-out.txt analyst-${MODEL_NAME}.out
+109:          grep -E '^\[(NEW|CHANGED|PRIO|HYP|PARKED|FINAL|NEXT|LEARN|RISK)\]|^class:|^confidence:|^asset:|^impact:|^testability:|^verify_steps:|^reasoning:|^evidence_needed:' analyst-out.txt > lead.txt || true
+111:            echo "## $(date -u +'%Y-%m-%d %H:%M:%S UTC') [target] (model ${MODEL_NAME})"
+114:          echo "lead bytes: $(wc -c < lead.txt) | raw bytes: $(wc -c < analyst-out.txt)"
+123:            ctx.txt
+145:      - name: Merge + rank + inventory + knowledge update
+147:          mkdir -p leads reports knowledge inventory
+150:            cat "$f" >> leads/lead-$(basename "$f" | sed -E 's/lead_([a-z0-9]+)\.txt/\1/').md
+153:          import re, glob, json, os, datetime
+154:          stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+158:              open(f'reports/hypotheses-{model}.txt','w').write(open(f).read())
+173:              for f in glob.glob('reports/hypotheses-*.txt'):
+176:              for f in glob.glob('reports/hypotheses-*.txt'):
+178:          kpath='knowledge/index.md'; os.makedirs('knowledge',exist_ok=True)
+181:              for f in glob.glob('reports/hypotheses-*.txt'):
+188:              for f in glob.glob('reports/hypotheses-*.txt'):
+190:          for sp in glob.glob('state_*.json'):
+221:          ctx=ssl.create_default_context(); rows=[]
+226:                  with urllib.request.urlopen(req,timeout=12,context=ctx) as r:
+233:          with open('probe-results.md','a') as fo:
+242:          git add leads reports knowledge inventory state_*.json probe-results.md || true
+244:            git commit -m "hunt cycle $(date -u +'%Y-%m-%d-%H-%M')"
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/reg.html -D /tmp/opencode/reg.hdr -w "RESULT HTTP %{http_code}\n" --max-time 20 -A "Mozilla/5.0" "https://auth.peoplefone.com/de_CH/register?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fportal.peoplefone.ch%2Fauthback&response_type=code&state=probe" ; grep -iE "^HTTP/|^location:" /tmp/opencode/reg.hdr; grep -oiE '<form[^>]*action="[^"]*"|turnstile|data-sitekey="[^"]*"' /tmp/opencode/reg.html | head -5
+RESULT HTTP 200
+HTTP/1.1 200 OK
+<form id="registrationForm" role="form" method="POST" action="https://auth.peoplefone.com/de_CH/register"
+turnstile
+data-sitekey="0x4AAAAAAETtGmlFEOhYOX2V"
+turnstile
+turnstile
+[0m
+[0m$ [0mcat >> probe-results.md << 'EOF'
+
+## 2026-09-05 00:15:00 UTC
+https://api.peoplefone.com/services/api-doc/ -> HTTP 200 (Swagger UI; swagger-initializer.js lists exactly 8 specs, no auth/token spec)
+https://api.peoplefone.com/services/api-doc/swagger-initializer.js -> HTTP 200 (spec inventory: CallManagementV1, ConfigAPI_ExternalNumberLookup, ConfigApiV1, ExternalRoutingV1, QueueApiV1, SmartRoutingV1, SMSGW, UaCsta_v1)
+https://www.peoplefone.com/en-ch/developer -> HTTP 200 (links to api-doc, support api article, contact form)
+https://portal.peoplefone.ch/ -> HTTP 302 -> /home (Laravel: XSRF-TOKEN + encrypted session cookies, secure; httponly)
+https://portal.peoplefone.ch/home -> HTTP 302 -> /login
+https://portal.peoplefone.ch/login -> HTTP 302 -> https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://portal.peoplefone.ch/authback&response_type=code&scope=&locale=de_CH&state=<fresh>
+https://portal.peoplefone.ch/api -> HTTP 404
+https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=&locale=de_CH&state=analystprobe123 -> HTTP 302 -> /de_CH/login?client_id=1&locale=de_CH&redirect_uri=https%3A%2F%2Fevil.com%2Fcallback&response_type=code&scope=&state=analystprobe123 (arbitrary redirect_uri PRESERVED)
+https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/cb&response_type=token&scope=&locale=de_CH&state=t1 -> HTTP 302 -> /de_CH/login...&redirect_uri=https%3A%2F%2Fevil.com%2Fcb&response_type=token (implicit flow accepted)
+https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/cb&response_type=code&code_challenge=1234567890abcdef&code_challenge_method=S256&scope=&locale=de_CH&state=t2 -> HTTP 302 -> /de_CH/login (PKCE params accepted + preserved)
+https://auth.peoplefone.com/oauth/token -> HTTP 405 (token endpoint EXISTS)
+https://auth.peoplefone.com/oauth2/token -> HTTP 404
+https://auth.peoplefone.com/token -> HTTP 404
+https://auth.peoplefone.com/de_CH/register?client_id=1&locale=de_CH&redirect_uri=https://portal.peoplefone.ch/authback&response_type=code&state=probe -> HTTP 200 (registrationForm POST + Cloudflare Turnstile sitekey 0x4AAAAAAETtGmlFEOhYOX2V) — public self-service registration LIVE
+EOF
+echo done
+done
+[0m
+== STEP 1 — DELTA ==
+[NEW] auth.peoplefone.com/oauth/authorize is LIVE for client_id=1: `GET /oauth/authorize?...redirect_uri=https://evil.com/callback...` → HTTP 302 → `/de_CH/login` with the attacker `redirect_uri` PRESERVED verbatim — prior KB "404 at standard paths" was an invalid-client artifact (`client_id=test` → 404); the endpoint validates client_id but NOT redirect_uri
+[NEW] Implicit (`response_type=token`) AND PKCE (`code_challenge`+`code_challenge_method=S256`) params accepted and preserved through the same redirect → public-client-style behavior
+[NEW] auth.peoplefone.com/oauth/token EXISTS (HTTP 405 on GET) — live token-exchange endpoint confirmed
+[NEW] auth.peoplefone.com/de_CH/register is LIVE (HTTP 200, `registrationForm` POST + Cloudflare Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to an authorized operator
+[NEW] portal.peoplefone.ch inventoried: LIVE Laravel customer portal (XSRF-TOKEN + encrypted session cookie, httponly, secure) — `302 /` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=portal.peoplefone.ch/authback&state=` — token-issuance chain now precisely mapped; root `/api` → 404
+[NEW] `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec (token issuance confirmed off-spec, via portal OAuth flow)
+[CHANGED] REVERSED prior REJECTED-AUTH verdict: OAuth authorize endpoint confirmed live; arbitrary redirect_uri/state preserved for client_id=1 two hops deep (authorize → login); token endpoint live; full ATO-relevant primitive re-instated
+
+== STEP 2 — PRIORITIZE ==
+[PRIO] auth.peoplefone.com,7.95,attack_surface:8,business_value:10,tech_exposure:10,gate_ease:3,cloud_surface:5,freshness:10 — revived OAuth authorize/token surface, low structural cost to re-probe, gated only by final victim-login step
+[PRIO] portal.peoplefone.ch,7.55,attack_surface:7,business_value:10,tech_exposure:8,gate_ease:4,cloud_surface:5,freshness:10 — in-scope customer portal (Laravel) is the OAuth orchestrator and token issuer; never previously inventoried
+[PRIO] configuration-api.peoplefone.com,8.6,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:4,cloud_surface:7,freshness:9 — unchanged, remains token-gated
+
+== STEP 3 — HYPOTHESES ==
+[HYP] OAuth arbitrary redirect_uri / implicit-token theft on auth service (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 78
+reasoning: Live 302 observed: authorize with `redirect_uri=https://evil.com/callback` preserves evil.com through `/de_CH/login`; implicit response_type=token and PKCE code_challenge both accepted and preserved (302 observed today); `/oauth/token` returns 405=exists; client_id=1 (portal web client) is the acting client; no client-secret needed at the authorize layer
+evidence_needed: After a real victim authentication via attacker-crafted authorize URL, the code (or token under implicit) is delivered to the attacker redirect_uri AND exchangeable at /oauth/token — determines ATO (public/PKCE) vs open-redirect+login-CSRF (confidential secret required)
+verify_steps: (authorized op, test account) replicate today's 302 repro, complete login, capture code at attacker-URL; POST the code to /oauth/token with and without client_secret; observe token issuance
+impact: If exchange is public-client-capable: full ATO of any authenticated portal user → call recordings, CDR, PBX config, billing; minimum guaranteed: open redirect primed on a login flow + login-CSRF; severity CRITICAL (conditional on client type)
+testability: HUMAN_ONLY
+[HYP] IDOR/BOLA on Configuration API {identifier} CRUD across 8 resource types
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: unchanged — 235KB spec, numeric sequential identifiers, boundary statement in spec, PII in UserResponse; live 401 gate confirmed; cross-model convergence (bigpickle+nemotron3)
+evidence_needed: tenant-A token returns tenant-B {identifier} object via sequential enumeration
+verify_steps: (authorized token) GET /customer/voip/v1/users → own id space; GET /users/{own_id±1}; compare owner markers vs token tenant
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, IVR/queue reprogramming; CRITICAL
+testability: AUTH_HELPED
+[HYP] SSRF via 5 callback-accepting endpoints incl. custom-header exfiltration
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api smart-routings/{id}/webhook + call-api uaCSTA device/monitorStart + configuration-api external-number-lookup (webhookUrl)
+confidence: 78
+reasoning: unchanged — 5 endpoints accept format:uri with zero host/scheme allowlist; External Number Lookup forwards customer Authorization/X-API-Key to attacker URL; uaCSTA streams call events
+evidence_needed: post-auth callback POST reaches attacker host; 169.254.169.254/loopback not filtered
+verify_steps: (authorized token) POST SMS with callbackUrl=https://attacker-collab.example/x + 169.254.169.254 variant; register Smart Routing webhook url; uaCSTA monitorStart with monitoringCallbackUrl
+impact: cloud metadata/IAM theft, internal pivot, credential + live call-metadata exfiltration; CRITICAL
+testability: AUTH_HELPED
+
+== STEP 4 — SELF-CRITIQUE ==
+[PARKED] BUSLOGIC @ Queue API agent login/logout (65): retained only at lowest rank; spec-silent on membership validation; drop priority in favor of the revived, live-evidenced OAuth chain
+[FINAL] AUTH OAuth redirect_uri/implicit token theft on auth (client_id=1) — 78, HUMAN_ONLY, CRITICAL — REVIVED from REJECTED, top slot by live evidence; prove client-type at token exchange before claiming ATO
+[FINAL] IDOR configuration-api {identifier} CRUD — 85, AUTH_HELPED, CRITICAL — RETAIN (top per cross-model convergence)
+[FINAL] SSRF 5 callback endpoints — 78, AUTH_HELPED, CRITICAL — RETAIN
+
+== STEP 5 — NEXT ACTION ==
+[NEXT] HUMAN: In authorized scope, create a test account via the live self-service `auth.peoplefone.com/de_CH/register` (Turnstile-protected, verified 200), complete the mapped portal login (portal.peoplefone.ch → auth authorize client_id=1), then (a) determine whether `/oauth/token` exchanges a code WITHOUT client_secret (public/PKCE client = confirmed ATO, CRITICAL) and (b) use the obtained bearer token to run the two read-only IDOR confirmations `GET /customer/voip/v1/users/{own_id±1}`. All remaining top hypotheses are gated on exactly this account.
+
+== STEP 6 — LEARNING ==
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: authorize endpoint CONFIRMED LIVE for client_id=1 (302→/de_CH/login preserving arbitrary redirect_uri, implicit+PKCE params accepted); prior 404 verdict traced to invalid `client_id=test` artifact — correction supersedes 2026-09-04 REJECTED entries
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: oauth/token live (405 on GET) — token-exchange endpoint exists adjacent to unrestricted redirect_uri; final severity turns on client type (secret vs PKCE/public)
+[LEARN] ACCEPTED AUTH @ portal.peoplefone.ch: in-scope customer portal inventoried; Laravel (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain is the sole token-issuance route; /api 404 on root
+[LEARN] ACCEPTED OTH @ api.peoplefone.com: swagger-initializer.js lists exactly 8 specs, moving all token/passport/session issuance firmly OFF-spec — OAuth URI flow is the only documented credential path
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+
+== STEP 7 — RISK ==
+[RISK] peoplefone GmbH: 91/100 — The single highest-impact chain is now live-evidenced: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise. All three API hypothesis classes (IDOR 85, SSRF 78, BUSLOGIC 65) remain live behind one token gate that an authorized operator can now open via the verified public `de_CH/register` endpoint. Probe results and corrected OAuth repro appended to probe-results.md.

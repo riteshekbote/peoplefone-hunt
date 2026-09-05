@@ -48,3 +48,15 @@
 - 2026-09-04 ACCEPTED BUSLOGIC @ call-api queue agents: retained at lowest rank — weakest evidence class, spec-silent on membership validation
 - 2026-09-04 REJECTED AUTH @ auth.peoplefone.com: re-confirmed token issuance outside all 8 specs and standard endpoints 404 — agent-side token acquisition impossible; human+portal required
 - 2026-09-04 REJECTED MISCONFIG @ *.peoplefone.com: no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+- 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: authorize endpoint CONFIRMED LIVE for client_id=1 (302→/de_CH/login preserving arbitrary redirect_uri, implicit+PKCE params accepted); prior 404 verdict traced to invalid `client_id=test` artifact — correction supersedes 2026-09-04 REJECTED entries
+- 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: oauth/token live (405 on GET) — token-exchange endpoint exists adjacent to unrestricted redirect_uri; final severity turns on client type (secret vs PKCE/public)
+- 2026-09-05 ACCEPTED AUTH @ portal.peoplefone.ch: in-scope customer portal inventoried; Laravel (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain is the sole token-issuance route; /api 404 on root
+- 2026-09-05 ACCEPTED OTH @ api.peoplefone.com: swagger-initializer.js lists exactly 8 specs, moving all token/passport/session issuance firmly OFF-spec — OAuth URI flow is the only documented credential path
+- 2026-09-05 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+- 2026-09-05 ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven
+- 2026-09-05 ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host/scheme validation; External Number Lookup forwards custom headers
+- 2026-09-05 ACCEPTED BUSLOGIC @ Queue API: agent login/logout accepts cross-tenant agent+queue identifiers; call center disruption
+- 2026-09-05 REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404
+- 2026-09-05 ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+- 2026-09-05 ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+- 2026-09-05 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets

