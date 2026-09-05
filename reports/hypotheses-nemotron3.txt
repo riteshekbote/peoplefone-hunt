@@ -1,4 +1,4 @@
-## 2026-09-05 04:41:56 UTC [target] (model nemotron3)
+## 2026-09-05 08:38:58 UTC [target] (model nemotron3)
 [NEW] auth.peoplefone.com/oauth/authorize CONFIRMED LIVE for client_id=1: 302→/de_CH/login preserving arbitrary redirect_uri; implicit (response_type=token) AND PKCE params accepted and preserved through login flow
 [NEW] auth.peoplefone.com/oauth/token EXISTS (HTTP 405 on GET) — live token-exchange endpoint adjacent to unrestricted redirect_uri
 [NEW] auth.peoplefone.com/de_CH/register LIVE (HTTP 200, registrationForm POST + Cloudflare Turnstile sitekey 0x4AAAAAAETtGmlFEOhYOX2V) — self-service account creation available
@@ -9,12 +9,12 @@
 [CHANGED] Phase confirmed POC — token acquisition via portal.peoplefone.ch is single blocker for all 3 CRITICAL hypothesis classes
 [CHANGED] Cross-model convergence (bigpickle+nemotron3) on identical top hypothesis — configuration-api {identifier} CRUD IDOR
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
-[PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
-[PRIO] portal.peoplefone.ch,7.5,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=4,cloud_surface=5,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.7,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
 [PRIO] call-api.peoplefone.com/customer/uaCSTA/v1,8.4,attack_surface=8,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=9
 [PRIO] call-api.peoplefone.com/customer/external-number-lookup/v1,8.3,attack_surface=8,business_value=7,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=9
+[PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
+[PRIO] portal.peoplefone.ch,7.5,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=4,cloud_surface=5,freshness=10
 [PRIO] configuration-api.peoplefone.com/customer/external-routing/v1,7.2,attack_surface=6,business_value=5,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=8
 [HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration
 class: IDOR

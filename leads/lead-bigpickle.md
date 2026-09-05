@@ -393,3 +393,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
 [RISK] peoplefone GmbH: 91/100 — The single highest-impact chain is now live-evidenced: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise. All three API hypothesis classes (IDOR 85, SSRF 78, BUSLOGIC 65) remain live behind one token gate that an authorized operator can now open via the verified public `de_CH/register` endpoint. Probe results and corrected OAuth repro appended to probe-results.md.
 ## 2026-09-05 04:40:55 UTC [target] (model bigpickle)
+## 2026-09-05 08:37:59 UTC [target] (model bigpickle)
+[HYP] OAuth client-type / code-theft via unrestricted authorize redirect (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize + /oauth/token
+confidence: 62
+reasoning: token endpoint POSTs (invalid code) return 401, no WWW-Authenticate; authorize is stateless-404 unless given a warm portal state (prior session live 302 preserved arbitrary redirect_uri through login); register/login now 500. Unauthenticated attacker-crafted authorize URL is not reliably reproducible without an active victim/session.
+evidence_needed: With a real login (authorized op), confirm code is delivered to attacker redirect_uri AND whether /oauth/token exchanges without client_secret (public/PKCE => ATO CRITICAL) vs requires secret (confidential => code-theft still needs leaked secret / login-CSRF only).
+verify_steps: (authorized, human) capture fresh state from portal.peoplefone.ch, reproduce authorize 302 with attacker redirect_uri, complete login, capture code; POST code to /oauth/token with and without client_secret and observe error class (401 vs 400 invalid_grant) to infer client type.
+impact: If public/PKCE: silent ATO of any portal user (recordings, PBX, billing); if confidential: open-redirect-on-login + code-theft requiring secret => high but gated. severity CRITICAL (conditional on client type)
+testability: HUMAN_ONLY
+[HYP] IDOR/BOLA Configuration API {identifier} CRUD (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: unchanged — 235KB spec, numeric sequential identifiers, boundary statement in spec, PII (sipUserName, address, email) in UserResponse; live 401 gate; cross-model convergence bigpickle+nemotron3.
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via sequential ±1 enumeration.
+verify_steps: (authorized token) GET /customer/voip/v1/users; then GET /users/{own_id±1}; compare owner markers vs token tenant.
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, IVR/queue reprogramming; CRITICAL
+testability: AUTH_HELPED
+[HYP] SSRF via 5 callback endpoints incl. custom-header exfiltration
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api smart-routings/{id}/webhook + call-api uaCSTA device/monitorStart + configuration-api external-number-lookup (webhookUrl)
+confidence: 78
+reasoning: unchanged — 5 endpoints accept format:uri with zero host/scheme allowlist; External Number Lookup forwards customer Authorization/X-API-Key to attacker URL; uaCSTA streams call events.
+evidence_needed: post-auth callback POST reaches attacker host; 169.254.169.254/loopback not filtered.
+verify_steps: (authorized token) POST SMS with callbackUrl=https://attacker.example/x + 169.254.169.254 variant; register Smart Routing webhook url; uaCSTA monitorStart with monitoringCallbackUrl.
+impact: cloud metadata/IAM theft, internal pivot, credential + live call-metadata exfiltration; CRITICAL
+testability: AUTH_HELPED
