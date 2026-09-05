@@ -1,4 +1,4 @@
-## 2026-09-05 17:42:38 UTC [target] (model nemotron3)
+## 2026-09-05 19:35:01 UTC [target] (model nemotron3)
 [NEW] auth.peoplefone.com/de_CH/register confirmed LIVE (HTTP 200, Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to authorized operator
 [NEW] portal.peoplefone.ch fully inventoried: Laravel (XSRF-TOKEN + encrypted session cookie, httponly, secure); `/` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id=1` is sole token-issuance chain
 [NEW] `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec — OAuth URI flow only documented credential path

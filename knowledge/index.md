@@ -66,3 +66,6 @@
 - 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: live re-probe frozen state — oauth/token 405 (live), stateless authorize 404 (fresh session), register 500 (regression holds); consistent with 12:00 triage; report path bugs.olivermaicher.eu unchanged.
 - 2026-09-05 REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formal INVALID (spec-silent on membership validation); removed from active set — no re-probe warranted.
 - 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence since spec harvest; cross-model rank holds — retains top slot, remains token-gated.
+- 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: this cycle NO_DELTA — state frozen at oauth/token 405 / stateless authorize 404 / register 500; consistent with 12:00 triage; report path bugs.olivermaicher.eu unchanged and remains the program's only report-ready item.
+- 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: still no counter-evidence; cross-model rank holds — retains top slot, remains token-gated.
+- 2026-09-05 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence this cycle; retained pending token.
