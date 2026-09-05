@@ -15,3 +15,9 @@
   - | Q2 Reachable | **PARTIAL** | Requires valid bearer token (401 enforced). SMS API is public ("free for all developers") which lowers token acquisition barrier, but still requires authentication. |
   - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL (or 7.4 HIGH) | **Report to bugs.olivermaicher.eu** with HTTP 302 trace |
   - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL |
+
+- 4 lead(s) marked VALID at 2026-09-05 16:09:01 UTC
+  - | Q2 Reachable? | PARTIAL | 401 enforced; requires valid bearer token. Not unauth-accessible. |
+  - **Verdict: VALID**
+  - | Q2 Reachable? | PARTIAL | All require valid bearer token (401 confirmed). Not unauth-accessible. |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | **9.1 CRITICAL** | **Report to bugs.olivermaicher.eu now** |
