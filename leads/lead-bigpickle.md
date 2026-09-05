@@ -639,3 +639,31 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: still no counter-evidence; cross-model rank holds — retains top slot, remains token-gated.
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence this cycle; retained pending token.
 [RISK] peoplefone GmbH: 84/100 — Report-ready finding (OAuth redirect_uri, triage VALID 9.1) is outstanding against the sole report channel bugs.olivermaicher.eu but not confirmed submitted; three CRITICAL classes (Configuration IDOR 85, SSRF 78, SMS BOLA 80) remain live behind a single bearer-token gate; register 500 narrows account-creation path but token endpoint 405 confirms exchange infra reachable; severity ceiling CRITICAL across all classes; cycle showed zero deltas so risk level is unchanged and entirely gated on human report submission + human token acquisition.
+## 2026-09-05 21:42:44 UTC [target] (model bigpickle)
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers (20023, 20024, 2, 2000); spec boundary note "user must be part of account bound to bearer token" is aspirational-doc, enforcement unproven; UserResponse exposes sipUserName+physical address+email; live 401 confirmed; cross-model convergence (bigpickle+nemotron3); no counter-evidence since spec harvest
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration; owner markers vs token tenant mismatch
+verify_steps: (authorized token, read-only) GET /customer/voip/v1/users; then GET /users/{own_id} and /users/{own_id±1}; repeat /numbers/{did} and /callforwarding/{id}; compare tenant/owner markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, IVR/queue/callforwarding reprogramming, billing fraud; severity CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM keys theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1/sms/messages (callbackUrl) + call-api smart-routings/{id}/webhook (url) + call-api uaCSTA device/monitorStart (callbackUrl+monitoringCallbackUrl) + configuration-api external-number-lookup (webhookUrl+custom headers)
+confidence: 78
+reasoning: 5 endpoints accept format:uri with no enum/allowlist; External Number Lookup forwards customer Authorization/X-API-Key to attacker URL; uaCSTA streams SIP username+number call events; Smart Routing X-Track-Id 2-min single-use; deprecated External Routing (2026-09-30) repeats the pattern; no internal-IP/denylist documented
+evidence_needed: post-auth callback POST reaches attacker host; 169.254.169.254/loopback/private ranges not filtered; custom-header forwarding observed
+verify_steps: (authorized token) POST SMS with callbackUrl=https://attacker-collab/x plus http://169.254.169.254/latest/meta-data/ variant; register Smart Routing webhook url; uaCSTA monitorStart with monitoringCallbackUrl; inspect attacker-side receipt only
+impact: cloud metadata/IAM theft, internal SIP/PBX pivot, credential exfiltration, live call-metadata leak; severity CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth arbitrary redirect_uri / code-theft (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: 302 preserving attacker redirect_uri through /de_CH/login only reproduces with a warm portal session (stateless-404 re-confirmed 21:41); implicit response_type=token + PKCE params accepted when live; /oauth/token stable 405 (re-confirmed 21:41); register still 500 (re-confirmed 21:41); triage 12:00 graded VALID 9.1 CRITICAL-conditional; final severity = client type at token exchange
+evidence_needed: with a real authorized login, code delivered to attacker redirect_uri AND /oauth/token exchanges without client_secret (public/PKCE → ATO CRITICAL) vs requires secret (confidential → login-CSRF/open-redirect only)
+verify_steps: (authorized, human) capture fresh portal.peoplefone.ch state, reproduce authorize 302 with attacker redirect_uri, complete login, capture code; POST code to /oauth/token with and without client_secret; infer client type from error class (401 vs 400 invalid_grant)
+impact: if public/PKCE: silent ATO of any portal user (recordings, CDR, PBX, billing, PII); else open-redirect-on-login + login-CSRF; severity CRITICAL (conditional)
+testability: HUMAN_ONLY
