@@ -69,3 +69,6 @@
 - 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: this cycle NO_DELTA — state frozen at oauth/token 405 / stateless authorize 404 / register 500; consistent with 12:00 triage; report path bugs.olivermaicher.eu unchanged and remains the program's only report-ready item.
 - 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: still no counter-evidence; cross-model rank holds — retains top slot, remains token-gated.
 - 2026-09-05 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence this cycle; retained pending token.
+- 2026-09-05 ACCEPTED @ auth.peoplefone.com: NO_DELTA state frozen at register 500 / token 405 / stateless authorize 404; portal 302 and api-doc 200 baseline — consistent with 12:00 triage; no new surface, probes add nothing this cycle.
+- 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence this cycle; rank holds; token-gated.
+- 2026-09-05 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets.
