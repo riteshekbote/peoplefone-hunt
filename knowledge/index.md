@@ -63,3 +63,6 @@
 - 2026-09-05 REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404 (superseded by live authorize discovery)
 - 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: re-confirmed authorize is stateless-404 in a fresh session (my 08:40-era probe) — 302 preserving attacker redirect_uri only reproduces with a warm portal session; register regressed 200→500; token endpoint stable 405. Triage 12:00 graded OAuth VALID 9.1 with report-channel bugs.olivermaicher.eu.
 - 2026-09-05 REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formally INVALID (spec-silent on membership validation); drop from priority.
+- 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: live re-probe frozen state — oauth/token 405 (live), stateless authorize 404 (fresh session), register 500 (regression holds); consistent with 12:00 triage; report path bugs.olivermaicher.eu unchanged.
+- 2026-09-05 REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formal INVALID (spec-silent on membership validation); removed from active set — no re-probe warranted.
+- 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence since spec harvest; cross-model rank holds — retains top slot, remains token-gated.

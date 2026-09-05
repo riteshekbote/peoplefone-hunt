@@ -147,3 +147,11 @@ www.peoplefone.com
 - CHANGED External Routing API deprecated 2026-09-30 but still live (26 days remaining) — same SSRF pattern as Smart Routing, potentially weaker code paths
 - CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is single blocker for all 3 CRITICAL hypothesis classes
 - CHANGED Cross-model convergence (bigpickle+nemotron3) on identical top hypothesis — configuration-api {identifier} CRUD IDOR
+
+## 2026-09-05 15:27:47 UTC
+- NEW auth.peoplefone.com/de_CH/register confirmed LIVE (HTTP 200, Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to authorized operator
+- NEW portal.peoplefone.ch fully inventoried: Laravel (XSRF-TOKEN + encrypted session cookie, httponly, secure); `/` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id=1` is sole token-is
+- NEW `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec — OAuth URI flow only documented credential path
+- CHANGED Triage 12:00 independently graded OAuth redirect_uri VALID 9.1 CRITICAL-conditional (report-channel: bugs.olivermaicher.eu)
+- CHANGED BUSLOGIC @ call-api queue agents formally INVALID (spec-silent on membership validation) — dropped from priority
+- CHANGED auth.peoplefone.com/oauth/authorize stateless-404 in fresh session; 302 preserving attacker redirect_uri only reproduces with warm portal session; register regressed 200→500 (transient); token endpoin
