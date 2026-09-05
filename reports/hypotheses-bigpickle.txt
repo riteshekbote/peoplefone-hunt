@@ -1,4 +1,4 @@
-## 2026-09-05 15:23:00 UTC [target] (model bigpickle)
+## 2026-09-05 17:37:12 UTC [target] (model bigpickle)
 [PRIO] configuration-api.peoplefone.com,8.55,attack_surface:10 business_value:10 tech_exposure:9 gate_ease:4 cloud_surface:7 freshness:9 — top slot held: 8 resource types, sequential IDs, PII in UserResponse; sole blocker = token
 [PRIO] call-api.peoplefone.com,8.15,attack_surface:9 business_value:9 tech_exposure:9 gate_ease:4 cloud_surface:8 freshness:9 — 5-endpoint SSRF surface incl. header-exfil variant + uaCSTA call-event streaming
 [PRIO] auth.peoplefone.com,7.95,attack_surface:8 business_value:10 tech_exposure:10 gate_ease:3 cloud_surface:5 freshness:10 — only report-ready finding (VALID 9.1); token endpoint stable 405; register 500 tightens token gate
