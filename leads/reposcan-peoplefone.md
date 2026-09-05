@@ -64,3 +64,23 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-05 20:48:09 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 22:27:34 UTC
+class: OTHER
+asset: provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php
+confidence: 25
+reasoning: Each device class hardcodes a third-party provisioning endpoint URL (e.g. `https://secure-provisioning.snom.com:8083`, `https://prov.gigaset.net`, `https://api-dm.yealink.com:8443`, `https://provisioning.auerswald.de`, `https://provisioning.e-connecting.net`) and a default constructor parameter `$client_auth=['username','password']`. The test file `provisioning-rpc/tests/test.php` also falls back to `$login = ['username', 'password']`. These are clearly **dummy placeholder values**, not live credentials. The endpoint URLs belong to third-party phone vendors, not to peoplefone infrastructure.
+impact: informational (no live secret leaked; placeholder values only; third-party endpoints are public API docs)
+verify_steps: Verify that no deployment artifact ships with real credentials substituted into these constructors. Check `provisioning-rpc-settings.php` (referenced in tests via `file_exists`) is `.gitignore`d and never committed — the `.gitignore` should be confirmed.
+class: OTHER
+asset: provisioning-rpc/src/ProvisioningRPC.php:9
+confidence: 30
+reasoning: `ProvisioningRPC::connect($model, $login)` builds a class name as `get_class().'Device'.ucfirst(strtolower($model))` and does `new $classname($login)`. If `$model` originates from external input, this is a class-injection vector constrained to the `Peoplefone\ProvisioningRPCDevice*` namespace. The catch block uses `die($t->getMessage())` which leaks the exception string.
+impact: low (namespace-constrained; requires caller to pass unsanitized input; `die()` leaks error messages but not stack traces)
+verify_steps: Check all call sites of `ProvisioningRPC::connect()` to confirm `$model` is never user-supplied. If it is, whitelist allowed model names.
+class: SSRF
+asset: provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php — `addPhone()` methods
+confidence: 20
+reasoning: The `$url` parameter in `addPhone(string $mac, string $url, ...)` is passed directly into the XML-RPC call body to the third-party provisioning server without any URL validation (no scheme/hostname allowlist). If a calling application passes user-controlled input as `$url`, the phone would be directed to fetch its provisioning from an attacker-chosen URL, enabling phone-level MITM or firmware redirection. The `$url` is not fetched by the peoplefone server itself; the phone fetches it.
+impact: medium (only exploitable if the calling web app exposes `addPhone()` with user-controlled `$url`; impact is phone-level config hijack, not server-side)
+verify_steps: Identify the web application(s) that consume this library and check whether `addPhone()` receives user-supplied URLs. If so, validate against an allowlist of known provisioning domains.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
