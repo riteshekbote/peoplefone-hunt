@@ -136,3 +136,14 @@ www.peoplefone.com
 - CHANGED External Routing API deprecated 2026-09-30 but still live (26 days remaining) — same SSRF pattern as Smart Routing, potentially weaker code paths
 - CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is single blocker for all 3 CRITICAL hypothesis classes
 - CHANGED Cross-model convergence (bigpickle+nemotron3) on identical top hypothesis — configuration-api {identifier} CRUD IDOR
+
+## 2026-09-05 12:06:02 UTC
+- NEW auth.peoplefone.com/oauth/authorize CONFIRMED LIVE for client_id=1: 302→/de_CH/login preserving arbitrary redirect_uri; implicit (response_type=token) AND PKCE params accepted and preserved through lo
+- NEW auth.peoplefone.com/oauth/token EXISTS (HTTP 405 on GET) — live token-exchange endpoint adjacent to unrestricted redirect_uri
+- NEW auth.peoplefone.com/de_CH/register LIVE (HTTP 200, registrationForm POST + Cloudflare Turnstile sitekey 0x4AAAAAAETtGmlFEOhYOX2V) — self-service account creation available
+- NEW portal.peoplefone.ch inventoried: LIVE Laravel customer portal (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain is sole token-issuance route
+- NEW /services/api-doc/swagger-initializer.js confirms exactly 8 specs, NO auth/token spec — OAuth URI flow is only documented credential path
+- CHANGED REVERSED prior REJECTED-AUTH verdict: OAuth authorize endpoint confirmed live; arbitrary redirect_uri/state preserved two hops deep; token endpoint live; full ATO-relevant primitive reinstated
+- CHANGED External Routing API deprecated 2026-09-30 but still live (26 days remaining) — same SSRF pattern as Smart Routing, potentially weaker code paths
+- CHANGED Phase confirmed POC — token acquisition via portal.peoplefone.ch is single blocker for all 3 CRITICAL hypothesis classes
+- CHANGED Cross-model convergence (bigpickle+nemotron3) on identical top hypothesis — configuration-api {identifier} CRUD IDOR

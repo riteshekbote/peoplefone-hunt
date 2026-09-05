@@ -61,3 +61,5 @@
 - 2026-09-05 ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
 - 2026-09-05 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
 - 2026-09-05 REJECTED AUTH @ auth.peoplefone.com: Token issuance NOT in API specs — requires portal.peoplefone.ch; standard endpoints 404 (superseded by live authorize discovery)
+- 2026-09-05 ACCEPTED AUTH @ auth.peoplefone.com: re-confirmed authorize is stateless-404 in a fresh session (my 08:40-era probe) — 302 preserving attacker redirect_uri only reproduces with a warm portal session; register regressed 200→500; token endpoint stable 405. Triage 12:00 graded OAuth VALID 9.1 with report-channel bugs.olivermaicher.eu.
+- 2026-09-05 REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formally INVALID (spec-silent on membership validation); drop from priority.
