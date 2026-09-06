@@ -826,3 +826,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; reposcan no alternative surface.
 [RISK] peoplefone GmbH: 84/100 — sole report-ready finding (OAuth redirect_uri, VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0); Configuration IDOR (85) + SSRF (78) + SMS BOLA (80) stay live behind one bearer token that remains unacquirable agent-side (register 500 persists, token 405); register regression narrows but does not close account creation. Ninth straight no-delta cycle: risk fully gated on (a) human report submission and (b) human token acquisition; no agent-side action can move it.
+## 2026-09-06 06:30:23 UTC [target] (model bigpickle)

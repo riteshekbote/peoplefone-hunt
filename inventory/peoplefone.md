@@ -189,3 +189,6 @@ www.peoplefone.com
 - CHANGED auth.peoplefone.com/oauth/authorize stateless-404 in fresh session; 302 preserving attacker redirect_uri only reproduces with warm portal session; register regressed 200→500 (transient); token endpoin
 
 ## 2026-09-06 01:23:13 UTC
+
+## 2026-09-06 06:31:53 UTC
+- NEW NO_DELTA — All 2026-09-06 knowledge-base entries reconfirm frozen state: auth.peoplefone.com register 500 / token 405 / stateless authorize 404 / portal 302 / api-doc 200 baseline; configuration-api {
