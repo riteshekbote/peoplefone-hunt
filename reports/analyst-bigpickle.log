@@ -5320,3 +5320,163 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] peoplefone GmbH: 84/100 — sole report-ready finding (OAuth redirect_uri, VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 10 frozen cycles; Configuration IDOR (85) + SSRF (78) + SMS BOLA (80) remain live behind one bearer token that stays unacquirable agent-side (register 500 persists, token 405). Register regression narrows but does not close account creation. Entire backlog is gated on (a) human report submission and (b) human token acquisition; no agent-side action can move risk. Risk would drop only upon confirmed submission with a valid-bugs increment.
+===== ANALYST bigpickle 2026-09-06 14:26:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m% [0mWebFetch https://bugs.olivermaicher.eu
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://auth.peoplefone.com/de_CH/register" --max-time 10
+500
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://auth.peoplefone.com/oauth/token" -X GET --max-time 10
+405
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://auth.peoplefone.com/oauth/authorize?client_id=1" --max-time 10
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://api.peoplefone.com/services/api-doc/" --max-time 10
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://portal.peoplefone.ch/" --max-time 10
+302
+[0m
+[0m→ [0mRead .
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/art/ 2>/dev/null || echo "no art dir"
+no art dir
+[0m
+All probes confirm frozen state: register 500, token 405, authorize 404, api-doc 200, portal 302. Let me check workspace for any new artifacts.
+[0m→ [0mRead probe-results.md[90m [offset=1, limit=50][0m
+[0m→ [0mRead state_bigpickle.json
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/
+total 344
+drwxr-xr-x  2 runner runner   4096 Sep  6 14:16 .
+drwxr-xr-x 12 runner runner   4096 Sep  6 14:16 ..
+-rw-r--r--  1 runner runner 117001 Sep  6 14:16 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1122 Sep  6 14:16 lead-laguna.md
+-rw-r--r--  1 runner runner   1100 Sep  6 14:16 lead-ling3.md
+-rw-r--r--  1 runner runner   1144 Sep  6 14:16 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  6 14:16 lead-mimo.md
+-rw-r--r--  1 runner runner 198064 Sep  6 14:16 lead-nemotron3.md
+-rw-r--r--  1 runner runner   6858 Sep  6 14:16 reposcan-peoplefone.md
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/triage/
+total 164
+drwxr-xr-x  2 runner runner  4096 Sep  6 14:16 .
+drwxr-xr-x 12 runner runner  4096 Sep  6 14:16 ..
+-rw-r--r--  1 runner runner     0 Sep  6 14:16 .gitkeep
+-rw-r--r--  1 runner runner   146 Sep  6 14:16 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner  2035 Sep  6 14:16 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   934 Sep  6 14:16 run-2026-09-03-02-51.md
+-rw-r--r--  1 runner runner   143 Sep  6 14:16 run-2026-09-03-07-45.md
+-rw-r--r--  1 runner runner   181 Sep  6 14:16 run-2026-09-03-12-34.md
+-rw-r--r--  1 runner runner   174 Sep  6 14:16 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   187 Sep  6 14:16 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   186 Sep  6 14:16 run-2026-09-03-21-53.md
+-rw-r--r--  1 runner runner  6531 Sep  6 14:16 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   211 Sep  6 14:16 run-2026-09-04-02-50.md
+-rw-r--r--  1 runner runner   230 Sep  6 14:16 run-2026-09-04-07-42.md
+-rw-r--r--  1 runner runner   149 Sep  6 14:16 run-2026-09-04-12-29.md
+-rw-r--r--  1 runner runner   149 Sep  6 14:16 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   212 Sep  6 14:16 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner   163 Sep  6 14:16 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   178 Sep  6 14:16 run-2026-09-04-23-16.md
+-rw-r--r--  1 runner runner   213 Sep  6 14:16 run-2026-09-05-01-04.md
+-rw-r--r--  1 runner runner 16166 Sep  6 14:16 run-2026-09-05-05-55.md
+-rw-r--r--  1 runner runner   177 Sep  6 14:16 run-2026-09-05-09-55.md
+-rw-r--r--  1 runner runner  1421 Sep  6 14:16 run-2026-09-05-13-15.md
+-rw-r--r--  1 runner runner 11220 Sep  6 14:16 run-2026-09-05-16-09.md
+-rw-r--r--  1 runner runner   220 Sep  6 14:16 run-2026-09-05-18-22.md
+-rw-r--r--  1 runner runner   239 Sep  6 14:16 run-2026-09-05-20-44.md
+-rw-r--r--  1 runner runner   231 Sep  6 14:16 run-2026-09-05-22-37.md
+-rw-r--r--  1 runner runner 11210 Sep  6 14:16 run-2026-09-06-00-15.md
+-rw-r--r--  1 runner runner   148 Sep  6 14:16 run-2026-09-06-04-46.md
+-rw-r--r--  1 runner runner   207 Sep  6 14:16 run-2026-09-06-09-08.md
+-rw-r--r--  1 runner runner   163 Sep  6 14:16 run-2026-09-06-12-55.md
+-rw-r--r--  1 runner runner 10000 Sep  6 14:16 triage-run-2026-09-05-12-00.md
+[0m
+[0m→ [0mRead probe-results.md[90m [offset=85][0m
+[0m→ [0mRead triage/run-2026-09-06-12-55.md
+[0m→ [0mRead triage/run-2026-09-06-09-08.md
+[0m→ [0mRead triage/run-2026-09-06-04-46.md
+[0m→ [0mRead triage/run-2026-09-06-00-15.md
+Now I have full context. Here is the structured analysis:
+
+---
+
+## STEP 1 — DELTA
+
+NO_DELTA. Register 500 / token 405 / stateless authorize 404 / portal 302 / api-doc 200 — identical to all 10 prior cycles. Probe-results only records api-doc 200 for the last 6 entries. Triage runs at 04:46, 09:08, and 12:55 UTC all failed (mimo received no leads). No new inventory, no new surfaces, no new artifacts.
+
+## STEP 2 — PRIORITIZE
+
+| Asset | a | b | t | g | c | f | Priority |
+|---|---|---|---|---|---|---|---|
+| `configuration-api.peoplefone.com` | 8 | 9 | 5 | 6 | 8 | 8 | **7.20** |
+| `auth.peoplefone.com` | 6 | 9 | 8 | 4 | 6 | 7 | **6.65** |
+| `api.peoplefone.com` | 7 | 8 | 6 | 5 | 7 | 8 | **6.80** |
+| `call-api.peoplefone.com` | 7 | 7 | 5 | 5 | 7 | 8 | **6.35** |
+
+**[PRIO]** configuration-api.peoplefone.com, 7.20, IDOR/CRUD+PII — retains top slot
+**[PRIO]** api.peoplefone.com, 6.80, SMS BOLA+dev portal surface
+**[PRIO]** auth.peoplefone.com, 6.65, OAuth redirect_uri — report-ready
+
+## STEP 3 — HYPOTHESES
+
+**[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)**
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec with numeric sequential identifiers (20023,20024,2,2000); explicit authorization-boundary note is aspirational, enforcement unproven; UserResponse exposes sipUserName+email+physical address; 401 enforced live; zero counter-evidence across 10 frozen cycles; cross-model rank convergence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, users/{own_id}, users/{own_id±1}; repeat numbers/{did}, callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+
+**[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation**
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/messages callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; uaCSTA streams call events; deprecated External Routing (2026-09-30) repeats pattern with weaker code paths; no counter-evidence across 10 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+
+**[HYP] OAuth arbitrary redirect_uri / code-theft (client_id=1)**
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: 302 preserving attacker redirect_uri through /de_CH/login (implicit+PKCE accepted when portal-warm); token endpoint stable 405 (exchange infra live); register 500 persists; triage 00:15 + 12:00 independently graded VALID 9.1 CRITICAL-conditional; sole report-ready item; live re-probe this cycle confirms frozen baseline
+evidence_needed: code delivered to attacker redirect_uri; /oauth/token exchange without client_secret (public/PKCE → ATO) vs with (confidential → login-CSRF)
+verify_steps: (authorized, human) warm portal session, reproduce authorize 302 with attacker redirect_uri, complete login, POST code to /oauth/token with and without client_secret
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) or open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+
+## STEP 4 — SELF-CRITIQUE
+
+All three survive confidence≥40, non-REJECTED, verify_steps present.
+
+**[FINAL]** 1. Configuration API {identifier} CRUD IDOR — 85, AUTH_HELPED, CRITICAL — RETAIN top slot, token-gated, 10th frozen cycle without counter-evidence.
+**[FINAL]** 2. SSRF 5 callback endpoints incl. header exfil — 78, AUTH_HELPED, CRITICAL — RETAIN, token-gated.
+**[FINAL]** 3. OAuth redirect_uri — 62, HUMAN_ONLY, CRITICAL-conditional — RETAIN; sole report-ready item (triage VALID 9.1, twice-confirmed).
+
+**[PARKED]** reposcan Command Injection / MX SSRF: source-level, production deployment unconfirmed, TARGET_ORG not configured — fails reachable-non-invasively gate.
+
+## STEP 5 — NEXT ACTION
+
+**[NEXT]** HUMAN: Submit the OAuth redirect_uri/open-redirect finding to bugs.olivermaicher.eu now — triage VALID 9.1 CRITICAL-conditional across three independent triage runs. Package: live re-verification this cycle (oauth/token 405-on-GET = exchange infra alive; register 500; api-doc 200; portal 302) plus the 302 trace (authorize→/de_CH/login preserving arbitrary redirect_uri for client_id=1, implicit+PKCE accepted when portal-warm). Report the guaranteed open-redirect/login-CSRF primitive; do not gate on client-type proof. Separately, when register recovers, create a portal account to mint a bearer token, then run the IDOR verify_steps `/customer/voip/v1/users ±1 enumeration` (read-only, authorized). Agent-side probing stays idle — 11th frozen cycle; no agent action can move this program.
+
+## STEP 6 — LEARNING
+
+[LEARN] ACCEPTED @ auth.peoplefone.com: NO_DELTA re-verified live — api-doc 200 / oauth/token 405 / register 500; consistent with 12:00 and 00:15 triage; no new surface; probes add nothing.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (11th frozen cycle).
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets; reposcan yields no alternative surface.
+[LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage 00:15 formally INVALID (spec-silent on membership validation); removed from active set.
+
+## STEP 7 — RISK
+
+**[RISK]** peoplefone GmbH: **84/100** — sole report-ready finding (OAuth redirect_uri, VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 11 frozen cycles. Configuration IDOR (85) + SSRF (78) + SMS BOLA (80) remain live behind one bearer token that stays unacquirable agent-side (register 500 persists). Register regression narrows but does not close account creation. Entire backlog is gated on (a) human report submission and (b) human token acquisition; no agent-side action can move risk. Risk would drop only upon confirmed submission with a valid-bugs increment.

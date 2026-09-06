@@ -98,3 +98,5 @@
 - 2026-09-06 ACCEPTED @ auth.peoplefone.com: NO_DELTA re-verified live — api-doc 200 / oauth/token 405 / register 500; consistent with 12:00 and 00:15 triage; no new surface; probes add nothing.
 - 2026-09-06 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (10th frozen cycle).
 - 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets; reposcan yields no alternative surface.
+- 2026-09-06 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (11th frozen cycle).
+- 2026-09-06 REJECTED BUSLOGIC @ call-api queue agents: triage 00:15 formally INVALID (spec-silent on membership validation); removed from active set.

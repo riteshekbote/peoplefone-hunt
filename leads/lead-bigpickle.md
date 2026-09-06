@@ -861,3 +861,33 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets; reposcan yields no alternative surface.
 [RISK] peoplefone GmbH: 84/100 — sole report-ready finding (OAuth redirect_uri, VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 10 frozen cycles; Configuration IDOR (85) + SSRF (78) + SMS BOLA (80) remain live behind one bearer token that stays unacquirable agent-side (register 500 persists, token 405). Register regression narrows but does not close account creation. Entire backlog is gated on (a) human report submission and (b) human token acquisition; no agent-side action can move risk. Risk would drop only upon confirmed submission with a valid-bugs increment.
+## 2026-09-06 14:17:51 UTC [target] (model bigpickle)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec with numeric sequential identifiers (20023,20024,2,2000); explicit authorization-boundary note is aspirational, enforcement unproven; UserResponse exposes sipUserName+email+physical address; 401 enforced live; zero counter-evidence across 10 frozen cycles; cross-model rank convergence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, users/{own_id}, users/{own_id±1}; repeat numbers/{did}, callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/messages callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; uaCSTA streams call events; deprecated External Routing (2026-09-30) repeats pattern with weaker code paths; no counter-evidence across 10 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: 302 preserving attacker redirect_uri through /de_CH/login (implicit+PKCE accepted when portal-warm); token endpoint stable 405 (exchange infra live); register 500 persists; triage 00:15 + 12:00 independently graded VALID 9.1 CRITICAL-conditional; sole report-ready item; live re-probe this cycle confirms frozen baseline
+evidence_needed: code delivered to attacker redirect_uri; /oauth/token exchange without client_secret (public/PKCE → ATO) vs with (confidential → login-CSRF)
+verify_steps: (authorized, human) warm portal session, reproduce authorize 302 with attacker redirect_uri, complete login, POST code to /oauth/token with and without client_secret
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) or open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[LEARN] ACCEPTED @ auth.peoplefone.com: NO_DELTA re-verified live — api-doc 200 / oauth/token 405 / register 500; consistent with 12:00 and 00:15 triage; no new surface; probes add nothing.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (11th frozen cycle).
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets; reposcan yields no alternative surface.
+[LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage 00:15 formally INVALID (spec-silent on membership validation); removed from active set.
