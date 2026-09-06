@@ -1,7 +1,7 @@
-## 2026-09-06 17:10:00 UTC [target] (model bigpickle)
-[PRIO] auth.peoplefone.com/oauth/authorize,9.1/10,attack_surface=9 business_value=10 tech_exposure=10 gate_ease=3 cloud_surface=5 freshness=8 → 8.45
-[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{identifier},85,attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=5 freshness=6 → 6.70
-[PRIO] api+call-api+configuration-api (5 SSRF endpoints),78,attack_surface=7 business_value=8 tech_exposure=7 gate_ease=2 cloud_surface=8 freshness=6 → 6.45
+## 2026-09-06 19:17:48 UTC [target] (model bigpickle)
+[PRIO] auth.peoplefone.com/oauth/authorize,8.45,attack_surface=9 business_value=10 tech_exposure=10 gate_ease=3 cloud_surface=5 freshness=8
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{identifier},6.70,attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=5 freshness=6
+[PRIO] api+call-api+configuration-api (5 SSRF endpoints),6.45,attack_surface=7 business_value=8 tech_exposure=7 gate_ease=2 cloud_surface=8 freshness=6
 [HYP] OAuth arbitrary redirect_uri / code-theft (client_id=1)
 class: AUTH
 asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
@@ -11,15 +11,6 @@ evidence_needed: code delivered to attacker redirect_uri; /oauth/token exchange 
 verify_steps: (authorized, human) warm portal session, reproduce authorize 302 with attacker redirect_uri, complete login, POST code to /oauth/token with and without client_secret
 impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) or open-redirect+login-CSRF; CRITICAL conditional
 testability: HUMAN_ONLY
-[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
-class: SSRF
-asset: api.peoplefone.com/customer/sms/v1 sms/messages callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
-confidence: 78
-reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; uaCSTA streams call events; deprecated External Routing (2026-09-30) repeats pattern with weaker code paths; no counter-evidence across 11 cycles
-evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
-verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
-impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
-testability: AUTH_HELPED
 [HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration
 class: IDOR
 asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
@@ -28,6 +19,15 @@ reasoning: 235KB spec with numeric sequential identifiers (20023,20024,2,2000); 
 evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
 verify_steps: (authorized, read-only) GET /customer/voip/v1/users, users/{own_id}, users/{own_id±1}; repeat numbers/{did}, callforwarding/{id}; compare tenant markers
 impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/messages callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; uaCSTA streams call events; deprecated External Routing (2026-09-30) repeats pattern with weaker code paths; no counter-evidence across 11 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
 testability: AUTH_HELPED
 [FINAL] 1. OAuth redirect_uri (62, AUTH, HUMAN_ONLY) — VALID 9.1 per triage, report-ready
 [FINAL] 2. Configuration API IDOR (85, IDOR, AUTH_HELPED) — highest confidence but token-gated

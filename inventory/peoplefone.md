@@ -198,3 +198,9 @@ www.peoplefone.com
 ## 2026-09-06 14:26:37 UTC
 
 ## 2026-09-06 17:11:44 UTC
+
+## 2026-09-06 19:31:05 UTC
+- NEW auth.peoplefone.com/oauth/authorize stateless-404 in fresh session; 302 preserving attacker redirect_uri only reproduces with warm portal session (verified 2026-09-05 08:40 probe); register regressed 
+- NEW Cross-model convergence (bigpickle+nemotron3) sustained 11 frozen cycles on Configuration API {identifier} CRUD IDOR as top hypothesis — no counter-evidence surfaced
+- CHANGED Queue API business logic formally INVALID per triage 12:00 and 00:15 (spec-silent on membership validation) — dropped from active set
+- CHANGED probe-results.md shows NO_DELTA — api.peoplefone.com/services/api-doc/ consistently 200 across all 2026-09-06 probes; no new endpoints or status changes
