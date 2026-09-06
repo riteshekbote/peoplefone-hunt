@@ -84,3 +84,5 @@ reasoning: The `$url` parameter in `addPhone(string $mac, string $url, ...)` is 
 impact: medium (only exploitable if the calling web app exposes `addPhone()` with user-controlled `$url`; impact is phone-level config hijack, not server-side)
 verify_steps: Identify the web application(s) that consume this library and check whether `addPhone()` receives user-supplied URLs. If so, validate against an allowlist of known provisioning domains.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-06 00:11:15 UTC
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
