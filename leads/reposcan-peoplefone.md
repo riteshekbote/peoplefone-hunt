@@ -98,3 +98,40 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-06 19:43:03 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-06 21:50:55 UTC
+[HYP] Command Injection via Unsanitized DNS Lookup Input
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-246
+confidence: 70
+reasoning: getMXDomains() extracts domain from user-supplied email, performs minimal regex sanitize (/[^a-z0-9\-\.]/), then passes $host directly into exec("nslookup -querytype=mx ".$host) and exec("dig mx ".$host." | grep ..."). The regex allows hyphens and dots but does NOT prevent injection of shell metacharacters beyond basic alphanumeric+dot+hyphen. However, the regex is strict enough to block most shell injection vectors. The SSRF risk is that an attacker-controlled MX domain could point to internal infrastructure (169.254.169.254, 10.x, etc.) and the server would connect to it via fsockopen on port 25.
+impact: medium
+verify_steps: 1) Register a domain with MX record pointing to 169.254.169.254 or internal IP. 2) Pass an email address using that domain to the validator. 3) Confirm the server attempts SMTP connection to the attacker-controlled IP.
+[HYP] SSRF via Unvalidated MX Server Connection
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:274
+confidence: 60
+reasoning: getMXConnection() calls fsockopen($host, $this->sock_port, ...) where $host comes from DNS MX lookup results. No IP range validation or allowlist is performed. An attacker who controls DNS for a domain can point MX records to internal/private IPs (RFC 1918, link-local, cloud metadata endpoints). The connection is outbound SMTP on port 25.
+impact: medium
+verify_steps: 1) Create a domain with MX record pointing to 169.254.169.254 (AWS metadata). 2) Use mailValidatorMXServer to validate an email on that domain. 3) Observe connection attempt to the metadata endpoint.
+[HYP] Hardcoded Third-Party Provisioning API Endpoints
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Auerswald,Gigaset,Panasonic,Snom,Yealink}.php
+confidence: 90
+reasoning: Five device classes contain hardcoded base URIs for external vendor provisioning APIs: https://secure-provisioning.snom.com:8083, https://prov.gigaset.net, https://api-dm.yealink.com:8443, https://provisioning.auerswald.de, https://provisioning.e-connecting.net. These are third-party phone vendor endpoints, not peoplefone infrastructure. The constructor default parameter $client_auth=['username','password'] is a placeholder, not a real credential.
+impact: low (third-party public endpoints; no live credentials leaked)
+verify_steps: 1) Confirm these endpoints are still live/vendor-operated. 2) Verify provisioning-rpc-settings.php (referenced in tests) is .gitignore'd and never committed.
+[HYP] Test File References External Credential File
+class: OTHER
+asset: peoplefone/provisioning-rpc/tests/test.php:7-9
+confidence: 40
+reasoning: test.php includes a file at __DIR__.'/../../provisioning-rpc-settings.php' via file_exists() check. If this settings file were ever committed, it would contain real credentials ($auerswald_login, $gigaset_login, etc.). The .gitignore does NOT explicitly exclude provisioning-rpc-settings.php (only vendor, composer.lock, .idea are listed).
+impact: info (no settings file committed; but .gitignore incomplete)
+verify_steps: 1) Confirm provisioning-rpc-settings.php is never committed in any branch/commit history. 2) Add provisioning-rpc-settings.php to .gitignore to prevent accidental commit.
+[HYP] Default Credential Placeholder in Constructor Signatures
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php
+confidence: 25
+reasoning: Each device class has constructor default $client_auth=['username','password']. These are clearly dummy placeholder values, not live credentials. The test file also uses ['username', 'password'] as fallback. These are not secrets but represent a code smell that could lead to accidental credential exposure if a developer copies the pattern without proper credential management.
+impact: informational (no live secret; placeholder values only)
+verify_steps: Verify no deployment artifact ships with real credentials substituted into these constructors.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
