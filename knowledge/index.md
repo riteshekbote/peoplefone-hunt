@@ -72,3 +72,26 @@
 - 2026-09-05 ACCEPTED @ auth.peoplefone.com: NO_DELTA state frozen at register 500 / token 405 / stateless authorize 404; portal 302 and api-doc 200 baseline — consistent with 12:00 triage; no new surface, probes add nothing this cycle.
 - 2026-09-05 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence this cycle; rank holds; token-gated.
 - 2026-09-05 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets.
+- 2026-09-06 ACCEPTED @ auth.peoplefone.com: NO_DELTA state frozen at register 500 / token 405 / stateless authorize 404; portal 302 and api-doc 200 baseline — consistent with 12:00 triage; no new surface, probes add nothing this cycle.
+- 2026-09-06 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence this cycle; rank holds; token-gated.
+- 2026-09-06 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence this cycle; retained pending token.
+- 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets.
+- 2026-09-06 ACCEPTED @ auth.peoplefone.com: NO_DELTA state frozen at register 500 / token 405 / stateless authorize 404; portal 302 and api-doc 200 baseline — consistent with 12:00 triage; no new surface, probes add nothing this cycle.
+- 2026-09-06 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence this cycle; rank holds; token-gated.
+- 2026-09-06 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence this cycle; retained pending token.
+- 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; no new dangling targets.
+- 2026-09-06 ACCEPTED @ auth.peoplefone.com: NO_DELTA — register 500 / token 405 / stateless authorize 404 / portal 302 / api-doc 200 verified fresh; consistent with 12:00 and 00:15 triage; no new surface.
+- 2026-09-06 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (9th frozen cycle).
+- 2026-09-06 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — wildcard remains Cloudflare CNAME-dominated; reposcan no alternative surface.
+- 2026-09-06 ACCEPTED AUTH @ auth.peoplefone.com: authorize endpoint CONFIRMED LIVE for client_id=1 (302→/de_CH/login preserving arbitrary redirect_uri, implicit+PKCE params accepted); prior 404 verdict traced to invalid `client_id=test` artifact — correction supersedes 2026-09-04 REJECTED entries
+- 2026-09-06 ACCEPTED AUTH @ auth.peoplefone.com: oauth/token live (405 on GET) — token-exchange endpoint exists adjacent to unrestricted redirect_uri; final severity turns on client type (secret vs PKCE/public)
+- 2026-09-06 ACCEPTED AUTH @ portal.peoplefone.ch: in-scope customer portal inventoried; Laravel (XSRF-TOKEN + encrypted session cookie); /→/home→/login→auth authorize chain is the sole token-issuance route; /api 404 on root
+- 2026-09-06 ACCEPTED OTH @ api.peoplefone.com: swagger-initializer.js lists exactly 8 specs, moving all token/passport/session issuance firmly OFF-spec — OAuth URI flow is the only documented credential path
+- 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no new dangling-target candidates; wildcard remains Cloudflare CNAME-dominated
+- 2026-09-06 ACCEPTED IDOR @ configuration-api.peoplefone.com: Full CRUD on 8 resource types with numeric sequential identifiers; UserResponse exposes sipUserName, physical address, email; cross-tenant object-level auth unproven
+- 2026-09-06 ACCEPTED SSRF @ 5 endpoints: SMS callbackUrl, Smart Routing webhook url, uaCSTA callbackUrl+monitoringCallbackUrl, External Number Lookup webhookUrl — zero host/scheme validation; External Number Lookup forwards custom headers
+- 2026-09-06 REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formally INVALID (spec-silent on membership validation); drop from priority
+- 2026-09-06 ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
+- 2026-09-06 ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+- 2026-09-06 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets

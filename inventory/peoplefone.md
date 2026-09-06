@@ -187,3 +187,5 @@ www.peoplefone.com
 - CHANGED Triage 12:00 independently graded OAuth redirect_uri VALID 9.1 CRITICAL-conditional (report-channel: bugs.olivermaicher.eu)
 - CHANGED BUSLOGIC @ call-api queue agents formally INVALID (spec-silent on membership validation) — dropped from priority
 - CHANGED auth.peoplefone.com/oauth/authorize stateless-404 in fresh session; 302 preserving attacker redirect_uri only reproduces with warm portal session; register regressed 200→500 (transient); token endpoin
+
+## 2026-09-06 01:23:13 UTC

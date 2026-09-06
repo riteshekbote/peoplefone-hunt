@@ -1,10 +1,4 @@
-## 2026-09-05 23:39:38 UTC [target] (model nemotron3)
-[NEW] auth.peoplefone.com/de_CH/register confirmed LIVE (HTTP 200, Turnstile sitekey `0x4AAAAAAETtGmlFEOhYOX2V`) — self-service account creation available to authorized operator (transient 500 regression noted)
-[NEW] portal.peoplefone.ch fully inventoried: Laravel (XSRF-TOKEN + encrypted session cookie, httponly, secure); `/` → `/home` → `/login` → `auth.peoplefone.com/oauth/authorize?client_id=1` is sole token-issuance chain
-[NEW] `/services/api-doc/swagger-initializer.js` confirms exactly 8 specs, NO auth/token spec — OAuth URI flow only documented credential path
-[CHANGED] Triage 12:00 independently graded OAuth redirect_uri VALID 9.1 CRITICAL-conditional (report-channel: bugs.olivermaicher.eu)
-[CHANGED] BUSLOGIC @ call-api queue agents formally INVALID (spec-silent on membership validation) — dropped from priority
-[CHANGED] auth.peoplefone.com/oauth/authorize stateless-404 in fresh session; 302 preserving attacker redirect_uri only reproduces with warm portal session; register regressed 200→500 (transient); token endpoint stable 405
+## 2026-09-06 01:23:02 UTC [target] (model nemotron3)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.7,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
