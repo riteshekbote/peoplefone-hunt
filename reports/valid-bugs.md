@@ -21,3 +21,9 @@
   - **Verdict: VALID**
   - | Q2 Reachable? | PARTIAL | All require valid bearer token (401 confirmed). Not unauth-accessible. |
   - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | **9.1 CRITICAL** | **Report to bugs.olivermaicher.eu now** |
+
+- 4 lead(s) marked VALID at 2026-09-06 00:15:19 UTC
+  - | Q2 Reachable | PARTIAL | 401 enforced; requires valid bearer token. Not unauth-accessible. |
+  - **Verdict: VALID**
+  - | Q2 Reachable | PARTIAL | All require valid bearer token (401 enforced) |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL | **Report to bugs.olivermaicher.eu** |
