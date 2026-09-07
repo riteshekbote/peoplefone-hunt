@@ -130,3 +130,8 @@
 - 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (17th frozen cycle).
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no dangling CNAME targets; reposcan yields no alternative surface.
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified frozen (register 500 / token 401 known-client & 500 nonexistent / stateless authorize 404 + attacker redirect_uri cookie / api-doc 200); 18th frozen cycle; consistent with triage.
+- 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (18th frozen cycle).
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
+- 2026-09-07 ACCEPTED OTH @ inventory: `call-api.peoplefone.com/services/api-doc/` remains the sole unprobed breadth item across the 8-spec surface — flagged for closure this cycle.
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.

@@ -560,3 +560,19 @@
 - LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
 - LEARN: REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formally INVALID (spec-silent on membership validation); drop from priority
 - LEARN: ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 
+
+## RANKED HYPOTHESES 2026-09-07 21:43:15 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://auth.peoplefone.com/de_CH/register (read-only, no cookies, ≤1 rps) — single highest-leverage passive check: 500-held ⇒ NO_DELTA (frozen 18); 
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Submit the OAuth open-redirect/redirect_uri finding to bugs.olivermaicher.eu now — triage 12:00 graded VALID 9.1 CRITICAL-conditional; include the 302 tr
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified frozen (register 500 / token 401 known-client & 500 nonexistent / stateless authorize 404 + attacker r
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (18th frozen cycle).
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative su
+- LEARN: ACCEPTED OTH @ inventory: `call-api.peoplefone.com/services/api-doc/` remains the sole unprobed breadth item across the 8-spec surface — flagged for closure thi
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: NEW — POST oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Correct
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (17th frozen cycle).
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- LEARN: REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- LEARN: ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 

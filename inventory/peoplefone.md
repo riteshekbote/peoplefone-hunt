@@ -224,3 +224,17 @@ www.peoplefone.com
 ## 2026-09-07 12:47:46 UTC
 
 ## 2026-09-07 18:15:44 UTC
+
+## 2026-09-07 21:43:15 UTC
+- NEW Knowledge base 2026-09-07: POST /oauth/token no client_secret → invalid_client JSON for client_id=1/4/5 (confidential clients); nonexistent client_ids (2,3,10,100,999,0,-1) → unhandled Laravel 500
+- NEW Knowledge base 2026-09-07: 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wild
+- CHANGED Configuration API {identifier} CRUD IDOR at 17th frozen cycle — no counter-evidence, cross-model rank holds, token-gated
+- CHANGED SSRF 5 callback endpoints — retained pending token, no counter-evidence
+- CHANGED BUSLOGIC queue agents — triage-formal INVALID (spec-silent on membership validation), removed from active set
+- CHANGED auth.peoplefone.com state frozen 17+ cycles: register 500 / token 405 / stateless authorize 404 (sets redirect_uri cookie with attacker value) / api-doc 200 / portal 302
+- NEW Knowledge base 2026-09-07: POST /oauth/token no client_secret → invalid_client JSON for client_id=1/4/5 (confidential clients); nonexistent client_ids (2,3,10,100,999,0,-1) → unhandled Laravel 500
+- NEW Knowledge base 2026-09-07: 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wild
+- CHANGED Configuration API {identifier} CRUD IDOR at 17th frozen cycle — no counter-evidence, cross-model rank holds, token-gated
+- CHANGED SSRF 5 callback endpoints — retained pending token, no counter-evidence
+- CHANGED BUSLOGIC queue agents — triage-formal INVALID (spec-silent on membership validation), removed from active set
+- CHANGED auth.peoplefone.com state frozen 17+ cycles: register 500 / token 405 / stateless authorize 404 (sets redirect_uri cookie with attacker value) / api-doc 200 / portal 302
