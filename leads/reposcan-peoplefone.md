@@ -173,3 +173,5 @@ reasoning: `getMXDomains()` calls `exec("nslookup -querytype=mx ".$host, $lines)
 impact: LOW (mitigated by strict regex sanitization)
 verify_steps: Confirm the regex `/[^a-z0-9\-\.]/` is applied to all code paths reaching `exec()`. No bypass path exists given the character set restriction.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-07 12:35:38 UTC
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
