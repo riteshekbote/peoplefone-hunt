@@ -220,3 +220,5 @@ www.peoplefone.com
 - NEW auth.peoplefone.com/oauth/token: POST code exchange without client_secret returns `invalid_client` JSON for client_id=1/4/5 (confirmed confidential clients); nonexistent client_ids (2,3,10,100,999,0,-
 - NEW *.peoplefone.com DNS: 11 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip) all NXDOMAIN — NO wildcard DNS exists; corrects prior "wildcard-dominated" claim;
 - CHANGED configuration-api.peoplefone.com/services/api-doc/ remains 404; call-api.peoplefone.com/services/api-doc/ unprobed; portal.peoplefone.ch Laravel flow unchanged; api.peoplefone.com/services/api-doc/ st
+
+## 2026-09-07 12:47:46 UTC

@@ -122,3 +122,7 @@
 - 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (15th frozen cycle).
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 11 guessed subdomains all NXDOMAIN (NO wildcard), no dangling CNAME targets; reposcan yields no alternative surface.
 - 2026-09-07 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified live this cycle — token 401 invalid_client known clients / 500 nonexistent, register 500, stateless authorize 404 (but sets redirect_uri cookie with attacker value even on stateless 404), api-doc 200; frozen 16 cycles; consistent with triage.
+- 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (16th frozen cycle).
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 8 new guessed subdomains (api-gw, internal, mgmt, invoice, partner, fileshare, sip, ws) all NXDOMAIN; no dangling CNAME targets; reposcan yields no alternative surface.
+- 2026-09-07 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
