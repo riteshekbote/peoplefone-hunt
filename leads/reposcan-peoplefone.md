@@ -153,3 +153,23 @@ reasoning: `tests/test.php` does `include_once __DIR__ . '/../../provisioning-rp
 impact: Low -- the file is gitignored and not present in the repo. Risk is future accidental commit.
 verify_steps: 1) Check all branches/tags for `provisioning-rpc-settings.php` via `git log --all -- 'provisioning-rpc-settings.php'`. 2) If found, extract and check if credentials are live on the hardcoded provisioning endpoints (`https://secure-provisioning.snom.com:8083`, `https://provisioning.e-connecting.net`, `https://prov.gigaset.net`, `https://api-dm.yealink.com:8443`, `https://provisioning.auerswald.de`).
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-07 06:08:17 UTC
+class: OTHER
+asset: provisioning-rpc/src/ProvisioningRPC.php:9
+confidence: 35
+reasoning: `ProvisioningRPC::connect($model, $login)` builds a class name as `get_class().'Device'.ucfirst(strtolower($model))` and instantiates it with `new $classname($login)`. The `$model` parameter is caller-controlled. While the namespace prefix (`Peoplefone\ProvisioningRPCDevice...`) limits exploitation to classes within that namespace, if the namespace prefix ever expands or autoload is misconfigured, this could allow unintended class instantiation. No concrete exploitation path exists in current code.
+impact: LOW (design concern, no current exploit path)
+verify_steps: Review all callers of `ProvisioningRPC::connect()` to confirm `$model` is never user-supplied without a whitelist. Check that no additional classes exist in the `Peoplefone` namespace that could be instantiated.
+class: SSRF
+asset: provisioning-rpc/src/ProvisioningRPCDevice*.php (all device implementations, `addPhone($mac, $url, ...)`)
+confidence: 25
+reasoning: The `$url` parameter in `addPhone()` is passed directly to third-party provisioning APIs (snom, yealink, panasonic, gigaset, auerswald) without any validation or sanitization in this library. If a consuming application passes user-controlled input to this parameter without validation, it could cause SSRF against those third-party APIs. However, this is a library -- the validation responsibility lies with the consuming application.
+impact: LOW (library-level design; depends on consumer validation)
+verify_steps: Identify all applications consuming this library. Check if `$url` is derived from user input. If so, verify URL allowlisting/ validation exists upstream.
+class: MISCONFIG
+asset: mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-246
+confidence: 20
+reasoning: `getMXDomains()` calls `exec("nslookup -querytype=mx ".$host, $lines)` and `exec("dig mx ".$host." | grep -v '^;' | grep ".$host, $lines)`. The `$host` is extracted from the email address via `substr($user, strrpos($user,'@')+1)` and sanitized with `preg_replace("/[^a-z0-9\-\.]/", "", strtolower($host))`. The regex only allows `[a-z0-9\-\.]` which prevents shell metacharacter injection. This is effectively mitigated by the strict input validation.
+impact: LOW (mitigated by strict regex sanitization)
+verify_steps: Confirm the regex `/[^a-z0-9\-\.]/` is applied to all code paths reaching `exec()`. No bypass path exists given the character set restriction.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
