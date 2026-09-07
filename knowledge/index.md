@@ -126,3 +126,7 @@
 - 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (16th frozen cycle).
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 8 new guessed subdomains (api-gw, internal, mgmt, invoice, partner, fileshare, sip, ws) all NXDOMAIN; no dangling CNAME targets; reposcan yields no alternative surface.
 - 2026-09-07 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
+- 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified live this cycle — token 401 invalid_client known clients / 500 nonexistent, register 500, stateless authorize 404 (redirect_uri cookie still set with attacker value), api-doc 200; frozen 17 cycles; consistent with triage.
+- 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (17th frozen cycle).
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no dangling CNAME targets; reposcan yields no alternative surface.
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.

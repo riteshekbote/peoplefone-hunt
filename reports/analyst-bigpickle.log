@@ -7089,3 +7089,113 @@ testability: AUTH_HELPED
 ## STEP 7 — RISK
 
 [RISK] peoplefone GmbH: **82/100** — Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 16 frozen cycles. The silent-ATO branch was falsified for known clients last cycle (confidential secret required), narrowing guaranteed impact to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists). Entire backlog gated on (a) human report submission and (b) human token acquisition; no agent-side action can move risk. New detail this cycle: stateless authorize sets redirect_uri cookie with attacker value even on 404, supporting the warm-session 302 reproduction path. Risk drops only on confirmed submission with a valid-bugs increment.
+===== ANALYST bigpickle 2026-09-07 18:15:44 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -X POST https://auth.peoplefone.com/oauth/token -d "grant_type=authorization_code&code=test&client_id=1" -H "Content-Type: application/x-www-form-urlencoded" -w "\nHTTP_CODE:%{http_code}" 2>&1 | tail -20
+{"error":"invalid_client","error_description":"Client authentication failed","message":"Client authentication failed"}
+HTTP_CODE:401
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://auth.peoplefone.com/oauth/authorize?client_id=1\&response_type=code\&redirect_uri=https://evil.example.com/callback\&state=test123 && echo ""
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://api.peoplefone.com/services/api-doc/ && echo "" && curl -s -o /dev/null -w "%{http_code}" https://configuration-api.peoplefone.com/services/api-doc/ && echo "" && curl -s -o /dev/null -w "%{http_code}" https://auth.peoplefone.com/de_CH/register && echo "" && curl -s -o /dev/null -w "%{http_code}" https://portal.peoplefone.ch/ && echo ""
+200
+404
+500
+302
+[0m
+[0m$ [0mcurl -s -D- https://auth.peoplefone.com/oauth/authorize?client_id=1\&response_type=code\&redirect_uri=https://evil.example.com/callback\&state=test123 2>&1 | head -30
+HTTP/1.1 404 Not Found
+Date: Mon, 07 Sep 2026 18:09:54 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-xss-protection: 1; mode=block
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjZnaHZpYnB2WVhEeDAwOEdYUlhFaVE9PSIsInZhbHVlIjoiOUFyUGRKc0VKSEFCWUVyZExpbVZOeExDQmJHYk1Ob3ZSYjNyVGJUSEF3SnVWR21pT1A5N2hZUlV5QjVBWmFiWmZ2R21HbVRWUm1VOFVFTHJmRzVSNlU2VnhPelpzYzNFSEJaaWRkQ2IvTTF4SWNibTJremZqaFNvcHQ2YU8xVzUiLCJtYWMiOiJmNzc2OGMwZDE0NDVlMmRjYWJmMzgyMTEzMzFlZDZlMWQ3MmUyMDBmMWU0MDY0YWIxMGNhNDY1M2ExZDFjZDFhIiwidGFnIjoiIn0%3D; expires=Tue, 08 Sep 2026 02:09:54 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6Ik4zaU84MFI3VHNUOHppWHRqR1pJT1E9PSIsInZhbHVlIjoiNmNTMWFhVzhFaU9yRXE4aXYxU2xOQXJzcEVEMFhlaUNJbUFVZ25RT2JWeldGRER6cmFzazBkVWM4cmE0L3g5TVo5cHdMN2x1Zk45aHE0UXMwSXBoRU1SL0NDbU5WMVBrNkV1Snlra3gzVktKY21lbDV4WVVGblRFTXNWVGx0YWwiLCJtYWMiOiJlOTIyYjc0YWM0MTJkYWNkNzBhNDkwYzlhYTIwMzcyYmI5NDIwZjdkNGEzZjRhMGU0M2YzOWU0NDgzNmFjNzgxIiwidGFnIjoiIn0%3D; expires=Tue, 08 Sep 2026 02:09:54 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6ImxPYmt1ZjcxRTl6bkNxQ21xa0VUc2c9PSIsInZhbHVlIjoibHBZb0F1ZHR5NFcrVGNiMExxVXEvVVl5elpmeFMvMFVGRVFMSmpieldSRjdBdW1lekZ5ZWUwam0wK0QvVDR6dXUrVFpHRnBBV1NKRWlNaXlGKzZrUHN1MzY5VFFsQWZ6aUJ6N2hkZzZNZjA9IiwibWFjIjoiNmFhMjU0ZGNiOTBhYTk2OTlkYzM1ZjQ1MDk0Y2YyMmViMzRkYTE4N2JjYmY4ZTEwZWY1NWQ2ZmNmYTgzMWFmZiIsInRhZyI6IiJ9; expires=Tue, 12 Oct 2027 18:09:54 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+Server: cloudflare
+CF-RAY: a377aac9ac901127-ORD
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Not Found</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+[0m
+[0m$ [0mcurl -s -X POST https://auth.peoplefone.com/oauth/token -d "grant_type=authorization_code&code=test&client_id=999" -H "Content-Type: application/x-www-form-urlencoded" -w "\nHTTP_CODE:%{http_code}" 2>&1 | tail -10
+<div class="ml-4 text-lg dark:text-gray-300 text-gray-700 uppercase tracking-wider">
+                        Server Error                    </div>
+                </div>
+            </div>
+        </div>
+    <script>window.__CF$cv$params={r:'a377aaccadbca8aa',t:'MTc4ODgwNDU5NA==',u:'01a07d0ffc927f618a79c878f6516537',ut:'FnB3hVSWOX9wlmsKqzgNe9VDo8Nv9o2ArsKYYQwpewM-1788804594-1.2.1.1-xJ5bYZhfyyRl6utfD_2Yi6cWt8XP2Eup7ht6YyjXHtF9tVFxeNPcf.LX.B.bbjsIi_p3xjGZymGt7oCntda2S4yA0NxyF59xh6H4x6ZCKtk',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+
+HTTP_CODE:500
+[0m
+STEP 1 — DELTA: NO_DELTA. All surfaces re-verified: api-doc 200, register 500, stateless authorize 404 (redirect_uri cookie still set), token 401 invalid_client (client_id=1), nonexistent client 500, configuration-api 404, portal 302. 17th frozen cycle.
+
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{identifier},9.0,attack_surface=9(business_value=9(8 resource types sequential IDs SIP creds PII),tech_exposure=8(OAuth-gated REST),gate_ease=3(token required),cloud_surface=7(VoIP/PBX),freshness=10(17 cycles no counter-evidence))
+[PRIO] auth.peoplefone.com/oauth/authorize,8.5,attack_surface=8(business_value=9(ATO→portal→PBX),tech_exposure=9(OAuth redirect_uri flaw confirmed),gate_ease=4(warm session needed),cloud_surface=6(CDN),freshness=10(17 cycles frozen))
+[PRIO] api+call-api callback endpoints,7.5,attack_surface=8(5 SSRF endpoints),business_value=7(cloud metadata/internal pivot),tech_exposure=7(SSRF to metadata),gate_ease=2(token required),cloud_surface=8(cloud infra),freshness=10(no counter-evidence))
+
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers across 8 resource types; spec states "user must be part of account bound to bearer token" but enforcement unproven; UserResponse exposes sipUserName+email+physical address; live 401 gate confirmed; cross-model convergence; no counter-evidence across 17 frozen cycles
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, /users/{own_id}, /users/{own_id±1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: authorize 302→/de_CH/login preserves arbitrary redirect_uri for client_id=1 with implicit+PKCE accepted (warm session); stateless authorize 404 but SETS redirect_uri cookie with attacker value even on 404; token endpoint enforces client-secret (401 invalid_client for clients 1/4/5; nonexistent → 500); register 500; code-theft-exchange ATO FALSIFIED for known clients; guaranteed primitive = open-redirect+login-CSRF; ATO only via HUMAN_ONLY warm-session implicit-flow fragment test
+evidence_needed: warm-session authorize response_type=token + attacker redirect_uri yields access_token fragment at attacker (implicit ATO); else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session; authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; uaCSTA streams call events; deprecated External Routing (2026-09-30) repeats pattern on weaker path; no counter-evidence across 17 frozen cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+
+[PARKED] BUSLOGIC Queue agent login/logout: triage-formal INVALID (spec-silent on membership validation); dropped.
+
+[FINAL] 1. Configuration API {identifier} CRUD IDOR — 85, AUTH_HELPED, CRITICAL — RETAIN top slot, frozen 17 cycles, token-gated.
+[FINAL] 2. SSRF 5 callback endpoints incl. header exfil — 78, AUTH_HELPED, CRITICAL — RETAIN, token-gated.
+[FINAL] 3. OAuth open-redirect/login-CSRF — 62, HUMAN_ONLY, CRITICAL-conditional — RETAIN; sole report-ready item (triage VALID 9.1), no longer claim silent ATO as guaranteed.
+
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding (arbitrary redirect_uri preserved 302→/de_CH/login for client_id=1, implicit+PKCE accepted when portal-warm; redirect_uri cookie set even on stateless 404) to bugs.olivermaicher.eu — triage VALID 9.1 CRITICAL-conditional. Frame guaranteed impact as open-redirect+login-CSRF; present warm-session implicit-flow fragment-token test as the potential silent-ATO escalation, NOT as confirmed. Include this cycle's fresh re-verify (token 401 invalid_client known clients / 500 nonexistent, register 500, api-doc 200, stateless authorize 404 + redirect_uri cookie set) plus existing 302 trace. Do NOT gate on client-type proof. Separately, when register recovers from 500, create a genuine portal account to mint a bearer, then run the IDOR verify_steps `/customer/voip/v1/users ±1` (read-only, authorized). Agent-side idle — 17th frozen cycle; no agent action unblocks this program.
+
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified live this cycle — token 401 invalid_client known clients / 500 nonexistent, register 500, stateless authorize 404 (redirect_uri cookie still set with attacker value), api-doc 200; frozen 17 cycles; consistent with triage.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (17th frozen cycle).
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no dangling CNAME targets; reposcan yields no alternative surface.
+[LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+
+[RISK] peoplefone GmbH: **82/100** — Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 17 frozen cycles. Silent-ATO branch falsified for known clients (confidential secret required); guaranteed impact narrowed to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists). Entire backlog gated on (a) human report submission and (b) human token acquisition; no agent-side action can move risk. Risk drops only on confirmed submission with a valid-bugs increment.
