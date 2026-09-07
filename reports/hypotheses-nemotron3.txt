@@ -1,12 +1,12 @@
-## 2026-09-06 23:10:43 UTC [target] (model nemotron3)
+## 2026-09-07 01:09:12 UTC [target] (model nemotron3)
+[NEW] probe-results.md: 2026-09-06 23:10:56 UTC — api.peoplefone.com/services/api-doc/ still 200; no new endpoints or status changes since 2026-09-05
+[NEW] knowledge-base: auth.peoplefone.com register 500 / token 405 / stateless authorize 404 / portal 302 / api-doc 200 baseline frozen 13+ cycles; configuration-api {identifier} CRUD IDOR rank holds 13th frozen cycle
+[CHANGED] NO_DELTA on all live surfaces — configuration-api.peoplefone.com/services/api-doc/ remains 404; call-api.peoplefone.com/services/api-doc/ unprobed; portal.peoplefone.ch Laravel flow unchanged
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
+[PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.7,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
-[PRIO] call-api.peoplefone.com/customer/uaCSTA/v1,8.4,attack_surface=8,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=9
-[PRIO] call-api.peoplefone.com/customer/external-number-lookup/v1,8.3,attack_surface=8,business_value=7,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=9
-[PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
 [PRIO] portal.peoplefone.ch,7.5,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=4,cloud_surface=5,freshness=10
-[PRIO] configuration-api.peoplefone.com/customer/external-routing/v1,7.2,attack_surface=6,business_value=5,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=8
 [HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration
 class: IDOR
 asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}

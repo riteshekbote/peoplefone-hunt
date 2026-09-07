@@ -208,3 +208,9 @@ www.peoplefone.com
 ## 2026-09-06 21:30:15 UTC
 
 ## 2026-09-06 23:10:54 UTC
+
+## 2026-09-07 01:12:39 UTC
+- NEW — decisive evidence this cycle. `client_id=1/4/5` all return `invalid_client` JSON on no-secret code exchange (confidential clients); nonexistent ids (2,3,10,100,999,0,-1) throw unhandled Laravel 500.
+- NEW probe-results.md: 2026-09-06 23:10:56 UTC — api.peoplefone.com/services/api-doc/ still 200; no new endpoints or status changes since 2026-09-05
+- NEW knowledge-base: auth.peoplefone.com register 500 / token 405 / stateless authorize 404 / portal 302 / api-doc 200 baseline frozen 13+ cycles; configuration-api {identifier} CRUD IDOR rank holds 13th f
+- CHANGED NO_DELTA on all live surfaces — configuration-api.peoplefone.com/services/api-doc/ remains 404; call-api.peoplefone.com/services/api-doc/ unprobed; portal.peoplefone.ch Laravel flow unchanged
