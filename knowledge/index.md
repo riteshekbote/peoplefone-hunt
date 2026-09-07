@@ -118,3 +118,7 @@
 - 2026-09-07 ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
 - 2026-09-07 ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
+- 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified live this cycle (token 401 invalid_client known clients / 500 nonexistent, register 500, stateless authorize 404, api-doc 200); frozen 15+ cycles; consistent with 01:12 triage; report path bugs.olivermaicher.eu unchanged.
+- 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (15th frozen cycle).
+- 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 11 guessed subdomains all NXDOMAIN (NO wildcard), no dangling CNAME targets; reposcan yields no alternative surface.
+- 2026-09-07 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.

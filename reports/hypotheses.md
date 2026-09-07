@@ -513,3 +513,18 @@
 - LEARN: ACCEPTED IDOR @ configuration-api: External Routing API deprecated 2026-09-30 but live — same SSRF pattern, weaker code paths
 - LEARN: ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
 - LEARN: REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling targets
+
+## RANKED HYPOTHESES 2026-09-07 06:14:29 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Submit the OAuth open-redirect/login-CSRF finding (arbitrary redirect_uri preserved 302→/de_CH/login for client_id=1, implicit+PKCE accepted when portal-
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Submit the OAuth open-redirect/redirect_uri finding to bugs.olivermaicher.eu now — triage 12:00 graded VALID 9.1 CRITICAL-conditional; include the 302 tr
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA re-verified live this cycle (token 401 invalid_client known clients / 500 nonexistent, register 500, stateless aut
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (15th frozen cycle).
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 11 guessed subdomains all NXDOMAIN (NO wildcard), no dangling CNAME targets; reposcan yields no alternative s
+- LEARN: REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: NEW — POST oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: NEW — 11 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip) all NXDOMAIN → NO 
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (14th frozen cycle).
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- LEARN: REJECTED BUSLOGIC @ call-api queue agents: triage 12:00 formally INVALID (spec-silent on membership validation); drop from priority
