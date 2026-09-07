@@ -138,3 +138,6 @@ https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://api.peoplefone.com/services/api-doc/ -> 200 len=?
 https://auth.peoplefone.com/de_CH/register -> HTTP 500
 https://call-api.peoplefone.com/services/api-doc/ -> HTTP 404
+
+## 2026-09-07 23:49:17 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?

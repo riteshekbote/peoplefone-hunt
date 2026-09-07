@@ -135,3 +135,6 @@
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
 - 2026-09-07 ACCEPTED OTH @ inventory: `call-api.peoplefone.com/services/api-doc/` remains the sole unprobed breadth item across the 8-spec surface — flagged for closure this cycle.
 - 2026-09-07 REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: register 500 re-verified this cycle (fresh, no cookies) — 19th frozen cycle; token-acquisition path still closed; consistent with triage.
+- 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (19th frozen cycle).
+- 2026-09-07 ACCEPTED OTH @ inventory: `call-api.peoplefone.com/services/api-doc/` → 404 verified — inventory breadth gap closed (all 8-spec backends match the 401/404-gated real-backend pattern, only api.peoplefone.com hosts the public dev portal).

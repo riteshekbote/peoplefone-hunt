@@ -238,3 +238,13 @@ www.peoplefone.com
 - CHANGED SSRF 5 callback endpoints — retained pending token, no counter-evidence
 - CHANGED BUSLOGIC queue agents — triage-formal INVALID (spec-silent on membership validation), removed from active set
 - CHANGED auth.peoplefone.com state frozen 17+ cycles: register 500 / token 405 / stateless authorize 404 (sets redirect_uri cookie with attacker value) / api-doc 200 / portal 302
+
+## 2026-09-07 23:49:15 UTC
+- NEW `call-api.peoplefone.com/services/api-doc/` probed for first time → HTTP 404 (2026-09-07 21:43:20 UTC)
+- NEW `auth.peoplefone.com/de_CH/register` consistently HTTP 500 across 18+ frozen cycles (regression holds)
+- NEW `auth.peoplefone.com/oauth/token` POST no `client_secret` → `invalid_client` JSON for `client_id=1/4/5` (confidential); nonexistent IDs (2,3,10,100,999,0,-1) → unhandled Laravel 500
+- NEW 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wildcard DNS; corrects prior "w
+- CHANGED Configuration API {identifier} CRUD IDOR at 18th frozen cycle — no counter-evidence, cross-model rank holds, token-gated
+- CHANGED SSRF 5 callback endpoints — retained pending token, no counter-evidence
+- CHANGED BUSLOGIC queue agents — triage-formal INVALID (spec-silent on membership validation), removed from active set
+- CHANGED auth.peoplefone.com state frozen 18+ cycles: register 500 / token 401/405 / stateless authorize 404 (sets `redirect_uri` cookie with attacker value) / api-doc 200 / portal 302
