@@ -137,3 +137,19 @@ verify_steps: Verify no deployment artifact ships with real credentials substitu
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-06 23:19:54 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-07 01:08:45 UTC
+[HYP] Command Injection via unsanitized `$host` in `exec()` call
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-245
+confidence: 75
+reasoning: `getMXDomains()` concatenates `$host` (derived from user-supplied email address) directly into `exec("nslookup -querytype=mx ".$host)` and `exec("dig mx ".$host." | grep -v '^;' | grep ".$host)`. The constructor regex `/[^a-z0-9\-\.]/` strips most chars but permits `.`, `-`, `@` and backtick ` ` which is a shell metacharacter. An attacker-controlled email like `foo\`id\`@evil.com` would pass the regex filter and get interpolated into the `exec()` call. The `@` is preserved by the constructor regex, and the `substr`/`strrpos` extraction splits on `@` leaving `evil.com` as `$host`, but a crafted hostname portion with backticks or `$(...)` before the `@` could inject commands. Additionally, even without backticks, the unquoted `$host` in the shell command means spaces or other metas would be word-split.
+impact: Medium -- requires the library to be used with attacker-controlled email input on a backend where `nslookup`/`dig` is available. If deployed in a web-facing validation endpoint, RCE is possible.
+verify_steps: 1) Check if this library is required by any peoplefone web app or API (search composer.json/lock for `peoplefone/mail-validator-mx-server`). 2) If deployed, test with `attacker\`id\`@domain.tld` as email input and observe command output. 3) Check if the calling code sanitizes input before calling `setContact()`/`validate()`.
+[HYP] Test file expects external credentials file with hardcoded fallback values
+class: OTHER
+asset: peoplefone/provisioning-rpc/tests/test.php:7-8
+confidence: 20
+reasoning: `tests/test.php` does `include_once __DIR__ . '/../../provisioning-rpc-settings.php'` — a file that is `.gitignore`d. If a developer accidentally commits this file to a different branch or fork, it would leak VoIP provisioning API credentials (Snom, Panasonic, Gigaset, Yealink, Auerswald accounts). The fallback values `['username', 'password']` are harmless placeholder strings, but the pattern itself is a credential-leak risk vector.
+impact: Low -- the file is gitignored and not present in the repo. Risk is future accidental commit.
+verify_steps: 1) Check all branches/tags for `provisioning-rpc-settings.php` via `git log --all -- 'provisioning-rpc-settings.php'`. 2) If found, extract and check if credentials are live on the hardcoded provisioning endpoints (`https://secure-provisioning.snom.com:8083`, `https://provisioning.e-connecting.net`, `https://prov.gigaset.net`, `https://api-dm.yealink.com:8443`, `https://provisioning.auerswald.de`).
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
