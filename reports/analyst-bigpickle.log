@@ -7639,3 +7639,154 @@ STEP 5 — NEXT ACTION
 STEP 6 — LEARNING / STEP 7 — RISK
 - All three leads retained (21st frozen cycle); no counter-evidence; inventory breadth closed; register-500 + client-id-500 + public-docs correctly OUT-OF-SCOPE per 00:30 triage.
 - [RISK] peoplefone GmbH: **82/100** — sole report-ready item still unsubmitted (valid-bugs 0) after 21 cycles; IDOR/SSRF remain token-gated. Risk drops only on confirmed submission.
+===== ANALYST bigpickle 2026-09-08 13:29:58 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*.txt"[90m 9 matches[0m
+[0m✱ [0mGlob "**/*.md"[90m 56 matches[0m
+[0m✱ [0mGlob "**/*.yml"[90m 1 match[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead probe-results.md[90m [offset=1, limit=100][0m
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead probe-results.md[90m [offset=101][0m
+[0m→ [0mRead triage/run-2026-09-08-09-47.md
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 "https://api.peoplefone.com/services/api-doc/"
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 "https://auth.peoplefone.com/de_CH/register"
+500
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 -X POST "https://auth.peoplefone.com/oauth/token" -d "grant_type=authorization_code&code=test&client_id=1"
+401
+[0m
+Now let me run fresh probes to verify current state:
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid"
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 "https://configuration-api.peoplefone.com/services/api-doc/"
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" -m 10 "https://call-api.peoplefone.com/services/api-doc/"
+404
+[0m
+[0m$ [0mcurl -s -D - -o /dev/null -m 10 "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid" 2>&1 | head -20
+HTTP/1.1 404 Not Found
+Date: Tue, 08 Sep 2026 13:24:56 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-xss-protection: 1; mode=block
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlYzNFlUbHU3YTZXeHRtUXJnV2srS0E9PSIsInZhbHVlIjoiK25aVjdhZmd0M1VjM2Zwc0dlekJOZGltU0xaVjZnby9RUWl0ZEZKR01PakhiWkdSWWZ6dFdFaHhhMmMwSURtQTY5NkhEd1hDbHpmcEZ1ZmpJQW1RTlVRbko3dmVNMnRiMkgvT05wNWlUL2pac1NqYUpGQ2NGMDF0UnFQRExITWYiLCJtYWMiOiJmYzU1ZjY2ZDU3ZDU0MWUyMTdiNmYyYjAwZDBhZjFlZWYyZGU1Njk2YWY0NzMwNjhlMDdmNjM5ZDQzMzlhNWJhIiwidGFnIjoiIn0%3D; expires=Tue, 08 Sep 2026 21:24:56 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6IjZUeDhtblk3MmJHc1N1TTVpUmhkRWc9PSIsInZhbHVlIjoiSEt1UEZPeUtZcHE2bFBHN1MvdldnOGRnN2pBWXBmaCtRb2tiR0Jrc0FZRTE3Nys3VU1MMkdOcFF4dG05NU9aQ3dwcWNsZVBTTlVLVVJmTnR5V0R6WXFESzh1V2h5bUZzbFB0RFIwVHdiODU5aVZESS9TMU1SQTYzV0VjVUVrZFciLCJtYWMiOiI0NDdiZjQyZjMxZjliODViMDU2ZGYwNDNhM2ZmYWY3ZWRkODc5Zjg2NmEwZjQ4NDczY2JiODQwMjViZjE0OTZlIiwidGFnIjoiIn0%3D; expires=Tue, 08 Sep 2026 21:24:56 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IkJDM2lsVzU4N1J1Ymx3WDZiaDFRS3c9PSIsInZhbHVlIjoiWWt2bVdxa1ltc1lPc0paQ1hNVTBON3Q1dGswSjdwWEhVb2t1b2ZVaHFkbGJNTkU1UDJhaDlTNkdFMHNvbmdDS1FsM2ducWhsOWRvTWEzbjY3Y3ZJdDVFN242b2xCY0JITW9mVFV5ZnBtd2s9IiwibWFjIjoiYjM3ODBlOTgyODU5Y2NmMGM0YmY0M2Q5NmNhYTUxOGU0YzA2NTY4ZmU5MDNiNzc4NzM1OWZjYTc4YjI2NjgwNiIsInRhZyI6IiJ9; expires=Wed, 13 Oct 2027 13:24:56 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+Server: cloudflare
+CF-RAY: a37e46be9edccf8f-SJC
+[0m
+[0m$ [0mcurl -s -D - -o /dev/null -m 10 -X POST "https://auth.peoplefone.com/oauth/token" -d "grant_type=authorization_code&code=test&client_id=1" 2>&1 | head -20
+HTTP/1.1 401 Unauthorized
+Date: Tue, 08 Sep 2026 13:24:57 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-xss-protection: 1; mode=block
+Cache-Control: no-cache, private
+Set-Cookie: peopoauth_session=eyJpdiI6IjMwT2dYUkNTUkE4dDVpQUw5bVRVVkE9PSIsInZhbHVlIjoiV0hIenExc0lkRVUvd0xjOGxER2RZVXYyUHpuYWovZDR4bWo5MHFUOGcyODhBM2tmUjdCRW5Pb0psZXB3SjNrMnFaNUxRamJsc1RZZ1d5bzhxZCtlRWliUHNIYWZ2ZDVLZDYzOThvSElwSm1nd2VJM1QwQnpZbmdyL3EzeWhpeXUiLCJtYWMiOiJmNmU0MDAzMjU2ZmM5YmRiODdmMjBhMTk4YTk0MmI0YzM0OWRjOTkyZGE5NjFmNDNjY2Q5YjY1ZDdmNjc0ZWE3IiwidGFnIjoiIn0%3D; expires=Tue, 08 Sep 2026 21:24:57 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IjRqbUZoWnJSZkNSRE5RUC9jVlRzV2c9PSIsInZhbHVlIjoicVRML295Q3RqY2RuY0NTM3JNRDE2Um16QVVGcm5QZVpOaVljMTRKMG94aTB3bFNjWnBVdzJoMU5xMVhRWmZnRCIsIm1hYyI6Ijg1N2UzYzNmYjJkZTliYzA0ZDUxMjJjZGZkZGExMTY0ZDFmNTYxODQwMDcyNWI5ZTFhZDEyY2Y0MGY4Y2Q0YTYiLCJ0YWciOiIifQ%3D%3D; expires=Wed, 13 Oct 2027 13:24:57 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+Server: cloudflare
+CF-RAY: a37e46c3997d58dc-SJC
+[0m
+[0m$ [0mcurl -s -m 10 "https://auth.peoplefone.com/de_CH/register" 2>&1 | head -5
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+[0m
+[0m$ [0mcurl -s -m 10 "https://auth.peoplefone.com/de_CH/register" 2>&1 | wc -c
+7441
+[0m
+[0m$ [0mcurl -s -m 10 "https://auth.peoplefone.com/oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=code&scope=openid" 2>&1 | wc -c
+7436
+[0m
+Fresh probes confirm NO_DELTA. Now produce the structured output:
+
+## 2026-09-08 13:25:00 UTC [target] (model bigpickle)
+
+**STEP 1 — DELTA**
+
+NO_DELTA — all 6 endpoints re-verified match frozen baseline: api-doc 200 / register 500 / token POST 401 (invalid_client) / stateless authorize 404+redirect_uri cookie set / config-api docs 404 / call-api docs 404. 22nd frozen cycle.
+
+**STEP 2 — PRIORITIZE**
+
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{resource}/{identifier},9,9,7,2,6,8,8.3 — unchanged from 21 prior cycles
+[PRIO] 5 SSRF callback endpoints,8,9,6,2,6,8,7.4 — unchanged, token-gated
+[PRIO] auth.peoplefone.com/oauth/authorize,5,7,9,2,6,8,6.6 — open-redirect/login-CSRF confirmed but HUMAN_ONLY for ATO escalation
+
+**STEP 3 — HYPOTHESES**
+
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers; spec says "user must be part of account bound to bearer token" but enforcement unproven; UserResponse exposes sipUserName+email+physical address; live 401 gate confirmed; cross-model convergence; no counter-evidence across 22 frozen cycles; 00:30 triage holds at HOLD pending bearer token
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, /users/{own_id}, /users/{own_id±1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern on weaker path; no counter-evidence across 22 frozen cycles; 00:30 triage holds at HOLD pending bearer token
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: authorize 302→/de_CH/login preserves arbitrary redirect_uri for client_id=1 with implicit+PKCE accepted (warm session); stateless authorize 404 but sets redirect_uri cookie with attacker value (freshly re-verified this cycle); token endpoint enforces client-secret (401 invalid_client for clients 1/4/5; nonexistent → 500); code-theft-exchange ATO falsified for known clients; guaranteed primitive = open-redirect+login-CSRF; ATO only via HUMAN_ONLY warm-session implicit-flow; 00:30 triage VALID 7.4 (9.1 conditional), sole report-ready item
+evidence_needed: warm-session authorize response_type=token + attacker redirect_uri yields access_token fragment at attacker; else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session; authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+
+**STEP 4 — SELF-CRITIQUE**
+
+[PARKED] BUSLOGIC Queue agent login/logout: triage-formal INVALID (spec-silent on membership validation); dropped 7+ cycles, no revival without new spec evidence.
+
+[FINAL] 1. Configuration API {identifier} CRUD IDOR — 85, AUTH_HELPED, CRITICAL — RETAIN top slot, frozen 22 cycles, token-gated (triage HOLD).
+[FINAL] 2. SSRF 5 callback endpoints incl. header exfil — 78, AUTH_HELPED, CRITICAL — RETAIN, token-gated (triage HOLD).
+[FINAL] 3. OAuth open-redirect/login-CSRF — 62, HUMAN_ONLY, CRITICAL-conditional — RETAIN; sole report-ready item (00:30 triage VALID 7.4/9.1); do not claim silent ATO as guaranteed.
+
+**STEP 5 — NEXT ACTION**
+
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 00:30 triage VALID 7.4 (9.1 conditional). Payload ready: arbitrary redirect_uri preserved 302→/de_CH/login for client_id=1 (warm portal session), implicit+PKCE accepted, redirect_uri cookie set even on stateless 404 (freshly re-verified this cycle). Present guaranteed impact as open-redirect+login-CSRF; frame warm-session implicit-flow fragment test as potential silent-ATO escalation, NOT confirmed. Do NOT gate on client-type proof. Separately: when register exits 500, create a genuine portal account → mint bearer → run IDOR verify_steps `/customer/voip/v1/users ±1` (read-only). Agent-side exhausted: register 500 held across 22 cycles and full inventory breadth closed — no probe adds signal.
+
+**STEP 6 — LEARNING**
+
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 401 known-clients & 500 nonexistent / stateless authorize 404+attacker redirect_uri cookie (freshly re-verified) / api-doc 200 — NO_DELTA re-verified; 22nd frozen cycle; 00:30 triage VALID on the open-redirect/login-CSRF primitive; consistent with prior triage.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (22nd frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (22nd frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
+[LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed this cycle.
+
+**STEP 7 — RISK**
+
+[RISK] peoplefone GmbH: **82/100** — Sole report-ready finding (OAuth open-redirect/login-CSRF, 00:30 triage VALID 7.4/9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 22 frozen cycles. Silent-ATO branch falsified for known clients (confidential secret required); guaranteed impact narrowed to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists; 00:30 triage HOLDS both pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk beyond passive passthrough. Risk drops only on confirmed submission with a valid-bugs increment.

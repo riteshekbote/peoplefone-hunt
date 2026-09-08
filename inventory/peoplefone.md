@@ -252,3 +252,7 @@ www.peoplefone.com
 ## 2026-09-08 03:46:49 UTC
 
 ## 2026-09-08 09:03:31 UTC
+
+## 2026-09-08 13:29:58 UTC
+- NEW No new probes since 2026-09-08 09:03:31 UTC (4h ago); all surfaces frozen: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie, token 401/405, call-api-doc 404, 19 subdomai
+- CHANGED Time-advance only — 21st frozen cycle for Configuration API IDOR, 21st for SSRF, 21st for OAuth; no status-code changes, no new endpoints, no counter-evidence
