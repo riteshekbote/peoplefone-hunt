@@ -1,12 +1,4 @@
-## 2026-09-07 23:49:06 UTC [target] (model nemotron3)
-[NEW] `call-api.peoplefone.com/services/api-doc/` probed for first time → HTTP 404 (2026-09-07 21:43:20 UTC)
-[NEW] `auth.peoplefone.com/de_CH/register` consistently HTTP 500 across 18+ frozen cycles (regression holds)
-[NEW] `auth.peoplefone.com/oauth/token` POST no `client_secret` → `invalid_client` JSON for `client_id=1/4/5` (confidential); nonexistent IDs (2,3,10,100,999,0,-1) → unhandled Laravel 500
-[NEW] 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wildcard DNS; corrects prior "wildcard-dominated" claim
-[CHANGED] Configuration API {identifier} CRUD IDOR at 18th frozen cycle — no counter-evidence, cross-model rank holds, token-gated
-[CHANGED] SSRF 5 callback endpoints — retained pending token, no counter-evidence
-[CHANGED] BUSLOGIC queue agents — triage-formal INVALID (spec-silent on membership validation), removed from active set
-[CHANGED] auth.peoplefone.com state frozen 18+ cycles: register 500 / token 401/405 / stateless authorize 404 (sets `redirect_uri` cookie with attacker value) / api-doc 200 / portal 302
+## 2026-09-08 03:46:40 UTC [target] (model nemotron3)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
@@ -48,8 +40,8 @@ testability: AUTH_HELPED
 [FINAL] 2. OAuth arbitrary redirect_uri / implicit-token theft on auth service (client_id=1) (confidence 78)
 [FINAL] 3. Cloud metadata/IAM keys theft via 5 webhook/callback endpoints with zero host validation (confidence 78)
 [NEXT] HUMAN: Submit the OAuth open-redirect/redirect_uri finding to bugs.olivermaicher.eu now — triage 12:00 graded VALID 9.1 CRITICAL-conditional; include the 302 trace preserving arbitrary redirect_uri through /de_CH/login, implicit+PKCE param acceptance, /oauth/token 405 evidence, and NEW confidential-client confirmation (invalid_client for 1/4/5). In parallel, authorized operator: create test account via live `auth.peoplefone.com/de_CH/register` (Turnstile sitekey 0x4AAAAAAETtGmlFEOhYOX2V, retry if 500), complete portal login chain to obtain bearer token, then run read-only IDOR confirmations (GET /customer/voip/v1/users/{own_id±1}, GET /customer/sms/v1/sms/messages/{neighbor_messageId}) plus SSRF probes to collaborator URLs + 169.254.169.254 metadata on all 5 callback endpoints.
-[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: NEW — POST oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: NEW — POST oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
 [LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (18th frozen cycle).
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
 [LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.

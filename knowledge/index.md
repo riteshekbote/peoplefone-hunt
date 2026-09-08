@@ -138,3 +138,14 @@
 - 2026-09-07 ACCEPTED AUTH @ auth.peoplefone.com: register 500 re-verified this cycle (fresh, no cookies) — 19th frozen cycle; token-acquisition path still closed; consistent with triage.
 - 2026-09-07 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (19th frozen cycle).
 - 2026-09-07 ACCEPTED OTH @ inventory: `call-api.peoplefone.com/services/api-doc/` → 404 verified — inventory breadth gap closed (all 8-spec backends match the 401/404-gated real-backend pattern, only api.peoplefone.com hosts the public dev portal).
+- 2026-09-08 ACCEPTED AUTH @ auth.peoplefone.com: register 500 re-verified this cycle (fresh, no cookies) — 20th frozen cycle; token-acquisition path still closed; consistent with prior triage.
+- 2026-09-08 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (20th frozen cycle).
+- 2026-09-08 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- 2026-09-08 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
+- 2026-09-08 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 re-confirmed — inventory breadth gap remains closed (all 8-spec backends match the 401/404-gated real-backend pattern).
+- 2026-09-08 REJECTED MISCONFIG @ *.peoplefone.com: NEW — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-08 ACCEPTED AUTH @ auth.peoplefone.com: NEW — POST oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
+- 2026-09-08 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (18th frozen cycle).
+- 2026-09-08 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token.
+- 2026-09-08 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- 2026-09-08 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
