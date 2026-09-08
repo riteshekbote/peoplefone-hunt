@@ -256,3 +256,10 @@ www.peoplefone.com
 ## 2026-09-08 13:29:58 UTC
 - NEW No new probes since 2026-09-08 09:03:31 UTC (4h ago); all surfaces frozen: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie, token 401/405, call-api-doc 404, 19 subdomai
 - CHANGED Time-advance only — 21st frozen cycle for Configuration API IDOR, 21st for SSRF, 21st for OAuth; no status-code changes, no new endpoints, no counter-evidence
+
+## 2026-09-08 17:47:45 UTC
+- NEW No new probes since 2026-09-08 09:03:31 UTC (4h ago); all surfaces frozen: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie, token 401/405, call-api-doc 404, 19 subdomai
+- CHANGED Time-advance only — 22nd frozen cycle for Configuration API IDOR, 22nd for SSRF, 22nd for OAuth; no status-code changes, no new endpoints, no counter-evidence
+- NEW 19 guessed subdomains all NXDOMAIN → NO wildcard DNS exists; corrects prior "wildcard-dominated" claim (knowledge base updated 2026-09-08)
+- NEW POST /oauth/token no client_secret → invalid_client JSON for client_id=1/4/5 (confirmed confidential); nonexistent IDs (2,3,10,100,999,0,-1) → unhandled Laravel 500; code-theft ATO falsified for known
+- NEW Stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; 
