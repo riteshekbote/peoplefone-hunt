@@ -166,3 +166,4 @@
 - 2026-09-08 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (24th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-08 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (24th frozen cycle); triage HOLD.
 - 2026-09-08 REJECTED MISCONFIG/OTHER @ repo scan: reposcan 18:10Z returns no public-org scan (TARGET_ORG unconfigured); library-level leads (mail-validator-mx-server, provisioning-rpc) are out-of-scope code, not scoped hosts, no deployment evidence — no in-scope alternative surface.
+- 2026-09-08 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
