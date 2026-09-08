@@ -191,3 +191,12 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-08 18:10:51 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-08 21:10:54 UTC
+[HYP] No source-code audit performed
+class: OTHER
+asset: cands.txt
+confidence: 100
+reasoning: "no org candidates" — no peoplefone GmbH public GitHub repos were identified. Without candidate repos, there is nothing to clone or scan for secrets/hardcoded credentials.
+impact: N/A
+verify_steps: N/A — no findings to verify
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
