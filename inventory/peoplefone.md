@@ -263,3 +263,9 @@ www.peoplefone.com
 - NEW 19 guessed subdomains all NXDOMAIN → NO wildcard DNS exists; corrects prior "wildcard-dominated" claim (knowledge base updated 2026-09-08)
 - NEW POST /oauth/token no client_secret → invalid_client JSON for client_id=1/4/5 (confirmed confidential); nonexistent IDs (2,3,10,100,999,0,-1) → unhandled Laravel 500; code-theft ATO falsified for known
 - NEW Stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; 
+
+## 2026-09-08 20:17:44 UTC
+- CHANGED reposcan 18:10Z produced no public-org scan (TARGET_ORG not configured) — reposcan continues to yield no alternative in-scope surface; prior library-level leads (mail-validator-mx-server, provisioning
+- NEW No new probes since 2026-09-08 09:03:31 UTC (8h ago); all surfaces frozen: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie, token 401/405, call-api-doc 404, 19 subdomai
+- CHANGED Time-advance only — 23rd frozen cycle for Configuration API IDOR, 23rd for SSRF, 23rd for OAuth; no status-code changes, no new endpoints, no counter-evidence
+- NEW OAuth open-redirect/login-CSRF finding triage-confirmed VALID 7.4 (9.1 conditional) — payload ready for bugs.olivermaicher.eu submission
