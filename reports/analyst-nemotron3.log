@@ -7561,3 +7561,63 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
 
 [RISK] peoplefone: 91 — The single highest-impact chain is live-evidenced and triage-confirmed: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise (triage VALID 9.1). All three API hypothesis classes (IDOR 85, SSRF 78, SMS BOLA 80) remain live behind one token gate that an authorized operator can open via the verified public `de_CH/register` endpoint (currently transient 500). Probe results and corrected OAuth repro appended to probe-results.md.
+===== ANALYST nemotron3 2026-09-08 09:03:31 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/
+total 240
+drwxr-xr-x 12 runner runner  4096 Sep  8 08:43 .
+drwxr-xr-x  3 runner runner  4096 Sep  8 08:43 ..
+drwxr-xr-x  7 runner runner  4096 Sep  8 08:43 .git
+drwxr-xr-x  3 runner runner  4096 Sep  8 08:43 .github
+-rw-r--r--  1 runner runner  1772 Sep  8 08:43 README.md
+-rw-r--r--  1 runner runner    43 Sep  8 08:43 analyst-out.txt
+-rw-r--r--  1 runner runner 76894 Sep  8 08:43 analyst-prompt.txt
+-rw-r--r--  1 runner runner 73039 Sep  8 08:43 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 leads
+-rw-r--r--  1 runner runner  5254 Sep  8 08:43 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 reports
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 reposcan-raw
+-rw-r--r--  1 runner runner  3268 Sep  8 08:43 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 scripts
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  8 08:43 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 triage
+[0m
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/knowledge/
+total 36
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:43 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 08:43 ..
+-rw-r--r--  1 runner runner 27226 Sep  8 08:43 index.md
+[0m
+[0m→ [0mRead knowledge/index.md
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/
+total 544
+drwxr-xr-x  2 runner runner   4096 Sep  8 08:43 .
+drwxr-xr-x 12 runner runner   4096 Sep  8 08:43 ..
+-rw-r--r--  1 runner runner 191184 Sep  8 08:43 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1734 Sep  8 08:43 lead-laguna.md
+-rw-r--r--  1 runner runner   1700 Sep  8 08:43 lead-ling3.md
+-rw-r--r--  1 runner runner   1768 Sep  8 08:43 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  8 08:43 lead-mimo.md
+-rw-r--r--  1 runner runner 318689 Sep  8 08:43 lead-nemotron3.md
+-rw-r--r--  1 runner runner  17618 Sep  8 08:43 reposcan-peoplefone.md
+[0m
+[0m✗ [0mRead leads/lead-bigpickle.md failed[90m [offset=180000, limit=500][0m
+[91m[1mError: [0mOffset 180000 is out of range for this file (1353 lines)
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=1300, limit=100][0m
+[0m✗ [0mRead leads/lead-nemotron3.md failed[90m [offset=318000, limit=500][0m
+[91m[1mError: [0mOffset 318000 is out of range for this file (1824 lines)
+[0m→ [0mRead leads/lead-nemotron3.md[90m [limit=200, offset=1700][0m
+[0m→ [0mRead inventory/peoplefone.md
