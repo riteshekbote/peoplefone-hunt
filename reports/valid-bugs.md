@@ -27,3 +27,15 @@
   - **Verdict: VALID**
   - | Q2 Reachable | PARTIAL | All require valid bearer token (401 enforced) |
   - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL | **Report to bugs.olivermaicher.eu** |
+
+- 10 lead(s) marked VALID at 2026-09-08 00:30:00 UTC
+  - [ ] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - [ ] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - [✓] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - | Q7 | Would reasonable triager accept? | **Yes.** Open-redirect on login flow with `redirect_uri` cookie injection is a concrete, exploitable primitive. Prior triage in this repo graded VALID 9.1 CRI
+  - **Verdict: VALID**
+  - | Q3 | Real security impact? | **Minimal.** Out-of-scope explicitly lists "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)." This is information disclosure via error message
+  - | Q2 | Attacker reachable? | **Partially.** 401 confirmed — bearer token required. Not unauthenticated. Requires valid operator token to test. |
+  - | Q4 | Provable non-invasively? | **No.** Cannot verify IDOR without active write/read attempts using a valid bearer token against cross-tenant identifiers. Spec analysis alone is insufficient proof. 
+  - | Q4 | Provable non-invasively? | **No.** Requires active POST with attacker-controlled callback URL and valid bearer token. Cannot verify without auth. |
+  - | 1 | OAuth redirect_uri preservation / open-redirect + login-CSRF | **VALID** | 7.4 (9.1 conditional) | Yes — submit now |
