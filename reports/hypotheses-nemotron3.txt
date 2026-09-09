@@ -1,7 +1,4 @@
-## 2026-09-08 22:45:40 UTC [target] (model nemotron3)
-[CHANGED] Time-advance only — 24th frozen cycle for Configuration API IDOR, 24th for SSRF, 24th for OAuth; no status-code changes, no new endpoints, no counter-evidence since 2026-09-08 09:03:31 UTC
-[CHANGED] reposcan 18:10Z produced no public-org scan (TARGET_ORG unconfigured) — no alternative in-scope surface
-[NEW] OAuth open-redirect/login-CSRF finding triage-confirmed VALID 7.4 (9.1 conditional) — payload ready for bugs.olivermaicher.eu submission
+## 2026-09-09 01:13:34 UTC [target] (model nemotron3)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] auth.peoplefone.com/oauth/authorize,7.9,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
