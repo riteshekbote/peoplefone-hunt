@@ -202,3 +202,25 @@ verify_steps: N/A — no findings to verify
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-08 23:25:18 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-09 01:31:24 UTC
+[HYP] Command Injection via exec() with User-Derived Input
+class: OTHER
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-245
+confidence: 65
+reasoning: |
+impact: LOW-MEDIUM
+verify_steps: |
+[HYP] Hardcoded External Provisioning API Endpoints (Information Disclosure)
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice*.php (5 files)
+confidence: 90
+reasoning: |
+impact: LOW
+verify_steps: |
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCXML.php:18-20 (+ 5 device classes)
+confidence: 85
+reasoning: |
+impact: LOW
+verify_steps: |
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
