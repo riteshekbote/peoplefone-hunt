@@ -247,3 +247,47 @@ reasoning: Developer email nicolas.urech@peoplefone.com is publicly exposed in p
 impact: Low - Standard for open-source; minimal direct security impact
 verify_steps: Verify this is the intended public contact for the package
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-09 11:51:27 UTC
+[HYP] Command Injection Risk via exec() with User-Derived Input
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-246
+confidence: 70
+reasoning: getMXDomains() extracts domain from user-supplied email, sanitizes with regex /[a-z0-9\-\.]/, then passes $host into exec("nslookup -querytype=mx ".$host) and exec("dig mx ".$host." | grep ..."). While the regex strips most shell metacharacters, the pattern of shelling out with user-influenced data is inherently risky. If sanitization is bypassed or refined, command injection becomes possible.
+impact: Medium - Requires bypass of input sanitization; could lead to RCE if exploitable
+verify_steps: 1) Check if the library is used in any web-facing application 2) Test with malformed domain inputs to verify sanitization effectiveness 3) Review any downstream consumers of this library
+[HYP] SSRF via Unvalidated MX Server Connection
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:274
+confidence: 60
+reasoning: getMXConnection() calls fsockopen($host, $this->sock_port, ...) where $host comes from DNS MX lookup results. No IP range validation or allowlist is performed. An attacker who controls DNS for a domain can point MX records to internal/private IPs (RFC 1918, link-local, cloud metadata endpoints). The connection is outbound SMTP on port 25.
+impact: Medium - Could lead to SSRF against internal services if deployed on cloud infrastructure
+verify_steps: 1) Create a domain with MX record pointing to 169.254.169.254 (AWS metadata) 2) Use mailValidatorMXServer to validate an email on that domain 3) Observe connection attempt to the metadata endpoint
+[HYP] Incomplete .gitignore - Credential File Not Excluded
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc/.gitignore
+confidence: 90
+reasoning: The .gitignore does NOT explicitly exclude provisioning-rpc-settings.php (referenced in tests/test.php via file_exists). If this settings file were ever committed, it would contain real credentials ($auerswald_login, $gigaset_login, etc.) for third-party provisioning APIs. Currently the file is not committed, but the incomplete .gitignore creates risk of accidental credential exposure.
+impact: Low - No current leak, but design flaw could lead to future credential exposure
+verify_steps: 1) Check all branches/tags for provisioning-rpc-settings.php via git log --all -- 'provisioning-rpc-settings.php' 2) Add provisioning-rpc-settings.php to .gitignore to prevent accidental commit
+[HYP] Error Message Leakage via die()
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPC.php:17
+confidence: 85
+reasoning: The catch block uses die($t->getMessage()) which leaks exception strings to output. While not a direct vulnerability, this could expose internal error details or stack information in production environments.
+impact: Low - Information disclosure via error messages
+verify_steps: 1) Confirm error handling is not exposed to end users 2) Check if error output is logged to files accessible by unauthorized parties
+[HYP] Hardcoded Third-Party Provisioning API Endpoints
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Auerswald,Gigaset,Panasonic,Snom,Yealink}.php
+confidence: 90
+reasoning: Five device classes contain hardcoded base URIs for external vendor provisioning APIs: https://secure-provisioning.snom.com:8083, https://prov.gigaset.net, https://api-dm.yealink.com:8443, https://provisioning.auerswald.de, https://provisioning.e-connecting.net. These are third-party phone vendor endpoints, not peoplefone infrastructure. The constructor default parameter $client_auth=['username','password'] is a placeholder, not a real credential.
+impact: Low (third-party public endpoints; no live credentials leaked)
+verify_steps: 1) Confirm these endpoints are still live/vendor-operated 2) Verify provisioning-rpc-settings.php is never committed in any branch/commit history
+[HYP] Developer Email Exposed in Package Metadata
+class: OTHER
+asset: peoplefone/provisioning-rpc/composer.json:10
+confidence: 100
+reasoning: Developer email nicolas.urech@peoplefone.com is publicly exposed in package metadata. This is standard for open-source packages but provides reconnaissance value for social engineering.
+impact: Low - Standard for open-source; minimal direct security impact
+verify_steps: Verify this is the intended public contact for the package
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
