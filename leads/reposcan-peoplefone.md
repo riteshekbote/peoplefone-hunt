@@ -291,3 +291,5 @@ reasoning: Developer email nicolas.urech@peoplefone.com is publicly exposed in p
 impact: Low - Standard for open-source; minimal direct security impact
 verify_steps: Verify this is the intended public contact for the package
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-09 15:29:52 UTC
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
