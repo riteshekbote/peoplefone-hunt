@@ -181,3 +181,6 @@
 - 2026-09-09 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA re-verified fresh this cycle; 26th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
 - 2026-09-09 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (26th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-09 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (26th frozen cycle); triage HOLD.
+- 2026-09-09 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA re-verified fresh this cycle; 27th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-09 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (27th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-09 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (27th frozen cycle); triage HOLD.
