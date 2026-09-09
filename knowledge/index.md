@@ -193,3 +193,7 @@
 - 2026-09-09 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, re-verified fresh this cycle) / api-doc 200 — NO_DELTA; 30th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
 - 2026-09-09 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (30th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-09 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (30th frozen cycle); triage HOLD.
+- 2026-09-09 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, re-verified header-level fresh this cycle) / api-doc 200 — NO_DELTA; 31st frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-09 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (31st frozen cycle); triage HOLD pending bearer token.
+- 2026-09-09 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (31st frozen cycle); triage HOLD.
+- 2026-09-09 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — no dangling CNAME targets; reposcan 23:29 ran with TARGET_ORG unconfigured, yields no in-scope surface.

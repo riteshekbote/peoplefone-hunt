@@ -8600,3 +8600,8 @@ testability: AUTH_HELPED
 
 **STEP 7 — RISK**
 [RISK] peoplefone: 91 — The single highest-impact chain is live-evidenced and triage-confirmed: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise (triage VALID 7.4/9.1). All three API hypothesis classes (IDOR 85, SSRF 78, SMS BOLA 80) remain live behind one token gate that an authorized operator can open via the verified public `de_CH/register` endpoint (currently transient 500). Probe results and corrected OAuth repro appended to probe-results.md.
+===== ANALYST nemotron3 2026-09-09 23:33:21 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[91m[1mError: [0mError from provider (Console): Upstream request failed: [404] Provider returned error
