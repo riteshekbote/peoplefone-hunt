@@ -224,3 +224,26 @@ reasoning: |
 impact: LOW
 verify_steps: |
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-09 06:43:17 UTC
+[HYP] Command Injection Risk via exec() in MX Lookup
+class: OTHER
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-246
+confidence: 45
+reasoning: The getMXDomains() method passes user-derived $host to exec() for nslookup/dig commands. Input sanitization via regex (/[^a-z0-9\-\.]/) strips most dangerous characters, but the pattern of shelling out with any user-influenced data is inherently risky. If sanitization is bypassed or refined, command injection becomes possible.
+impact: Medium - Requires bypass of input sanitization; could lead to RCE if exploitable
+verify_steps: 1) Check if the library is used in any web-facing application 2) Test with malformed domain inputs to verify sanitization effectiveness 3) Review any downstream consumers of this library
+[HYP] Outdated PHP Version Requirement
+class: MISCONFIG
+asset: peoplefone/mail-validator-mx-server/composer.json:13
+confidence: 90
+reasoning: Requires "php": ">=5.3.0" - PHP 5.x reached end-of-life in 2018 and has known security vulnerabilities. This suggests the library may not be maintained with current security standards.
+impact: Low - Does not directly indicate a vulnerability but suggests security posture may be lacking
+verify_steps: 1) Check if this library is actively used in production systems 2) Verify if PHP 5.3 compatibility is actually needed
+[HYP] Internal Developer Email Exposed
+class: OTHER
+asset: peoplefone/provisioning-rpc/composer.json:10
+confidence: 100
+reasoning: Developer email nicolas.urech@peoplefone.com is publicly exposed in package metadata. This is standard for open-source packages but provides reconnaissance value for social engineering.
+impact: Low - Standard for open-source; minimal direct security impact
+verify_steps: Verify this is the intended public contact for the package
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
