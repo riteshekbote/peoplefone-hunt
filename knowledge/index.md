@@ -208,3 +208,6 @@
 - 2026-09-10 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
 - 2026-09-10 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
 - 2026-09-10 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-10 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 33rd frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-10 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (33rd frozen cycle); triage HOLD pending bearer token.
+- 2026-09-10 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (33rd frozen cycle); triage HOLD.

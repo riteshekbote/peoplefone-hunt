@@ -1,4 +1,10 @@
-## 2026-09-10 06:42:54 UTC [target] (model nemotron3)
+## 2026-09-10 11:53:25 UTC [target] (model nemotron3)
+[NEW] REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (corrects "wildcard-dominated" claim)
+[NEW] ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs → unhandled 500
+[NEW] ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets redirect_uri cookie (httponly, secure, 1-year expiry) with attacker value even on 404
+[CHANGED] Configuration API IDOR frozen 32nd cycle, SSRF frozen 32nd cycle, OAuth frozen 32nd cycle — no status-code changes, no new endpoints
+[CHANGED] call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+[NEW] REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.6,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,9.1,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.7,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10

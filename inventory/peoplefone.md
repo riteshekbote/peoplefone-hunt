@@ -292,3 +292,11 @@ www.peoplefone.com
 ## 2026-09-10 01:31:29 UTC
 
 ## 2026-09-10 06:43:45 UTC
+
+## 2026-09-10 11:53:56 UTC
+- NEW REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (corrects "wildcard-dominated" claim)
+- NEW ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs → unhandled 500
+- NEW ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets redirect_uri cookie (httponly, secure, 1-year expiry) with attacker value even on 404
+- CHANGED Configuration API IDOR frozen 32nd cycle, SSRF frozen 32nd cycle, OAuth frozen 32nd cycle — no status-code changes, no new endpoints
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+- NEW REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
