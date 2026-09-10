@@ -312,3 +312,11 @@ www.peoplefone.com
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
 
 ## 2026-09-10 19:16:12 UTC
+
+## 2026-09-10 21:45:47 UTC
+- NEW 19 guessed subdomains (admin/mail/staging/test/dev-api/status/shop/billing/webmail/crm/pbx/voip/api-gw/internal/mgmt/invoice/partner/fileshare/sip/ws) all NXDOMAIN → NO wildcard DNS exists; corrects p
+- NEW POST /oauth/token with no client_secret → invalid_client JSON for clients 1/4/5 (confirmed confidential); nonexistent IDs (2,3,10,100,999,0,-1) → unhandled Laravel 500; code-theft-exchange ATO falsifi
+- NEW Stateless authorize sets `redirect_uri` cookie (httponly, secure, Max-Age 34560000) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mod
+- CHANGED Configuration API IDOR frozen 34th cycle, SSRF frozen 34th cycle, OAuth frozen 34th cycle — no status-code changes, no new endpoints
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+- CHANGED REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
