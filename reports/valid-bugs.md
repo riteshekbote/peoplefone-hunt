@@ -39,3 +39,11 @@
   - | Q4 | Provable non-invasively? | **No.** Cannot verify IDOR without active write/read attempts using a valid bearer token against cross-tenant identifiers. Spec analysis alone is insufficient proof. 
   - | Q4 | Provable non-invasively? | **No.** Requires active POST with attacker-controlled callback URL and valid bearer token. Cannot verify without auth. |
   - | 1 | OAuth redirect_uri preservation / open-redirect + login-CSRF | **VALID** | 7.4 (9.1 conditional) | Yes — submit now |
+
+- 6 lead(s) marked VALID at 2026-09-10 23:23:27 UTC
+  - | Q3 Real impact? | CONDITIONAL — Cross-tenant CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing); requires valid bearer token |
+  - | Q4 Provable non-invasively? | NO — Requires valid bearer token to invoke endpoints |
+  - | Q7 Reasonable triager accept? | CONDITIONAL — 7.4 base, 9.1 if token scope is broad; triage-confirmed VALID per inventory entry |
+  - **Verdict: VALID** — Meets all gates with conditional severity.
+  - | Q3 Real impact? | LOW — POST without client_secret returns `invalid_client` JSON for valid client_ids; nonexistent IDs return unhandled Laravel 500 |
+  - | OAuth redirect_uri | **VALID** | 7.4 (9.1 conditional) |
