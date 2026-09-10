@@ -300,3 +300,13 @@ www.peoplefone.com
 - CHANGED Configuration API IDOR frozen 32nd cycle, SSRF frozen 32nd cycle, OAuth frozen 32nd cycle — no status-code changes, no new endpoints
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
 - NEW REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
+
+## 2026-09-10 16:08:02 UTC
+- CHANGED OAuth at auth.peoplefone.com frozen 33rd cycle: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000) / api
+- CHANGED Configuration API IDOR frozen 33rd cycle — no counter-evidence, cross-model rank holds, token-gated
+- CHANGED SSRF 5 callback endpoints frozen 33rd cycle — retained pending token, no counter-evidence
+- NEW REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (corrects "wildcard-dominated" claim)
+- NEW ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs → unhandled 500
+- NEW ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets redirect_uri cookie (httponly, secure, 1-year expiry) with attacker value even on 404
+- NEW REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
