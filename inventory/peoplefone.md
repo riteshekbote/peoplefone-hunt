@@ -336,3 +336,5 @@ www.peoplefone.com
 - NEW ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs → unhandled Laravel 500; code-theft ATO falsified for kn
 - NEW ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets redirect_uri cookie (httponly, secure, Max-Age 34560000) with attacker-controlled value even on 404 — server processes redirect_uri param p
 - CHANGED REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
+
+## 2026-09-11 08:47:53 UTC
