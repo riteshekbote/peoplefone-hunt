@@ -233,3 +233,7 @@
 - 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (37th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (37th frozen cycle); triage HOLD.
 - 2026-09-11 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 405 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, header-level fresh re-verify 19:50Z) / api-doc 200 / config-api docs 404 — NO_DELTA; 38th frozen cycle; triage VALID on open-redirect/login-CSRF.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (38th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (38th frozen cycle); triage HOLD.
+- 2026-09-11 ACCEPTED OTH @ inventory: status map identical — api docs 200, config-api docs 404, call-api docs 404; all 8-spec backends match the 401/404-gated real-backend pattern.

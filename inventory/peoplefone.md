@@ -347,3 +347,5 @@ www.peoplefone.com
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
 
 ## 2026-09-11 17:16:44 UTC
+
+## 2026-09-11 19:51:32 UTC
