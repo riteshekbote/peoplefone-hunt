@@ -328,3 +328,26 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-11 15:10:53 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-11 18:35:55 UTC
+[HYP] Command Injection via exec() on unsanitized user input
+class: OTHER
+asset: mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-245
+confidence: 60
+reasoning: The getMXDomains() method extracts a hostname from user-supplied email addresses and passes it directly to exec("nslookup -querytype=mx ".$host) and exec("dig mx ".$host." | grep -v '^;' | grep ".$host). Although there is a regex filter [^a-z0-9\-\.] applied to $host earlier (line 239), the filtering occurs before the exec call but after the variable is extracted from the user email. The regex strips most shell metacharacters, which reduces but does not fully eliminate injection risk (e.g., backtick or $() within the regex allowance is not clear). The code pattern is inherently dangerous.
+impact: Medium — if regex is bypassed or modified, arbitrary command execution on the host.
+verify_steps: 1. Confirm whether the regex at line 239 truly strips all shell metacharacters (backtick, $(), semicolons, pipes). 2. Verify if this library is used in any web-facing application in the peoplefone stack (check internal repos, Packagist download stats, or internal dependency manifests). 3. Check if any web endpoint passes user-controlled email input into this class.
+[HYP] SSRF via SMTP connection to attacker-controlled MX host
+class: SSRF
+asset: mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:266-286
+confidence: 45
+reasoning: The getMXConnection() method takes an array of DNS-resolved MX hosts and opens a direct fsockopen() connection to each. An attacker-controlled domain could resolve to an internal IP (127.0.0.1, 10.x, 192.168.x), making this an SSRF vector to reach internal services via SMTP on port 25. The email address is user-supplied (setContact), and the MX lookup is DNS-based. No validation is performed on the resolved IP to prevent internal network scanning.
+impact: Medium — internal network scanning or interaction with internal SMTP services if the library is deployed in a web context.
+verify_steps: 1. Verify if this library is used behind any HTTP endpoint (web app, API). 2. Check if any callers of setContact() accept untrusted input. 3. Confirm whether DNS resolution for MX records could return RFC1918 addresses in the deployment environment.
+[HYP] Default credentials placeholder in constructor signatures
+class: OTHER
+asset: provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php:24/14/15/14/14
+confidence: 20
+reasoning: All five device classes have constructor default parameters: array $client_auth=['username','password']. These are literal string array defaults, not actual leaked credentials. However, they indicate the auth pattern (username/password basic auth) used for provisioning RPC calls to third-party VoIP APIs (snom, Panasonic, Gigaset, Auerswald, Yealink). If any consumer forgets to override the defaults, it would attempt authentication with literal "username"/"password" against live provisioning endpoints.
+impact: Low — these are placeholder defaults in open-source library code, not real secrets. Risk is only if a consumer fails to provide credentials.
+verify_steps: 1. Check if any downstream project instantiates these classes without overriding the default auth array. 2. Confirm these are not
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
