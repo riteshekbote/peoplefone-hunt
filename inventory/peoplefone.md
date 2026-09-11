@@ -338,3 +338,10 @@ www.peoplefone.com
 - CHANGED REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
 
 ## 2026-09-11 08:47:53 UTC
+
+## 2026-09-11 13:25:34 UTC
+- NEW Register endpoint regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side
+- NEW auth.peoplefone.com stateless authorize sets `redirect_uri` cookie (Max-Age 34560000, httponly, secure) with attacker-controlled value even on 404 — server partially processes redirect_uri in stateles
+- CHANGED Configuration API IDOR frozen 36th cycle, SSRF 5 endpoints frozen 36th cycle, OAuth frozen 36th cycle — no status-code changes, no new endpoints, no counter-evidence since 2026-09-08
+- CHANGED 19 guessed subdomains all NXDOMAIN → NO wildcard DNS exists; corrects prior "wildcard-dominated" claim (re-verified 2026-09-11)
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
