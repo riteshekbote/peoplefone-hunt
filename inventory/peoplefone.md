@@ -328,3 +328,11 @@ www.peoplefone.com
 - CHANGED Configuration API IDOR frozen 35th cycle, SSRF frozen 35th cycle, OAuth frozen 35th cycle — no status-code changes, no new endpoints
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
 - CHANGED REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set
+
+## 2026-09-11 03:48:31 UTC
+- NEW probe-results.md shows NO_DELTA since 2026-09-08 09:03:31 UTC — api.peoplefone.com/services/api-doc/ consistently 200; all live surfaces frozen (register 500, stateless authorize 404+attacker redirect
+- NEW knowledge base confirms Configuration API IDOR frozen 35th cycle, SSRF 5 endpoints frozen 35th cycle, OAuth frozen 35th cycle — no status-code changes, no new endpoints, no counter-evidence
+- NEW REJECTED MISCONFIG @ *.peoplefone.com re-confirmed: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (corrects prior "wildcard-dominated" claim)
+- NEW ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs → unhandled Laravel 500; code-theft ATO falsified for kn
+- NEW ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets redirect_uri cookie (httponly, secure, Max-Age 34560000) with attacker-controlled value even on 404 — server processes redirect_uri param p
+- CHANGED REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set

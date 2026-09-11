@@ -10189,3 +10189,159 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] peoplefone GmbH: 82/100 — Unchanged. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1) still not confirmed submitted (valid-bugs 0) after 35 cycles; Configuration IDOR (85) + SSRF (78) remain live behind a bearer token unacquirable agent-side. Two lever lines: (a) locale-probe above may re-open the register path agent-unlockable; (b) human submission still pending. Risk drops only on a valid-bugs increment or confirmed token-acquired verification of top classes.
+===== ANALYST bigpickle 2026-09-11 03:48:31 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m# [0mTodos
+[•] Probe alternate locale registration routes on auth.peoplefone.com
+[ ] Full fresh verification of all live surfaces
+[0m
+[0m$ [0mcurl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/en_CH/register' 2>/dev/null; echo; curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/fr_CH/register' 2>/dev/null; echo; curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/it_CH/register' 2>/dev/null; echo; curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/de_DE/register' 2>/dev/null; echo; curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/en_GB/register' 2>/dev/null; echo; curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/register' 2>/dev/null
+500|
+500|
+500|
+500|
+500|
+404|
+[0m
+[0m$ [0m# Full fresh verification of all surfaces
+echo "=== API DOC ===" && curl -s -o /dev/null -w '%{http_code}|%{size_download}b' -H 'User-Agent: Mozilla/5.0' 'https://api.peoplefone.com/services/api-doc/' 2>/dev/null; echo
+echo "=== REGISTER ===" && curl -s -o /dev/null -w '%{http_code}|%{size_download}b' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/de_CH/register' 2>/dev/null; echo
+echo "=== STATELESS AUTHORIZE ===" && curl -s -D- -o /dev/null -w '%{http_code}|%{size_download}b' -H 'User-Agent: Mozilla/5.0' 'https://auth.peoplefone.com/oauth/authorize?client_id=1&response_type=code&state=verify29&redirect_uri=https://evil.example.com/callback' 2>/dev/null | head -30; echo
+echo "=== TOKEN POST client_id=1 ===" && curl -s -X POST 'https://auth.peoplefone.com/oauth/token' -H 'Content-Type: application/x-www-form-urlencoded' -d 'grant_type=authorization_code&client_id=1&redirect_uri=https://evil.example.com/callback&code=test' 2>/dev/null; echo
+echo "=== TOKEN GET ===" && curl -s -o /dev/null -w '%{http_code}' 'https://auth.peoplefone.com/oauth/token' 2>/dev/null; echo
+echo "=== TOKEN POST no body ===" && curl -s -X POST 'https://auth.peoplefone.com/oauth/token' -H 'Content-Type: application/x-www-form-urlencoded' -d '' 2>/dev/null; echo
+echo "=== CONFIG API ===" && curl -s -o /dev/null -w '%{http_code}|%{size_download}b' -H 'User-Agent: Mozilla/5.0' 'https://configuration-api.peoplefone.com/services/api-doc/' 2>/dev/null; echo
+echo "=== CALL API ===" && curl -s -o /dev/null -w '%{http_code}|%{size_download}b' -H 'User-Agent: Mozilla/5.0' 'https://call-api.peoplefone.com/services/api-doc/' 2>/dev/null; echo
+echo "=== PORTAL ===" && curl -s -o /dev/null -w '%{http_code}|%{redirect_url}' -H 'User-Agent: Mozilla/5.0' 'https://portal.peoplefone.ch/' 2>/dev/null; echo
+=== API DOC ===
+200|1334b
+=== REGISTER ===
+500|7441b
+=== STATELESS AUTHORIZE ===
+HTTP/1.1 404 Not Found
+Date: Fri, 11 Sep 2026 03:45:14 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-xss-protection: 1; mode=block
+Cache-Control: no-cache, private
+Set-Cookie: XSRF-TOKEN=eyJpdiI6ImE0L1RydHhjSlFSZzY5RkRLaVUyYkE9PSIsInZhbHVlIjoibkFkT3ROaGwzWFlIYzZoUHIvY0taZWozWGplU2t2WTRXdCtLT08yVWhnQkJIdTkvTy9FY2crc1dCc0ZKcDhkSWxNamxBU2FkZWFvM3dvcHFZRndaTExFeFdBbEZaWG5DSS9EQkduMWgxajk5Yk1LTUNjWU0rQWZMaTFLemJma3UiLCJtYWMiOiJmMjUzMDQ3NDVlNGU1ZDM2MWVkZWM3ZjFjYTIyNzAyZDRhNzczNzRmMWVkYTllYzI3ZGM2ZTBhNWMwZDc2ZmIyIiwidGFnIjoiIn0%3D; expires=Fri, 11 Sep 2026 11:45:14 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6IkFPWGU2eWQ0dmN5bHJaU2orTG8zeEE9PSIsInZhbHVlIjoiNEZGYnVvdjA5eWsxSTdZbCtybzliem82REJnNFdud2dGb1A1cjNRa0VmbklTQ1dDV2JLcXJkcUlESkI0MkMybXBiVldFT2prNklwR21pamM3VzhKc3UrV2xiVEljQjdEL0N2Yk0yNlJoZ0FWOE9peGtwaTRMblNsYk9OdzJUSHEiLCJtYWMiOiI3OGUyZTNhOGIxOGZjOTEzN2Y2N2U5MjU1NzNkMjAwYjZjYTQ3ZTgwNTczN2VlMTAzYTdiYTVmNDIwODcxYTIyIiwidGFnIjoiIn0%3D; expires=Fri, 11 Sep 2026 11:45:14 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6IitUZWhEWUFyNWNUckdXVDBjVXdqdlE9PSIsInZhbHVlIjoiSzd2bG1FODgzR2lVSE5rT0I5dnAzL1NvT04vRnhsMWVrSHIwbmlqejZJb1ZGMW8wTEpST1JDOWpmZk01bkNaK0wxTW9FZjNuek9XaXJzYlJtbzJkNzJLbGU4a29ZMDRCYmtobEdkekFOUmM9IiwibWFjIjoiYTljNDU2NTIwZmI3NWM2ZDc3NzNmNTFlNzkxYzM1NzFkNzAwZThmNGRmYzE3YTY1MGIyNGMzZTEzNzNhNjRkNSIsInRhZyI6IiJ9; expires=Sat, 16 Oct 2027 03:45:14 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+cf-cache-status: DYNAMIC
+expect-ct: max-age=86400, enforce
+referrer-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+Server: cloudflare
+CF-RAY: a393adb02cd7629c-SEA
+
+404|7436b
+=== TOKEN POST client_id=1 ===
+{"error":"invalid_client","error_description":"Client authentication failed","message":"Client authentication failed"}
+=== TOKEN GET ===
+405
+=== TOKEN POST no body ===
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Server Error</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased"><a href="https://auth.peoplefone.com/cdn-cgi/content?id=2kR7hO5eGFNDGzhX2Dz97DX1kFkCSe_yv_VmBgrHhW0-1789098317.033266-1.2.1.1-eAKej2UTYXd5yEiz_PbKUCv73zNKFNL_o8Ati6LA61UUVdkVbSK4LQx3cRr2EEC4" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg dark:text-gray-300 text-gray-700 border-r border-gray-400 tracking-wider">
+                        500                    </h1>
+
+                    <div class="ml-4 text-lg dark:text-gray-300 text-gray-700 uppercase tracking-wider">
+                        Server Error                    </div>
+                </div>
+            </div>
+        </div>
+    <script>window.__CF$cv$params={r:'a393adc17f0be477',t:'MTc4OTA5ODMxNw==',u:'01a08e91d5b1755280e88805235057dc',ut:'9gyVPz7d3JObz2gQFQBIZyQW7jbxvmLUi5kSpoo1O1g-1789098317-1.2.1.1-isOpwJj2c1iy4wc8Cw5SK.m5Oa3YvCiMaMTSJNdTO_yeRJKGzzjeEm7pRhCG_COG996NOL1OzacLVOnKO8Vp__VhPr3j63Uyez.q5AAwYro',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+</html>
+
+=== CONFIG API ===
+404|7449b
+=== CALL API ===
+404|7440b
+=== PORTAL ===
+302|https://portal.peoplefone.ch/home
+[0m
+[0m# [0mTodos
+[✓] Probe alternate locale registration routes on auth.peoplefone.com
+[✓] Full fresh verification of all live surfaces
+[0m
+All probes complete. Locale probe result: all locale-prefixed register routes → 500 (global regression), bare `/register` → 404. Every other surface frozen as prior.
+STEP 1 — DELTA
+- [NEW] Locale probe (36th cycle): `/en_CH/fr_CH/it_CH/de_DE/en_GB /register` all → 500; bare `/register` → 404 (routes require locale prefix) — register-500 is GLOBAL, not locale-scoped; register-minting lever permanently closed agent-side
+- [NO_DELTA] All live surfaces frozen: api-doc 200 (1334b) / register 500 / stateless authorize 404+attacker `redirect_uri` cookie (Max-Age 34560000, httponly, secure, fresh re-verified) / token POST(client_id=1)→401 invalid_client / token GET 405 / token POST(no-body)→500 / config-api+call-api docs 404 / portal 302
+
+STEP 2 — PRIORITIZE
+- [PRIO] configuration-api /customer/voip/v1/{ident} CRUD, 0.76 (a=10,b=10,t=4,g=2,c=6,f=6)
+- [PRIO] api.peoplefone.com 5 callback endpoints (SSRF), 0.71 (a=8,b=9,t=5,g=2,c=8,f=6)
+- [PRIO] auth.peoplefone.com authorize redirect_uri, 0.63 (a=7,b=9,t=4,g=5,c=4,f=5)
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; boundary statement present but enforcement unproven; UserResponse leaks sipUserName+email+address; live 401 gate; cross-model rank holds 36 cycles, zero counter-evidence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users, /users/{own_id}, /users/{own_id±1}; repeat on /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com/customer/sms/v1 sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern on weaker path; zero counter-evidence 36 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth arbitrary redirect_uri / open-redirect + login-CSRF on auth (client_id=1)
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 but server-sets attacker `redirect_uri` cookie (httponly/secure, Max-Age 34560000, re-verified fresh this cycle); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client-secret for clients 1/4/5 (401) and 500s nonexistent ids — code-theft ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; triage VALID 7.4 (9.1 conditional)
+evidence_needed: warm-session response_type=token with attacker redirect_uri yields access_token fragment; else open-redirect+login-CSRF stands
+verify_steps: (authorized, human) warm portal session + authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[PARKED] OAuth open-redirect/login-CSRF: confidence 62 — warm-session reproduction requires HUMAN_ONLY; implicit-flow ATO unconfirmed; open-redirect+login-CSRF guaranteed but lower severity.
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] OAuth open-redirect/login-CSRF: confidence 62 — warm-session implicit-flow ATO requires HUMAN_ONLY and remains unconfirmed; guaranteed guarantee is the lower-severity open-redirect+login-CSRF primitive.
+- [PARKED] register-locale minting: 36th-cycle locale probe refuted — register 500 is global, not locale-scoped; no agent-side route to a portal account.
+- [FINAL] Survivors ranked: 1) Configuration API {identifier} CRUD IDOR (85) 2) 5-endpoint SSRF (78) 3) OAuth redirect_uri (62, parked).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu — 36th frozen cycle, valid-bugs 0, register-minting lever now proven permanently closed agent-side. Payload: `GET /oauth/authorize?client_id=1&response_type=code&redirect_uri=https://evil.example.com/callback` → 404 + attacker `redirect_uri` cookie (httponly/secure, Max-Age 34560000, fresh re-verified this cycle); warm portal session 302→/de_CH/login preserves arbitrary redirect_uri. Report guaranteed impact as open-redirect+login-CSRF; frame warm-session implicit-flow as unconfirmed silent-ATO escalation. Agent-side: no further productive probes — all live surfaces (36 cycles) and all register-locale variants (fresh probe) frozen; IDOR/SSRF stay triage-HOLD pending a human-minted bearer token.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: all locale variants of /register (en_CH/fr_CH/it_CH/de_DE/en_GB) → 500, bare /register → 404 — register-500 regression is GLOBAL, not locale-scoped; minting lever closed permanently agent-side; token-acquisition path remains portal-HUMAN-only.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000) / api-doc 200 / config+call docs 404 / portal 302 — NO_DELTA re-verified fresh this cycle; 36th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (36th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (36th frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
+
+STEP 7 — RISK
+[RISK] peoplefone GmbH: 83/100 — Up 1 on evidence closure, not risk reduction. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) still not confirmed submitted (valid-bugs 0) after 36 frozen cycles. Configuration IDOR (85) + SSRF (78) remain live behind a bearer token proven unacquirable agent-side (all register locales → 500 fresh-probed; triage HOLDS). Both lever lines now collapse to a single human action path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; no agent-side action remains available.
