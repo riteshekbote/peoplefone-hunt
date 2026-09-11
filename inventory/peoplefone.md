@@ -345,3 +345,5 @@ www.peoplefone.com
 - CHANGED Configuration API IDOR frozen 36th cycle, SSRF 5 endpoints frozen 36th cycle, OAuth frozen 36th cycle — no status-code changes, no new endpoints, no counter-evidence since 2026-09-08
 - CHANGED 19 guessed subdomains all NXDOMAIN → NO wildcard DNS exists; corrects prior "wildcard-dominated" claim (re-verified 2026-09-11)
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+
+## 2026-09-11 17:16:44 UTC
