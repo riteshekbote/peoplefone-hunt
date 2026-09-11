@@ -353,3 +353,11 @@ verify_steps: 1. Check if any downstream project instantiates these classes with
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-11 21:13:56 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-11 23:18:23 UTC
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc/tests/test.php:7-9
+confidence: 55
+reasoning: Test file attempts to include `provisioning-rpc-settings.php` from the parent directory, but `.gitignore` only excludes `vendor`, `composer.lock`, and `.idea`. If a developer creates this file with real provisioning API credentials (username/password pairs for Snom, Panasonic, Gigaset, Auerswald, Yealink) and commits without adding it to `.gitignore`, credentials would leak to the public repo.
+impact: Medium — credential leakage if misconfigured
+verify_steps: Check git history for any committed `provisioning-rpc-settings.php` or similar credential files; confirm the file is not tracked via `git ls-files`.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
