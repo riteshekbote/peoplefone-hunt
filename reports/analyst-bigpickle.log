@@ -11272,3 +11272,499 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] peoplefone GmbH: 83/100 — Unchanged. This cycle is evidence-closure only (38 frozen cycles, all live surfaces byte-identical). The sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains unsent (valid-bugs 0). Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 global regression holds for the 39th consecutive verification). Both lever lines collapse onto the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; no agent-side action remains.
+===== ANALYST bigpickle 2026-09-11 22:23:05 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la; echo "---"; ls -la art/ 2>/dev/null; ls -la *.md 2>/dev/null; cat scope.yml 2>/dev/null | head -50
+total 296
+drwxr-xr-x 12 runner runner   4096 Sep 11 22:20 .
+drwxr-xr-x  3 runner runner   4096 Sep 11 22:20 ..
+drwxr-xr-x  7 runner runner   4096 Sep 11 22:20 .git
+drwxr-xr-x  3 runner runner   4096 Sep 11 22:20 .github
+-rw-r--r--  1 runner runner   1772 Sep 11 22:20 README.md
+-rw-r--r--  1 runner runner     32 Sep 11 22:20 analyst-out.txt
+-rw-r--r--  1 runner runner 103167 Sep 11 22:20 analyst-prompt.txt
+-rw-r--r--  1 runner runner  99312 Sep 11 22:20 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 leads
+-rw-r--r--  1 runner runner   7204 Sep 11 22:20 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 reports
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 reposcan-raw
+-rw-r--r--  1 runner runner   3268 Sep 11 22:20 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 scripts
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 triage
+---
+-rw-r--r-- 1 runner runner 1772 Sep 11 22:20 README.md
+-rw-r--r-- 1 runner runner 7204 Sep 11 22:20 probe-results.md
+programs:
+  peoplefone:
+    name: peoplefone GmbH Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All company-owned infrastructure, VoIP platforms, SIP services, PBX systems, APIs, customer portals, mobile and desktop applications, and domains operated by peoplefone GmbH and its group entities"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+[0m
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la leads/ knowledge/ reports/ triage/ scripts/ recon-notes/ 2>/dev/null; echo "---analyst-out---"; cat analyst-out.txt; echo; echo "---state---"; cat state_bigpickle.json
+knowledge/:
+total 56
+drwxr-xr-x  2 runner runner  4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner 45064 Sep 11 22:20 index.md
+
+leads/:
+total 928
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner   4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner 344217 Sep 11 22:20 lead-bigpickle.md
+-rw-r--r--  1 runner runner   2958 Sep 11 22:20 lead-laguna.md
+-rw-r--r--  1 runner runner   2900 Sep 11 22:20 lead-ling3.md
+-rw-r--r--  1 runner runner   3016 Sep 11 22:20 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 11 22:20 lead-mimo.md
+-rw-r--r--  1 runner runner 541688 Sep 11 22:20 lead-nemotron3.md
+-rw-r--r--  1 runner runner  31126 Sep 11 22:20 reposcan-peoplefone.md
+
+recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner 4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner  823 Sep 11 22:20 DEDICATED-DEEP.md
+
+reports/:
+total 1992
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner   4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner 939234 Sep 11 22:20 analyst-bigpickle.log
+-rw-r--r--  1 runner runner  12586 Sep 11 22:20 analyst-laguna.log
+-rw-r--r--  1 runner runner  12528 Sep 11 22:20 analyst-ling3.log
+-rw-r--r--  1 runner runner  12644 Sep 11 22:20 analyst-longcat.log
+-rw-r--r--  1 runner runner 847297 Sep 11 22:20 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   9954 Sep 11 22:20 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep 11 22:20 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep 11 22:20 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep 11 22:20 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   9513 Sep 11 22:20 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner 145377 Sep 11 22:20 hypotheses.md
+-rw-r--r--  1 runner runner   4928 Sep 11 22:20 valid-bugs.md
+
+scripts/:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner 16987 Sep 11 22:20 sync-issues.py
+
+triage/:
+total 328
+drwxr-xr-x  2 runner runner  4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner     0 Sep 11 22:20 .gitkeep
+-rw-r--r--  1 runner runner   146 Sep 11 22:20 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner  2035 Sep 11 22:20 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   934 Sep 11 22:20 run-2026-09-03-02-51.md
+-rw-r--r--  1 runner runner   143 Sep 11 22:20 run-2026-09-03-07-45.md
+-rw-r--r--  1 runner runner   181 Sep 11 22:20 run-2026-09-03-12-34.md
+-rw-r--r--  1 runner runner   174 Sep 11 22:20 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   187 Sep 11 22:20 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   186 Sep 11 22:20 run-2026-09-03-21-53.md
+-rw-r--r--  1 runner runner  6531 Sep 11 22:20 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   211 Sep 11 22:20 run-2026-09-04-02-50.md
+-rw-r--r--  1 runner runner   230 Sep 11 22:20 run-2026-09-04-07-42.md
+-rw-r--r--  1 runner runner   149 Sep 11 22:20 run-2026-09-04-12-29.md
+-rw-r--r--  1 runner runner   149 Sep 11 22:20 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   212 Sep 11 22:20 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner   163 Sep 11 22:20 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   178 Sep 11 22:20 run-2026-09-04-23-16.md
+-rw-r--r--  1 runner runner   213 Sep 11 22:20 run-2026-09-05-01-04.md
+-rw-r--r--  1 runner runner 16166 Sep 11 22:20 run-2026-09-05-05-55.md
+-rw-r--r--  1 runner runner   177 Sep 11 22:20 run-2026-09-05-09-55.md
+-rw-r--r--  1 runner runner  1421 Sep 11 22:20 run-2026-09-05-13-15.md
+-rw-r--r--  1 runner runner 11220 Sep 11 22:20 run-2026-09-05-16-09.md
+-rw-r--r--  1 runner runner   220 Sep 11 22:20 run-2026-09-05-18-22.md
+-rw-r--r--  1 runner runner   239 Sep 11 22:20 run-2026-09-05-20-44.md
+-rw-r--r--  1 runner runner   231 Sep 11 22:20 run-2026-09-05-22-37.md
+-rw-r--r--  1 runner runner 11210 Sep 11 22:20 run-2026-09-06-00-15.md
+-rw-r--r--  1 runner runner   148 Sep 11 22:20 run-2026-09-06-04-46.md
+-rw-r--r--  1 runner runner   207 Sep 11 22:20 run-2026-09-06-09-08.md
+-rw-r--r--  1 runner runner   163 Sep 11 22:20 run-2026-09-06-12-55.md
+-rw-r--r--  1 runner runner  1382 Sep 11 22:20 run-2026-09-06-15-58.md
+-rw-r--r--  1 runner runner   205 Sep 11 22:20 run-2026-09-06-18-09.md
+-rw-r--r--  1 runner runner   254 Sep 11 22:20 run-2026-09-06-20-28.md
+-rw-r--r--  1 runner runner   148 Sep 11 22:20 run-2026-09-06-22-18.md
+-rw-r--r--  1 runner runner   214 Sep 11 22:20 run-2026-09-07-00-05.md
+-rw-r--r--  1 runner runner   988 Sep 11 22:20 run-2026-09-07-04-50.md
+-rw-r--r--  1 runner runner   252 Sep 11 22:20 run-2026-09-07-09-56.md
+-rw-r--r--  1 runner runner   500 Sep 11 22:20 run-2026-09-07-15-31.md
+-rw-r--r--  1 runner runner   166 Sep 11 22:20 run-2026-09-07-19-23.md
+-rw-r--r--  1 runner runner   219 Sep 11 22:20 run-2026-09-07-22-16.md
+-rw-r--r--  1 runner runner 16188 Sep 11 22:20 run-2026-09-08-00-30.md
+-rw-r--r--  1 runner runner   250 Sep 11 22:20 run-2026-09-08-05-10.md
+-rw-r--r--  1 runner runner   164 Sep 11 22:20 run-2026-09-08-09-47.md
+-rw-r--r--  1 runner runner   186 Sep 11 22:20 run-2026-09-08-14-06.md
+-rw-r--r--  1 runner runner   210 Sep 11 22:20 run-2026-09-08-17-57.md
+-rw-r--r--  1 runner runner   146 Sep 11 22:20 run-2026-09-08-20-50.md
+-rw-r--r--  1 runner runner  1650 Sep 11 22:20 run-2026-09-08-23-10.md
+-rw-r--r--  1 runner runner   294 Sep 11 22:20 run-2026-09-09-01-16.md
+-rw-r--r--  1 runner runner   163 Sep 11 22:20 run-2026-09-09-06-04.md
+-rw-r--r--  1 runner runner   170 Sep 11 22:20 run-2026-09-09-11-31.md
+-rw-r--r--  1 runner runner   158 Sep 11 22:20 run-2026-09-09-15-16.md
+-rw-r--r--  1 runner runner   717 Sep 11 22:20 run-2026-09-09-18-41.md
+-rw-r--r--  1 runner runner   143 Sep 11 22:20 run-2026-09-09-21-29.md
+-rw-r--r--  1 runner runner   148 Sep 11 22:20 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   186 Sep 11 22:20 run-2026-09-10-01-25.md
+-rw-r--r--  1 runner runner   234 Sep 11 22:20 run-2026-09-10-06-37.md
+-rw-r--r--  1 runner runner   211 Sep 11 22:20 run-2026-09-10-11-48.md
+-rw-r--r--  1 runner runner   231 Sep 11 22:20 run-2026-09-10-15-48.md
+-rw-r--r--  1 runner runner   196 Sep 11 22:20 run-2026-09-10-18-55.md
+-rw-r--r--  1 runner runner   693 Sep 11 22:20 run-2026-09-10-21-24.md
+-rw-r--r--  1 runner runner  6151 Sep 11 22:20 run-2026-09-10-23-23.md
+-rw-r--r--  1 runner runner   250 Sep 11 22:20 run-2026-09-11-01-26.md
+-rw-r--r--  1 runner runner   242 Sep 11 22:20 run-2026-09-11-06-37.md
+-rw-r--r--  1 runner runner   389 Sep 11 22:20 run-2026-09-11-11-47.md
+-rw-r--r--  1 runner runner   172 Sep 11 22:20 run-2026-09-11-15-50.md
+-rw-r--r--  1 runner runner   151 Sep 11 22:20 run-2026-09-11-18-58.md
+-rw-r--r--  1 runner runner   148 Sep 11 22:20 run-2026-09-11-21-36.md
+-rw-r--r--  1 runner runner 10000 Sep 11 22:20 triage-run-2026-09-05-12-00.md
+---analyst-out---
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la; echo "---"; ls -la art/ 2>/dev/null; ls -la *.md 2>/dev/null; cat scope.yml 2>/dev/null | head -50
+total 296
+drwxr-xr-x 12 runner runner   4096 Sep 11 22:20 .
+drwxr-xr-x  3 runner runner   4096 Sep 11 22:20 ..
+drwxr-xr-x  7 runner runner   4096 Sep 11 22:20 .git
+drwxr-xr-x  3 runner runner   4096 Sep 11 22:20 .github
+-rw-r--r--  1 runner runner   1772 Sep 11 22:20 README.md
+-rw-r--r--  1 runner runner     32 Sep 11 22:20 analyst-out.txt
+-rw-r--r--  1 runner runner 103167 Sep 11 22:20 analyst-prompt.txt
+-rw-r--r--  1 runner runner  99312 Sep 11 22:20 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 leads
+-rw-r--r--  1 runner runner   7204 Sep 11 22:20 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 reports
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 reposcan-raw
+-rw-r--r--  1 runner runner   3268 Sep 11 22:20 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 scripts
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 11 22:20 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 11 22:20 triage
+---
+-rw-r--r-- 1 runner runner 1772 Sep 11 22:20 README.md
+-rw-r--r-- 1 runner runner 7204 Sep 11 22:20 probe-results.md
+programs:
+  peoplefone:
+    name: peoplefone GmbH Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All company-owned infrastructure, VoIP platforms, SIP services, PBX systems, APIs, customer portals, mobile and desktop applications, and domains operated by peoplefone GmbH and its group entities"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+[0m
+[0m→ [0mRead probe-results.md
+
+---state---
+{"phase": "POC", "target": "api"}
+[0m
+[0m$ [0mcat reports/valid-bugs.md; echo "=== last triage ==="; cat triage/run-2026-09-11-21-36.md; echo "=== previous triage ==="; cat triage/run-2026-09-11-18-58.md; echo "=== hypotheses tail files ==="; tail -20 reports/hypotheses-bigpickle.txt
+# Validated findings (running count 0)
+
+- 5 lead(s) marked VALID at 2026-09-03 23:46:45 UTC
+  - | Q4 Provable non-invasively? | NO — probe returned HTTP 404 on `/oauth/authorize?client_id=test&redirect_uri=...`. Cannot confirm endpoint exists or is vulnerable without valid `client_id` and a logi
+  - **Verdict: HOLD** — Requires authenticated probe with valid `client_id` and portal login session to confirm. Current probe evidence is insufficient (404 = endpoint not found or misconfigured test para
+  - | Q4 Provable non-invasively? | NO — probe returned HTTP 401. Requires valid bearer token + neighboring tenant identifiers to demonstrate cross-tenant access. |
+  - | Q4 Provable non-invasively? | PARTIALLY — spec shows `{messageId}` in path, but probe didn't fetch live response body. Need valid token + enumerate neighbor IDs. |
+  - | OAuth redirect_uri bypass | **HOLD** | Probe returned 404; needs valid client_id + login session to confirm |
+
+- 7 lead(s) marked VALID at 2026-09-05 05:55:43 UTC
+  - | Q2 Reachable | **PARTIAL** | 401 enforced on live endpoints; requires valid bearer token. Not unauth-accessible. "Low-priv" may apply if token-scope isolation is weak (spec says "user must be part o
+  - | Q4 Non-invasive proof | **NO** | Spec analysis only. 235KB OpenAPI spec reveals 8 resource types with numeric sequential identifiers (20023, 20024, 2, 2000) and an explicit authorization boundary st
+  - ### **VERDICT: VALID**
+  - | Q2 Reachable | **PARTIAL** | All endpoints require valid bearer token (401 confirmed live). Not unauth-accessible. |
+  - | Q2 Reachable | **PARTIAL** | Requires valid bearer token (401 enforced). SMS API is public ("free for all developers") which lowers token acquisition barrier, but still requires authentication. |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL (or 7.4 HIGH) | **Report to bugs.olivermaicher.eu** with HTTP 302 trace |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL |
+
+- 4 lead(s) marked VALID at 2026-09-05 16:09:01 UTC
+  - | Q2 Reachable? | PARTIAL | 401 enforced; requires valid bearer token. Not unauth-accessible. |
+  - **Verdict: VALID**
+  - | Q2 Reachable? | PARTIAL | All require valid bearer token (401 confirmed). Not unauth-accessible. |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | **9.1 CRITICAL** | **Report to bugs.olivermaicher.eu now** |
+
+- 4 lead(s) marked VALID at 2026-09-06 00:15:19 UTC
+  - | Q2 Reachable | PARTIAL | 401 enforced; requires valid bearer token. Not unauth-accessible. |
+  - **Verdict: VALID**
+  - | Q2 Reachable | PARTIAL | All require valid bearer token (401 enforced) |
+  - | 2 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 9.1 CRITICAL | **Report to bugs.olivermaicher.eu** |
+
+- 10 lead(s) marked VALID at 2026-09-08 00:30:00 UTC
+  - [ ] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - [ ] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - [✓] Output verdicts with proof steps, impact, CVSS, channel for VALID leads
+  - | Q7 | Would reasonable triager accept? | **Yes.** Open-redirect on login flow with `redirect_uri` cookie injection is a concrete, exploitable primitive. Prior triage in this repo graded VALID 9.1 CRI
+  - **Verdict: VALID**
+  - | Q3 | Real security impact? | **Minimal.** Out-of-scope explicitly lists "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)." This is information disclosure via error message
+  - | Q2 | Attacker reachable? | **Partially.** 401 confirmed — bearer token required. Not unauthenticated. Requires valid operator token to test. |
+  - | Q4 | Provable non-invasively? | **No.** Cannot verify IDOR without active write/read attempts using a valid bearer token against cross-tenant identifiers. Spec analysis alone is insufficient proof. 
+  - | Q4 | Provable non-invasively? | **No.** Requires active POST with attacker-controlled callback URL and valid bearer token. Cannot verify without auth. |
+  - | 1 | OAuth redirect_uri preservation / open-redirect + login-CSRF | **VALID** | 7.4 (9.1 conditional) | Yes — submit now |
+
+- 6 lead(s) marked VALID at 2026-09-10 23:23:27 UTC
+  - | Q3 Real impact? | CONDITIONAL — Cross-tenant CRUD on 8 resource types (users, groups, IVRs, queues, numbers, smart-routings, callforwarding, manual-routing); requires valid bearer token |
+  - | Q4 Provable non-invasively? | NO — Requires valid bearer token to invoke endpoints |
+  - | Q7 Reasonable triager accept? | CONDITIONAL — 7.4 base, 9.1 if token scope is broad; triage-confirmed VALID per inventory entry |
+  - **Verdict: VALID** — Meets all gates with conditional severity.
+  - | Q3 Real impact? | LOW — POST without client_secret returns `invalid_client` JSON for valid client_ids; nonexistent IDs return unhandled Laravel 500 |
+  - | OAuth redirect_uri | **VALID** | 7.4 (9.1 conditional) |
+=== last triage ===
+
+===== TRIAGE 2026-09-11 21:36:33 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided. Please share the probe results to validate.
+=== previous triage ===
+
+===== TRIAGE 2026-09-11 18:58:03 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+Please provide the actual leads to triage. The LEADS section is empty.
+=== hypotheses tail files ===
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 but server-sets attacker redirect_uri cookie (httponly/secure, Max-Age 34560000 — re-verified header-level fresh this cycle); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client-secret for clients 1/4/5 (401) and 500s nonexistent ids — code-theft ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; triage VALID 7.4 (9.1 conditional)
+evidence_needed: warm-session response_type=token with attacker redirect_uri yields access_token fragment; or cookie-seeded redirect consumes pre-seeded attacker value
+verify_steps: (authorized, human) warm portal session + authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+[PARKED] OAuth open-redirect/login-CSRF: confidence 62 — warm-session reproduction requires HUMAN_ONLY; implicit-flow ATO unconfirmed; open-redirect+login-CSRF guaranteed but lower severity. Report payload ready.
+[FINAL] Configuration API IDOR — 85, top slot, token-gated, cross-model convergence, zero counter-evidence
+[FINAL] SSRF 5 endpoints — 78, retained pending token, zero counter-evidence
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu — 38th frozen cycle, valid-bugs 0. Payload `GET /oauth/authorize?client_id=1&response_type=code&redirect_uri=https://evil.example.com/callback` → 404 + attacker `redirect_uri` cookie (httponly/secure/Max-Age 34560000 — fresh re-verified 19:50Z); warm portal session preserves arbitrary redirect_uri (302→/de_CH/login). Report guaranteed open-redirect+login-CSRF; frame warm-session implicit-flow as unconfirmed silent-ATO escalation. Agent-side: zero productive probes remain — all live surfaces (38 cycles incl. Laravel debug/_ignition/telescope/horizon/graphql/.env sweep) frozen; IDOR/SSRF stay triage-HOLD pending human-minted bearer token.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 405 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, header-level fresh re-verify 19:50Z) / api-doc 200 / config-api docs 404 — NO_DELTA; 38th frozen cycle; triage VALID on open-redirect/login-CSRF.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (38th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (38th frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
+[LEARN] ACCEPTED OTH @ inventory: status map identical — api docs 200, config-api docs 404, call-api docs 404; all 8-spec backends match the 401/404-gated real-backend pattern.
+[RISK] peoplefone GmbH: 83/100 — Unchanged. This cycle is evidence-closure only (38 frozen cycles, all live surfaces byte-identical). The sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains unsent (valid-bugs 0). Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 global regression holds for the 39th consecutive verification). Both lever lines collapse onto the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; no agent-side action remains.
+[0m
+[0m$ [0mls -la inventory/; echo "=== index tail ==="; tail -30 knowledge/index.md; echo "=== ctx head ==="; head -20 ctx.txt; echo "=== hypotheses-bigpickle tail count ==="; wc -l reports/hypotheses-bigpickle.txt reports/hypotheses-nemotron3.txt
+total 44
+drwxr-xr-x  2 runner runner  4096 Sep 11 22:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 11 22:20 ..
+-rw-r--r--  1 runner runner 36642 Sep 11 22:20 peoplefone.md
+=== index tail ===
+- 2026-09-10 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-10 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 33rd frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-10 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (33rd frozen cycle); triage HOLD pending bearer token.
+- 2026-09-10 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (33rd frozen cycle); triage HOLD.
+- 2026-09-10 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 34th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-10 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (34th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-10 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (34th frozen cycle); triage HOLD.
+- 2026-09-10 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 35th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-10 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (35th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-10 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (35th frozen cycle); triage HOLD.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: all locale variants of /register (en_CH/fr_CH/it_CH/de_DE/en_GB) → 500, bare /register → 404 — register-500 regression is GLOBAL, not locale-scoped; minting lever closed permanently agent-side; token-acquisition path remains portal-HUMAN-only.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000) / api-doc 200 / config+call docs 404 / portal 302 — NO_DELTA re-verified fresh this cycle; 36th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (36th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (36th frozen cycle); triage HOLD.
+- 2026-09-11 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
+- 2026-09-11 REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (35th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (35th frozen cycle); triage HOLD.
+- 2026-09-11 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- 2026-09-11 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
+- 2026-09-11 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 / config+call docs 404 / portal 302 — NO_DELTA re-verified fresh this cycle; 37th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (37th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (37th frozen cycle); triage HOLD.
+- 2026-09-11 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 405 / stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, header-level fresh re-verify 19:50Z) / api-doc 200 / config-api docs 404 — NO_DELTA; 38th frozen cycle; triage VALID on open-redirect/login-CSRF.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (38th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (38th frozen cycle); triage HOLD.
+- 2026-09-11 ACCEPTED OTH @ inventory: status map identical — api docs 200, config-api docs 404, call-api docs 404; all 8-spec backends match the 401/404-gated real-backend pattern.
+=== ctx head ===
+=== KNOWLEDGE BASE ===
+# Knowledge Base (seed)
+- 2026-09-03 REJECTED MISCONFIG @ *.peoplefone.com: wildcard-dominated DNS with all CNAMEs pointing to managed Cloudflare CDN (per inventory) makes dangling CNAME takeover improbable; no unclaimed third-party targets observed
+- 2026-09-03 ACCEPTED AUTH @ auth.peoplefone.com: Dedicated auth subdomains high-value for session/token flaws
+- 2026-09-03 ACCEPTED IDOR @ api.peoplefone.com: Developer portals common source of API exposure
+- 2026-09-03 REJECTED MISCONFIG @ support.peoplefone.com: Low confidence, support portals typically non-critical
+- 2026-09-03 ACCEPTED AUTH @ auth.peoplefone.com: OAuth authorize endpoint lacks redirect_uri allowlist validation for client_id=1; arbitrary redirect_uri accepted and preserved through login flow
+- 2026-09-03 ACCEPTED IDOR @ configuration-api.peoplefone.com: Multi-tenant API exposes virtualUsers/{identifier} endpoints with explicit authorization boundary notes in spec
+- 2026-09-03 ACCEPTED IDOR @ call-api.peoplefone.com: Call control endpoints accept owner.identifier in body with authorization boundary notes
+- 2026-09-03 REJECTED MISCONFIG @ www.peoplefone.com: GraphQL introspection hypothesis invalidated — developer portal uses OpenAPI/Swagger, not GraphQL
+- 2026-09-03 REJECTED MISCONFIG @ *.peoplefone.com: Wildcard DNS dominated by Cloudflare CDN CNAMEs; no dangling third-party targets observed
+- 2026-09-03 ACCEPTED IDOR @ api.peoplefone.com: Developer portal explicitly links to public API documentation confirming attack surface
+- 2026-09-03 REJECTED MISCONFIG @ *.peoplefone.com: wildcard-dominated DNS with all CNAMEs pointing to managed Cloudflare CDN makes dangling CNAME takeover improbable
+- 2026-09-03 ACCEPTED IDOR @ api.peoplefone.com: Exposed Swagger UI reveals full SMS/Bola messageId endpoint surface with per-{messageId} access — high-value BOLA candidate
+- 2026-09-03 ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth)
+- 2026-09-03 ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
+- 2026-09-03 REJECTED MISCONFIG @ *.peoplefone.com: Swagger UI is protected by 401 on all real API backends; unauthenticated docs exposure is by-design dev portal, not standalone finding
+- 2026-09-04 ACCEPTED IDOR @ api.peoplefone.com: Exposed Swagger UI reveals full SMS/BOLA messageId endpoint surface with per-{messageId} access — high-value BOLA candidate
+- 2026-09-04 ACCEPTED SSRF @ api/call-api: Spec-documented attacker-controlled callbackUrl and Smart Routing webhook url constitute server-side-fetch SSRF vectors (post-auth)
+- 2026-09-04 ACCEPTED IDOR @ configuration-api.peoplefone.com: Newly found tenant-scoped PBX config API (`/customer/voip/v1`) with {identifier} CRUD — IDOR/BOLA candidate
+=== hypotheses-bigpickle tail count ===
+   57 reports/hypotheses-bigpickle.txt
+   50 reports/hypotheses-nemotron3.txt
+  107 total
+[0m
+STEP 1 — DELTA
+NO_DELTA. All live surfaces byte-identical to the 19:50Z 38th-frozen-cycle verification (api-doc 200, config-api docs 404, call-api docs 404, register 500 global, token GET 405 / known-client 401 / no-body 500, stateless authorize 404 + attacker redirect_uri cookie Max-Age 34560000, portal 302). Repo scan has no public org (TARGET_ORG unconfigured). One process anomaly: triage runs 2026-09-11 18:58 and 21:36 (mimo-v2.5-free) received EMPTY leads — triage channel is not receiving lead payloads, but this only affects the report-validation step, not live surface.
+
+STEP 2 — PRIORITIZE
+[PRIO] configuration-api.peoplefone.com,8.55,attack_surface:10 business_value:10 tech_exposure:9 gate_ease:4 cloud_surface:7 freshness:9
+[PRIO] call-api.peoplefone.com,8.15,attack_surface:9 business_value:9 tech_exposure:9 gate_ease:4 cloud_surface:8 freshness:9
+[PRIO] auth.peoplefone.com,7.95,attack_surface:8 business_value:10 tech_exposure:10 gate_ease:3 cloud_surface:5 freshness:10
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; authorization-boundary statement present but enforcement unproven; UserResponse leaks sipUserName+email+address; live 401 gate (docs 404 re-verified fresh 19:50Z); cross-model rank holds 38 cycles, zero counter-evidence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via +-1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id+1}; repeat on /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence 38 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254/latest/meta-data/; inspect attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 but server-sets attacker redirect_uri cookie (httponly/secure, Max-Age 34560000 — re-verified header-level fresh 19:50Z); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client-secret for clients 1/4/5 (401) and 500s nonexistent ids — code-theft ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; triage VALID 7.4 (9.1 conditional)
+evidence_needed: warm-session response_type=token with attacker redirect_uri yields access_token fragment; or cookie-seeded redirect consumes pre-seeded attacker value
+verify_steps: (authorized, human) warm portal session + authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] OAuth open-redirect/login-CSRF: confidence 62 — warm-session reproduction requires HUMAN_ONLY; implicit-flow ATO unconfirmed; open-redirect+login-CSRF guaranteed but lower severity; report payload ready.
+[FINAL] Configuration API IDOR — 85, top slot, token-gated, cross-model convergence, zero counter-evidence (39th frozen cycle).
+[FINAL] SSRF 5 endpoints — 78, retained pending token, zero counter-evidence (39th frozen cycle).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu — 39th frozen cycle, valid-bugs 0, and every agent-side probe path is exhausted (register 500 global closes token-minting; bearer-gated APIs stay 401; docs 404). Payload `GET /oauth/authorize?client_id=1&response_type=code&redirect_uri=https://evil.example.com/callback` → 404 + attacker `redirect_uri` cookie (httponly/secure/Max-Age 34560000, fresh re-verified 19:50Z); warm portal session preserves arbitrary redirect_uri (302→/de_CH/login). Report guaranteed open-redirect+login-CSRF; frame warm-session implicit-flow as unconfirmed silent-ATO escalation. Also flag the empty-lead triage channel (18:58/21:36 runs) to keep the validation loop working.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 405 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 / config+call docs 404 — NO_DELTA; 39th frozen cycle; triage remains VALID on open-redirect/login-CSRF.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (39th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (39th frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan (TARGET_ORG unconfigured) yields no in-scope surface.
+[LEARN] ACCEPTED OTH @ pipeline: triage runs 2026-09-11 18:58Z and 21:36Z (mimo-v2.5-free) received EMPTY leads ("No leads were provided") — the triage channel is not receiving lead payloads; operational defect in the validation loop, worth fixing before report submission so the VALID gate can be re-confirmed.
+
+STEP 7 — RISK
+[RISK] peoplefone GmbH: 83/100 — Unchanged. 39th frozen cycle; all live surfaces byte-identical. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains unsent (valid-bugs 0) and the just-observed empty-lead triage runs add process risk to the submission path. Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 regression holds all locales). Both lever lines collapse to the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment.

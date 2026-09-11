@@ -237,3 +237,8 @@
 - 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (38th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (38th frozen cycle); triage HOLD.
 - 2026-09-11 ACCEPTED OTH @ inventory: status map identical — api docs 200, config-api docs 404, call-api docs 404; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-11 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token 405 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 / config+call docs 404 — NO_DELTA; 39th frozen cycle; triage remains VALID on open-redirect/login-CSRF.
+- 2026-09-11 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (39th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (39th frozen cycle); triage HOLD.
+- 2026-09-11 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan (TARGET_ORG unconfigured) yields no in-scope surface.
+- 2026-09-11 ACCEPTED OTH @ pipeline: triage runs 2026-09-11 18:58Z and 21:36Z (mimo-v2.5-free) received EMPTY leads ("No leads were provided") — the triage channel is not receiving lead payloads; operational defect in the validation loop, worth fixing before report submission so the VALID gate can be re-confirmed.

