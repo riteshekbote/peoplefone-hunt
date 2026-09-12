@@ -47,3 +47,12 @@
   - **Verdict: VALID** — Meets all gates with conditional severity.
   - | Q3 Real impact? | LOW — POST without client_secret returns `invalid_client` JSON for valid client_ids; nonexistent IDs return unhandled Laravel 500 |
   - | OAuth redirect_uri | **VALID** | 7.4 (9.1 conditional) |
+
+- 7 lead(s) marked VALID at 2026-09-12 14:13:51 UTC
+  - | Q4 | **NO** | All verify steps require a valid bearer token (testability: AUTH_HELPED); spec harvested passively but IDOR proof requires cross-tenant request with real token |
+  - | Q4 | **NO** | All 5 endpoints require valid bearer token to trigger callback (AUTH_HELPED); spec analysis is passive but SSRF proof requires authenticated POST |
+  - | Q7 | **YES** | Multiple probe cycles (40+) confirm stable state; live 302 observed; triage already graded VALID 9.1 |
+  - **Verdict: VALID** — Provable non-invasively via HTTP 302 trace. Already triaged VALID by prior runs.
+  - | Q4 | **NO** | Requires valid bearer token to query `/messages/{messageId}` (AUTH_HELPED); messageId format known from spec but cross-tenant access unproven |
+  - **Verdict: HOLD** — Confidence 75-80, HIGH/CRITICAL impact, requires token for proof. Subsumed under broader SSRF hypothesis but independently valid.
+  - | 3 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 7.4 / 9.1 | **YES** |
