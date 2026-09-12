@@ -381,3 +381,12 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-12 21:00:40 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 22:43:38 UTC
+[HYP] Command injection surface in mail-validator-mx-server
+class: OTHER
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-245
+confidence: 15
+reasoning: exec() calls with $host variable (nslookup/dig). However, input is sanitized via regex `[^a-z0-9\-\.]` on line 239 before the exec, which strips all shell metacharacters. Not exploitable as-is.
+impact: Informational
+verify_steps: N/A - not actionable
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
