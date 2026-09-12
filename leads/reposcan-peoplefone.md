@@ -361,3 +361,11 @@ reasoning: Test file attempts to include `provisioning-rpc-settings.php` from th
 impact: Medium — credential leakage if misconfigured
 verify_steps: Check git history for any committed `provisioning-rpc-settings.php` or similar credential files; confirm the file is not tracked via `git ls-files`.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 01:12:20 UTC
+class: OTHER
+asset: `peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-245`
+confidence: 15
+reasoning: `$host` is derived from the email domain (line 238-239) and stripped to `[a-z0-9\-\.]` via `preg_replace` on line 239. The sanitized value is then interpolated into `exec("nslookup -querytype=mx ".$host)` and `exec("dig mx ".$host." | grep ...")`. The regex is restrictive enough to prevent shell metacharacter injection in practice, making this **low-confidence** — it is a defense-in-depth concern rather than an exploitable finding. No live in-scope peoplefone deployment was confirmed running this code.
+impact: informational
+verify_steps: Check if `mail-validator-mx-server` is deployed anywhere on peoplefone infrastructure (DNS records, package registries). The regex sanitization appears sufficient to block injection.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
