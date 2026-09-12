@@ -2441,3 +2441,31 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan (TARGET_ORG unconfigured) yields no in-scope surface.
 [LEARN] ACCEPTED OTH @ pipeline: triage runs 2026-09-11 18:58Z and 21:36Z (mimo-v2.5-free) received EMPTY leads ("No leads were provided") — the triage channel is not receiving lead payloads; operational defect in the validation loop, worth fixing before report submission so the VALID gate can be re-confirmed.
 [RISK] peoplefone GmbH: 83/100 — Unchanged. 39th frozen cycle; all live surfaces byte-identical. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains unsent (valid-bugs 0) and the just-observed empty-lead triage runs add process risk to the submission path. Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 regression holds all locales). Both lever lines collapse to the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment.
+## 2026-09-12 00:26:02 UTC [target] (model bigpickle)
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; authorization-boundary statement present but enforcement unproven; UserResponse leaks sipUserName+email+address; live 401 gate (docs 404 re-verified fresh this cycle); cross-model rank holds 40 cycles, zero counter-evidence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via +-1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id+1}; repeat on /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence 40 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; inspect attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 but server-sets attacker redirect_uri cookie (httponly/secure, Max-Age 34560000 — header-level fresh re-verify THIS cycle); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client-secret for clients 1/4/5 (401) and 500s nonexistent ids — code-theft ATO falsified for known confidential clients; guaranteed primitive = open-redirect+login-CSRF; triage VALID 7.4 (9.1 conditional)
+evidence_needed: warm-session response_type=token with attacker redirect_uri yields access_token fragment; or cookie-seeded redirect consumes pre-seeded attacker value
+verify_steps: (authorized, human) warm portal session + authorize?client_id=1&response_type=token&redirect_uri=attacker; observe fragment; else submit as open-redirect+login-CSRF
+impact: silent ATO of portal users (recordings, CDR, PBX, billing, PII) if implicit; else open-redirect+login-CSRF; CRITICAL conditional
+testability: HUMAN_ONLY

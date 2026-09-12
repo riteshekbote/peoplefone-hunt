@@ -242,3 +242,10 @@
 - 2026-09-11 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (39th frozen cycle); triage HOLD.
 - 2026-09-11 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan (TARGET_ORG unconfigured) yields no in-scope surface.
 - 2026-09-11 ACCEPTED OTH @ pipeline: triage runs 2026-09-11 18:58Z and 21:36Z (mimo-v2.5-free) received EMPTY leads ("No leads were provided") — the triage channel is not receiving lead payloads; operational defect in the validation loop, worth fixing before report submission so the VALID gate can be re-confirmed.
+- 2026-09-12 REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-12 ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
+- 2026-09-12 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (39th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-12 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (39th frozen cycle); triage HOLD.
+- 2026-09-12 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- 2026-09-12 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
+- 2026-09-12 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
