@@ -355,3 +355,6 @@ www.peoplefone.com
 ## 2026-09-12 00:26:36 UTC
 
 ## 2026-09-12 05:03:55 UTC
+
+## 2026-09-12 09:29:02 UTC
+- NEW NO_DELTA — All surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/5
