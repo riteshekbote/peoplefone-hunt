@@ -1,4 +1,4 @@
-## 2026-09-12 00:26:27 UTC [target] (model nemotron3)
+## 2026-09-12 05:03:02 UTC [target] (model nemotron3)
 [PRIO] configuration-api.peoplefone.com/customer/voip/v1,9.2,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=8,freshness=10
 [PRIO] auth.peoplefone.com/oauth/authorize,8.0,attack_surface=8,business_value=10,tech_exposure=10,gate_ease=3,cloud_surface=5,freshness=10
 [PRIO] call-api.peoplefone.com/customer/smart-routing/v1,8.4,attack_surface=9,business_value=8,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
