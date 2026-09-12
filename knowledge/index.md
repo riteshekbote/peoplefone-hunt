@@ -261,3 +261,7 @@
 - 2026-09-12 ACCEPTED OTH @ pipeline: triage 17:15Z received EMPTY leads despite 16:23Z lead emit — lead payloads still not reaching the gate (5th consecutive empty run); operational defect blocking pre-submission VALID re-confirmation.
 - 2026-09-12 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA re-verified; 41st frozen cycle; triage VALID on open-redirect/login-CSRF.
 - 2026-09-12 ACCEPTED OTH @ pipeline: triage received EMPTY leads again despite lead emit — lead payloads still not reaching the gate (5th+ consecutive empty run); operational defect blocking pre-submission VALID re-confirmation.
+- 2026-09-12 ACCEPTED AUTH @ auth.peoplefone.com: register 500 / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500 / stateless authorize 404+attacker redirect_uri cookie / api-doc 200 — NO_DELTA; 42nd frozen cycle; triage VALID on open-redirect/login-CSRF.
+- 2026-09-12 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (42nd frozen cycle); triage HOLD pending bearer token.
+- 2026-09-12 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (42nd frozen cycle); triage HOLD.
+- 2026-09-12 ACCEPTED OTH @ pipeline: triage 19:25Z + 21:37Z both received EMPTY leads — empty-lead defect now 7+ consecutive runs despite prior lead emits; operational blocker to pre-submission VALID re-confirmation.
