@@ -56,3 +56,6 @@
   - | Q4 | **NO** | Requires valid bearer token to query `/messages/{messageId}` (AUTH_HELPED); messageId format known from spec but cross-tenant access unproven |
   - **Verdict: HOLD** — Confidence 75-80, HIGH/CRITICAL impact, requires token for proof. Subsumed under broader SSRF hypothesis but independently valid.
   - | 3 | OAuth redirect_uri bypass (client_id=1) | **VALID** | 7.4 / 9.1 | **YES** |
+
+- 1 lead(s) marked VALID at 2026-09-13 23:14:54 UTC
+  - **Verdict: VALID**
