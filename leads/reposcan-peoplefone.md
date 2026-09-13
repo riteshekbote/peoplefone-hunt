@@ -392,3 +392,29 @@ verify_steps: N/A - not actionable
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-13 00:29:28 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 05:23:14 UTC
+class: MISCONFIG
+asset: peoplefone/mail-validator-mx-server → src/peoplefone/mailValidatorMXServer.php:242-245
+confidence: 30
+reasoning: |
+impact: Medium — latent command injection; mitigated by regex but violates secure coding
+verify_steps: |
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc → .gitignore (absent entry)
+confidence: 25
+reasoning: |
+impact: Low — procedural risk, no current credential exposure
+verify_steps: |
+class: MISCONFIG
+asset: gido/slackphones → index.js:19-20
+confidence: 45
+reasoning: |
+impact: Low — information disclosure of internal URL structure
+verify_steps: |
+class: SSRF
+asset: gido/slackphones → index.js:113,65,95
+confidence: 40
+reasoning: |
+impact: Medium — server-side request forgery if SLACK_TOKEN is compromised
+verify_steps: |
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
