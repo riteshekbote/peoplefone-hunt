@@ -398,3 +398,10 @@ www.peoplefone.com
 - CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, ca
 - CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 44th frozen cycle — no counter-evidence, rank holds.
 - CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
+
+## 2026-09-13 19:01:26 UTC
+- CHANGED auth.peoplefone.com: fresh live re-verify 18:57Z — api-doc 200 `/services/api-doc/`; stateless `GET /oauth/authorize?client_id=1&response_type=code&redirect_uri=https://attacker.example/cb` → 404 but 
+- CHANGED pipeline: `.github/workflows/triage.yml:45` fix (anchored `^\[HYP\]|^\[NEXT\]`) still not applied as of 12:27Z repo-check — 2+ cycles past first instruction; gate starvation defect remains live in-rep
+- CHANGED inventory: unchanged — config-api+call-api docs 404, 19 guessed subdomains NXDOMAIN, all 8-spec backends 401/404-gated.
+- CHANGED Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
+- CHANGED OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 45th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
