@@ -13439,3 +13439,219 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] peoplefone GmbH: 82/100 — 45th frozen cycle; all live surfaces byte-identical (fresh 12:06Z trace matches 01:08Z). Sole report-ready finding (OAuth open-redirect+login-CSRF, triage VALID 7.4/9.1) remains UNSENT (valid-bugs 0); gate fix root-caused and validated against repo last cycle but NOT yet landed in triage.yml:45, so pre-submission VALID re-confirmation is still blocked on the human. Configuration IDOR (85) + SSRF (78) stay live behind a bearer token proven unacquirable agent-side (register 500 global). Risk drops only on a valid-bugs increment; held at 82.
+===== ANALYST bigpickle 2026-09-13 16:29:50 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt && git -C /home/runner/work/peoplefone-hunt/peoplefone-hunt log --oneline -5 2>/dev/null
+total 320
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:26 .
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:26 ..
+drwxr-xr-x  7 runner runner   4096 Sep 13 16:26 .git
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:26 .github
+-rw-r--r--  1 runner runner   1772 Sep 13 16:26 README.md
+-rw-r--r--  1 runner runner     32 Sep 13 16:26 analyst-out.txt
+-rw-r--r--  1 runner runner 114525 Sep 13 16:26 analyst-prompt.txt
+-rw-r--r--  1 runner runner 110670 Sep 13 16:26 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 leads
+-rw-r--r--  1 runner runner   8236 Sep 13 16:26 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 reports
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 reposcan-raw
+-rw-r--r--  1 runner runner   3268 Sep 13 16:26 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 scripts
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 triage
+314474c triage 2026-09-13-16-25
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/.github/workflows/ 2>/dev/null; ls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/ 2>/dev/null | head -30
+total 44
+drwxr-xr-x 2 runner runner  4096 Sep 13 16:26 .
+drwxr-xr-x 3 runner runner  4096 Sep 13 16:26 ..
+-rw-r--r-- 1 runner runner 14342 Sep 13 16:26 hunt.yml
+-rw-r--r-- 1 runner runner  5381 Sep 13 16:26 reposcan.yml
+-rw-r--r-- 1 runner runner  1020 Sep 13 16:26 sync-issues.yml
+-rw-r--r-- 1 runner runner  6504 Sep 13 16:26 triage.yml
+total 1112
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 .
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:26 ..
+-rw-r--r--  1 runner runner 413965 Sep 13 16:26 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3570 Sep 13 16:26 lead-laguna.md
+-rw-r--r--  1 runner runner   3500 Sep 13 16:26 lead-ling3.md
+-rw-r--r--  1 runner runner   3640 Sep 13 16:26 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 13 16:26 lead-mimo.md
+-rw-r--r--  1 runner runner 657626 Sep 13 16:26 lead-nemotron3.md
+-rw-r--r--  1 runner runner  35387 Sep 13 16:26 reposcan-peoplefone.md
+[0m
+[0m$ [0mgrep -n "UNVALIDATED\|HYP\]\|NEXT\]" /home/runner/work/peoplefone-hunt/peoplefone-hunt/.github/workflows/triage.yml; echo "---mimo---"; cat /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/lead-mimo.md; echo "---analyst-out---"; cat /home/runner/work/peoplefone-hunt/peoplefone-hunt/analyst-out.txt
+42:      - name: Collect UNVALIDATED leads
+45:          grep -h "\[UNVALIDATED\]" leads/lead-*.md 2>/dev/null | sort -u | head -25 > new-leads.txt
+---mimo---
+# Lead log (seed)
+---analyst-out---
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt && git -C /home/runner/work/peoplefone-hunt/peoplefone-hunt log --oneline -5 2>/dev/null
+total 320
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:26 .
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:26 ..
+drwxr-xr-x  7 runner runner   4096 Sep 13 16:26 .git
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:26 .github
+-rw-r--r--  1 runner runner   1772 Sep 13 16:26 README.md
+-rw-r--r--  1 runner runner     32 Sep 13 16:26 analyst-out.txt
+-rw-r--r--  1 runner runner 114525 Sep 13 16:26 analyst-prompt.txt
+-rw-r--r--  1 runner runner 110670 Sep 13 16:26 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 leads
+-rw-r--r--  1 runner runner   8236 Sep 13 16:26 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 reports
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 reposcan-raw
+-rw-r--r--  1 runner runner   3268 Sep 13 16:26 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 scripts
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:26 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 triage
+314474c triage 2026-09-13-16-25
+[0m
+[0m$ [0mls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/.github/workflows/ 2>/dev/null; ls -la /home/runner/work/peoplefone-hunt/peoplefone-hunt/leads/ 2>/dev/null | head -30
+total 44
+drwxr-xr-x 2 runner runner  4096 Sep 13 16:26 .
+drwxr-xr-x 3 runner runner  4096 Sep 13 16:26 ..
+-rw-r--r-- 1 runner runner 14342 Sep 13 16:26 hunt.yml
+-rw-r--r-- 1 runner runner  5381 Sep 13 16:26 reposcan.yml
+-rw-r--r-- 1 runner runner  1020 Sep 13 16:26 sync-issues.yml
+-rw-r--r-- 1 runner runner  6504 Sep 13 16:26 triage.yml
+total 1112
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:26 .
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:26 ..
+-rw-r--r--  1 runner runner 413965 Sep 13 16:26 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3570 Sep 13 16:26 lead-laguna.md
+-rw-r--r--  1 runner runner   3500 Sep 13 16:26 lead-ling3.md
+-rw-r--r--  1 runner runner   3640 Sep 13 16:26 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 13 16:26 lead-mimo.md
+-rw-r--r--  1 runner runner 657626 Sep 13 16:26 lead-nemotron3.md
+-rw-r--r--  1 runner runner  35387 Sep 13 16:26 reposcan-peoplefone.md
+[0m
+[0m
+[0m$ [0mtail -40 /home/runner/work/peoplefone-hunt/peoplefone-hunt/probe-results.md
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-11 19:51:34 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-11 22:23:07 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 00:26:38 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 05:03:57 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 09:29:04 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 13:11:09 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 16:26:05 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 18:47:55 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 21:20:52 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-12 23:08:04 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-13 01:10:59 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-13 06:25:03 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+
+## 2026-09-13 12:16:22 UTC
+https://api.peoplefone.com/services/api-doc/ -> 200 len=?
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "api-doc: %{http_code}\n" --max-time 15 "https://api.peoplefone.com/services/api-doc/"; sleep 1; curl -s -o /dev/null -w "register: %{http_code}\n" --max-time 15 "https://auth.peoplefone.com/oauth/register"; sleep 1; curl -s -D - -o /dev/null --max-time 15 "https://auth.peoplefone.com/oauth/authorize?client_id=1&response_type=token&scope=openid&redirect_uri=https://attacker.example/cb" | grep -i "HTTP/\|set-cookie\|location"
+api-doc: 200
+register: 404
+HTTP/1.1 404 Not Found
+Set-Cookie: XSRF-TOKEN=eyJpdiI6Ikg1UDl2bUFjMkV6TGM0bVFVUExIYkE9PSIsInZhbHVlIjoiR0NpTmR1NVhDWmNmMXFUWWdtU0JKYVQyeEZEQ2NzRWh4U2FoNSswZlBROVlQdlF0OC9MWGJwZEpsaDFURUJoTmtraFJHK2dIWGNPY0lYbnNxZEIwbmpoREp6WXowOUxKUDhLRDR2TGRIVjRhaStGT0kzVDZubHVlVWFrb3JMMHoiLCJtYWMiOiI0ZTc3MDc3MTEwZjM0MDgyMzZkMTI4MzkxZjQ3MDA3MDlkZmY0YzQxZGY3Zjk5NjBkODMzNTIxY2YyZWMzN2M1IiwidGFnIjoiIn0%3D; expires=Mon, 14 Sep 2026 00:27:25 GMT; Max-Age=28800; path=/; secure; samesite=lax
+Set-Cookie: peopoauth_session=eyJpdiI6Imh3VFFWV3ovVjIxc2kxRytZZlJyc3c9PSIsInZhbHVlIjoiZzlMN0F0Q0NKNzZ4bzhHNmM4RWNES1ZFVWc0Q256R041dytpaFV5b290UE5KM1pmdXpjcnJPcFozNG1SMlQ0OUhLczBpYm9jYmpCdlJ3TWRaTWY0MTFoTlpsbjlRTVZVQ1krTkllVUNpS0hmNmxSMWVLMnVuK2NSVFNDdEVxSkkiLCJtYWMiOiJkNjQ3YjU5NmNjZDY1M2FmOWU1YjBlYTQwMTg2MjA1MTExNjk5MjY3ZWQ2NjIzYTRmNjZmNmFhZjMxMTY1ZWU0IiwidGFnIjoiIn0%3D; expires=Mon, 14 Sep 2026 00:27:25 GMT; Max-Age=28800; path=/; secure; httponly; samesite=lax
+Set-Cookie: redirect_uri=eyJpdiI6ImQ2YkQ1RGVjZ3VELyt6MXFFNURqUUE9PSIsInZhbHVlIjoiMElNWi80RTQrNlVSdFVQMGxod2Q5OEpiOGsxbGpQR2VqbFJtelN2UGg1QVBZcUxLKy90c2h4S24zRWF1U3Nycit4NW0vTFFta3dZSm03REcxVjVYUSszRDNuYXJiUnNscXMyUE1Bb1dtYms9IiwibWFjIjoiNmUwMDllNjI1MWIzZGRhY2ZiMDBmYzA4ODYyMWVjOThiN2JhNDRhZTZiOWRlNzU0NjRlNGQ0MDU0YTAyZmY0ZSIsInRhZyI6IiJ9; expires=Mon, 18 Oct 2027 16:27:25 GMT; Max-Age=34560000; path=/; secure; httponly; samesite=lax
+[0m
+STEP 1 — DELTA
+[CHANGED] pipeline: `.github/workflows/triage.yml:45` re-checked 12:27Z — the one-line fix is verified-valid in knowledge but STILL NOT APPLIED; literal `grep -h "\[UNVALIDATED\]"` intact, `lead-mimo.md` remains seed-only → gate defect is live in repo, human action outstanding.
+[CHANGED] auth.peoplefone.com: live fresh re-verify 12:27Z — api-doc 200 / bare `/oauth/register` 404 (locale 500s unchanged) / stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httponly, Max-Age 34560000, exp 2027-10-18); otherwise NO_DELTA.
+[CHANGED] inventory: unchanged — config-api+call-api docs 404, 19 subdomains NXDOMAIN, all 8-spec backends 401/404-gated.
+
+STEP 2 — PRIORITIZE
+[PRIO] auth.peoplefone.com/oauth/authorize,6.55,auth+gate_ease+HUMAN_ONLY-implicit
+[PRIO] configuration-api /customer/voip/v1/{identifier} CRUD,6.10,attack_surface+business_value
+[PRIO] 5-endpoint webhook/callback SSRF,5.45,cloud_surface
+[PRIO] triage.yml:45 gate grep,4.30,freshness+gate_ease
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB spec; numeric sequential ids; explicit authorization-boundary statement, enforcement unproven; UserResponse leaks sipUserName+email+address; all real backends 401-gated; bearer unacquirable agent-side (register 500 global); 45 cycles zero counter-evidence
+evidence_needed: tenant-A bearer returns tenant-B {identifier} via ±1 enumeration
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id+1}; repeat /numbers/{did}, /callforwarding/{id}; compare tenant markers
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF on auth (client_id=1), cookie-seeded variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: live 12:27Z — stateless authorize 404 still Set-Cookie encrypted attacker redirect_uri (secure, httponly, Max-Age 34560000, exp 2027-10-18); warm-session authorize 302→/de_CH/login preserves arbitrary redirect_uri with implicit+PKCE accepted; token enforces client_secret for 1/4/5 and 500s nonexistent ids — code-theft ATO falsified for confidential clients; triage VALID 7.4/9.1 per last contentful gate 09-12 14:13
+evidence_needed: warm-session response_type=token yields #access_token fragment to attacker redirect_uri
+verify_steps: (authorized, human) portal login to warm session, GET /oauth/authorize?client_id=1&response_type=token&redirect_uri=https://attacker.example/cb — inspect 302 chain for fragment; else file as open-redirect+login-CSRF
+impact: silent ATO of portal users if implicit fragment; open-redirect+login-CSRF otherwise; CRITICAL conditional
+testability: HUMAN_ONLY
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints; External Number Lookup forwards Authorization/X-API-Key to attacker URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence 45 cycles
+evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; attacker-side receipt only
+impact: metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] none — no sub-40 candidates; MISCONFIG subdomain/Cloudflare lines stay rejected (19 NXDOMAIN).
+[FINAL] configuration-api {identifier} CRUD IDOR (85) — top slot retained, 45th frozen, token-gated.
+[FINAL] auth OAuth open-redirect+login-CSRF (62) — 45th re-verified live 12:27Z, triage VALID 7.4/9.1 (last contentful gate 09-12 14:13); ceiling stays open-redirect+login-CSRF absent implicit-fragment reproduction.
+[FINAL] 5-endpoint SSRF (78) — retained, token-gated.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Apply the validated one-line fix — triage.yml:45 `grep -h "\[UNVALIDATED\]"` is STILL intact as of 12:27Z → replace with `grep -hE '^\[HYP\]|^\[NEXT\]' leads/lead-*.md`, commit, trigger `workflow_dispatch` triage (re-confirms VALID on OAuth; lead-mimo stays starved until then), then submit to bugs.olivermaicher.eu: PoC `GET /oauth/authorize?client_id=1&response_type=token&scope=openid&redirect_uri=https://attacker.example/cb` + 12:27Z fresh trace (404 → `Set-Cookie: redirect_uri=<encrypted attacker value>; ...; Max-Age=34560000` exp 2027-10-18), warm-session 302 preserves arbitrary redirect_uri, token enforces client_secret for 1/4/5; CVSS 7.4, impact=open-redirect+login-CSRF, channel bugs.olivermaicher.eu.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED OTH @ pipeline: repo re-check 12:27Z — triage.yml:45 fix NOT applied (literal `[UNVALIDATED]` grep intact), lead-mimo.md seed-only; the 8-empty-run defect remains live in-repo; precise repro of the starvation is confirmed and the remedy validated, blocker is purely the outstanding human edit.
+[LEARN] ACCEPTED AUTH @ auth.peoplefone.com: 45th frozen re-verify 12:27Z (fresh, no cookies) — api-doc 200 / bare register 404 / stateless authorize 404 + encrypted attacker redirect_uri cookie (secure, httponly, Max-Age 34560000, exp 2027-10-18) / token 401 known+500 nonexistent; NO_DELTA; triage VALID on open-redirect+login-CSRF.
+[LEARN] ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (45th frozen cycle); triage HOLD pending bearer token.
+[LEARN] ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (45th frozen cycle); triage HOLD.
+[LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
+
+STEP 7 — RISK
+[RISK] peoplefone GmbH: 82/100 — 45th frozen cycle; every live surface byte-identical (12:27Z fresh verify). Sole report-ready finding (OAuth open-redirect+login-CSRF, VALID 7.4/9.1 conditional) remains UNSENT (valid-bugs 0); configuration IDOR (85) + SSRF (78) still token-gated behind an agent-unacquirable bearer. Positive this cycle: no. The pipeline gate fix — though validated and precise-reproven — is still not committed to triage.yml, so pre-submission VALID re-confirmation remains blocked on the same outstanding human edit, now 1 cycle past first instruction. Risk drops only on a valid-bugs increment; held at 82.

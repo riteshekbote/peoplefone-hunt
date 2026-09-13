@@ -388,3 +388,13 @@ www.peoplefone.com
 - CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, ca
 - CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 44th frozen cycle — no counter-evidence, rank holds.
 - CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
+
+## 2026-09-13 16:29:50 UTC
+- CHANGED pipeline: `.github/workflows/triage.yml:45` re-checked 12:27Z — the one-line fix is verified-valid in knowledge but STILL NOT APPLIED; literal `grep -h "\[UNVALIDATED\]"` intact, `lead-mimo.md` remain
+- CHANGED auth.peoplefone.com: live fresh re-verify 12:27Z — api-doc 200 / bare `/oauth/register` 404 (locale 500s unchanged) / stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httpon
+- CHANGED inventory: unchanged — config-api+call-api docs 404, 19 subdomains NXDOMAIN, all 8-spec backends 401/404-gated.
+- NEW Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
+- NEW OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 44th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
+- CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, ca
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 44th frozen cycle — no counter-evidence, rank holds.
+- CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
