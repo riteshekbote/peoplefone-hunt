@@ -411,3 +411,12 @@ www.peoplefone.com
 - CHANGED api.peoplefone.com: fresh 21:33Z GET /services/api-doc/ → 200 (0.89s) — baseline holds; otherwise NO_DELTA 47th frozen cycle (config/call docs 404, 19 subdomains NXDOMAIN).
 - NEW Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
 - NEW OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 46th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
+
+## 2026-09-13 23:33:13 UTC
+- CHANGED api.peoplefone.com: fresh `GET /services/api-doc/` → 200 (0.91s) — baseline byte-identical to 21:33Z; 48th frozen cycle.
+- CHANGED pipeline: triage.yml:45 literal-`[UNVALIDATED]` grep remains unfixed (repo-check 21:21Z + 12:27Z), gate cannot emit a fresh VALID re-confirmation of the OAuth finding.
+- NEW OAuth open-redirect/login-CSRF at auth.peoplefone.com triage-confirmed VALID 7.4 (9.1 conditional) — 46th frozen cycle; payload ready for bugs.olivermaicher.eu submission (valid-bugs still 0).
+- NEW Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
+- CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, ca
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 46th frozen cycle — no counter-evidence, rank holds.
+- CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.

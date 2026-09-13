@@ -298,3 +298,6 @@
 - 2026-09-13 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets.
 - 2026-09-13 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (46th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-13 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (46th frozen cycle); triage HOLD.
+- 2026-09-13 ACCEPTED AUTH @ auth.peoplefone.com: 48th frozen cycle — fresh-probe api-doc 200 (0.91s); NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-13 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (48th frozen cycle).
+- 2026-09-13 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (48th frozen cycle).
