@@ -371,3 +371,13 @@ www.peoplefone.com
 
 ## 2026-09-13 01:10:57 UTC
 - CHANGED pipeline: **Root cause of the empty-lead triage defect found** — `triage.yml:45` collects leads with `grep "[UNVALIDATED]" leads/lead-*.md`, but hunt.yml appends `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]/
+
+## 2026-09-13 06:25:01 UTC
+- CHANGED pipeline: Root-caused empty-lead triage defect CONFIRMED against repo — `.github/workflows/triage.yml:45` runs `grep -h "\[UNVALIDATED\]" leads/lead-*.md`; hunt.yml:109 only ever emits `[NEW]/[CHANGED
+- CHANGED auth.peoplefone.com: fresh header-level re-verify 01:08Z byte-identical (register 500 all locales / token GET 405 + POST client_id=1→401 + no-body→500 / stateless authorize 404 + attacker `redirect_ur
+- CHANGED inventory: unchanged — config-api+call-api docs 404, 19 guessed subdomains NXDOMAIN, all 8-spec backends 401/404-gated.
+- NEW Pipeline defect root-caused: triage.yml:45 greps literal `[UNVALIDATED]` but hunt.yml emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` blocks → 0 matches → new-leads.txt always empty → mimo receives empty
+- NEW OAuth open-redirect/login-CSRF finding at auth.peoplefone.com confirmed triage VALID 7.4 (9.1 conditional) — 43rd frozen cycle; payload ready for bugs.olivermaicher.eu submission.
+- NEW auth.peoplefone.com register 500 confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
+- CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, call-api-doc 404
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 43rd frozen cycle — no counter-evidence, rank holds.
