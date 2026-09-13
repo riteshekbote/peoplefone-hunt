@@ -1139,3 +1139,21 @@
 - LEARN: ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 
 - LEARN: ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the
 - LEARN: ACCEPTED OTH @ pipeline: triage received EMPTY leads again despite lead emit — lead payloads still not reaching the gate (5th+ consecutive empty run); operation
+
+## RANKED HYPOTHESES 2026-09-13 01:10:57 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Fix the starved VALID gate first (it gates pre-submission re-confirmation): in `.github/workflows/triage.yml:45` replace `grep -h "\[UNVALIDATED\]" leads
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 42nd frozen cycle, triage VALID 7.4 (9.1 conditional), valid-bugs still 
+- LEARN: ACCEPTED OTH @ pipeline: ROOT CAUSED empty-lead triage defect — triage.yml:45 greps literal `[UNVALIDATED]`; hunt.yml appends `[HYP]/[NEXT]` blocks; verified 0 
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: 43rd frozen re-verify fresh 01:08Z — register 500 (all locales) / token GET 405 + POST(client_id=1)→401 + POST(no-body)→500
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (43rd frozen cycle); triage HOLD pending bearer token.
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (43rd frozen cycle); triage HOLD.
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains all NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surfa
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects file
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (42nd frozen cycle); triage HOLD pending bearer token.
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (42nd frozen cycle); triage HOLD.
+- LEARN: REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- LEARN: ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 
+- LEARN: ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the
+- LEARN: ACCEPTED OTH @ pipeline: triage received EMPTY leads again despite lead emit — lead payloads still not reaching the gate (7+ consecutive empty runs); operationa

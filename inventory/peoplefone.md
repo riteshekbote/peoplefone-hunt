@@ -368,3 +368,6 @@ www.peoplefone.com
 ## 2026-09-12 21:20:50 UTC
 
 ## 2026-09-12 23:08:02 UTC
+
+## 2026-09-13 01:10:57 UTC
+- CHANGED pipeline: **Root cause of the empty-lead triage defect found** — `triage.yml:45` collects leads with `grep "[UNVALIDATED]" leads/lead-*.md`, but hunt.yml appends `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]/
