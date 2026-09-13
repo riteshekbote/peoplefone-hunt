@@ -381,3 +381,10 @@ www.peoplefone.com
 - NEW auth.peoplefone.com register 500 confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
 - CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500, stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, call-api-doc 404
 - CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 43rd frozen cycle — no counter-evidence, rank holds.
+
+## 2026-09-13 12:16:20 UTC
+- NEW Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
+- NEW OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 44th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
+- CHANGED All live surfaces frozen since 2026-09-08 09:03:31 UTC: api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, ca
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 44th frozen cycle — no counter-evidence, rank holds.
+- CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
