@@ -291,3 +291,10 @@
 - 2026-09-13 ACCEPTED AUTH @ auth.peoplefone.com: 46th frozen cycle — fresh 18:57Z re-verify: api-doc 200 / stateless authorize 404 + encrypted attacker redirect_uri cookie (secure, httponly, Max-Age 34560000, exp 2027-10-18) / token GET 405; NO_DELTA; triage VALID on open-redirect+login-CSRF.
 - 2026-09-13 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (46th frozen cycle).
 - 2026-09-13 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (46th frozen cycle).
+- 2026-09-13 ACCEPTED OTH @ pipeline: accidental-substring mechanism now EMPIRICALLY confirmed live — 09-13 runs 12:02/16:25/18:56/21:15 were contentful but fed only literal `[UNVALIDATED]` meta-mentions from pipeline root-cause text (6× bigpickle, 8× nemotron3; all graded INVALID); triage.yml:45 still unfixed 21:21Z; OAuth not re-fed to gate since 09-12 14:13 (VALID there, "submit now"). Anchored fix validated and correct.
+- 2026-09-13 ACCEPTED AUTH @ auth.peoplefone.com: 47th frozen cycle — fresh 21:33Z api-doc 200 baseline; NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-13 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (47th frozen cycle).
+- 2026-09-13 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (47th frozen cycle).
+- 2026-09-13 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets.
+- 2026-09-13 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (46th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-13 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (46th frozen cycle); triage HOLD.

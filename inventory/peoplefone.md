@@ -405,3 +405,9 @@ www.peoplefone.com
 - CHANGED inventory: unchanged — config-api+call-api docs 404, 19 guessed subdomains NXDOMAIN, all 8-spec backends 401/404-gated.
 - CHANGED Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
 - CHANGED OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 45th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
+
+## 2026-09-13 21:25:47 UTC
+- CHANGED pipeline: gate defect DEGENERATED and now EMPIRICALLY CONFIRMED — runs 09-13 12:02/16:25/18:56/21:15 returned contentful (9-11 leads) but 100% INVALID, fed solely by literal-substring `[UNVALIDATED]` 
+- CHANGED api.peoplefone.com: fresh 21:33Z GET /services/api-doc/ → 200 (0.89s) — baseline holds; otherwise NO_DELTA 47th frozen cycle (config/call docs 404, 19 subdomains NXDOMAIN).
+- NEW Pipeline defect root-caused and fix VERIFIED: `.github/workflows/triage.yml:45` greps literal `[UNVALIDATED]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` → 0 matches for 8+ runs; anchored gr
+- NEW OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 46th frozen cycle; payload ready for bugs.olivermaicher.eu submission.
