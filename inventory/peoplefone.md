@@ -422,3 +422,11 @@ www.peoplefone.com
 - CHANGED Register 500 regression confirmed GLOBAL across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB → 500, bare /register → 404) — minting lever permanently closed agent-side.
 
 ## 2026-09-14 01:39:56 UTC
+
+## 2026-09-14 07:12:18 UTC
+- NEW probe-results.md: 2026-09-14 01:39:57 UTC — api.peoplefone.com/services/api-doc/ → 200 (0.64s); all other endpoints unchanged since 2026-09-08 09:03:31 UTC (register 500 all locales, stateless authori
+- NEW knowledge-base 2026-09-14: 49th frozen cycle confirmed — Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) all token-gated; OAuth open-redirect/login-CSRF triage VALID 7.4/9.1 (09-12 1
+- NEW knowledge-base 2026-09-14: REJECTED MISCONFIG @ *.peoplefone.com — 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare); corrects prior "wildcard-
+- NEW knowledge-base 2026-09-14: ACCEPTED AUTH @ auth.peoplefone.com — POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhand
+- NEW knowledge-base 2026-09-14: REJECTED BUSLOGIC @ call-api queue agents — triage-formal INVALID (spec-silent on membership validation); removed from active set
+- NEW knowledge-base 2026-09-14: ACCEPTED OTH @ pipeline — triage.yml:45 literal `[UNVALIDATED]` grep feeds gate nothing; `grep -hE '^\[HYP\]|^\[NEXT\]' leads/lead-*.md` returns 25 lines; fix verified again
