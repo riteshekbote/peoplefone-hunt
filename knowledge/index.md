@@ -323,3 +323,11 @@
 - 2026-09-14 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (51st frozen cycle).
 - 2026-09-14 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (50th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-14 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (50th frozen cycle); triage HOLD.
+- 2026-09-14 ACCEPTED AUTH @ auth.peoplefone.com: 52nd frozen re-verify 19:29Z — api-doc 200 (0.86s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httponly, Max-Age 34560000, exp 2027-10-19; XSRF-TOKEN + peopoauth_session Max-Age 28800 companions); NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-14 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (52nd frozen cycle).
+- 2026-09-14 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (52nd frozen cycle).
+- 2026-09-14 ACCEPTED AUTH @ auth.peoplefone.com: 52nd frozen re-verify 19:29Z — api-doc 200 (0.86s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httponly, Max-Age 34560000, exp 2027-10-19; XSRF-TOKEN+peopoauth_session Max-Age 28800 companions); NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-14 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (52nd frozen cycle).
+- 2026-09-14 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (52nd frozen cycle).
+- 2026-09-14 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (51st frozen cycle); triage HOLD pending bearer token.
+- 2026-09-14 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (51st frozen cycle); triage HOLD.
