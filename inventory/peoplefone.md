@@ -434,3 +434,7 @@ www.peoplefone.com
 ## 2026-09-14 14:33:56 UTC
 
 ## 2026-09-14 19:31:46 UTC
+
+## 2026-09-14 22:47:14 UTC
+- NEW auth.peoplefone.com fresh 2026-09-14 re-probe: stateless authorize 404 still sets attacker `redirect_uri` cookie (encrypted, secure, httponly, Max-Age 34560000, exp 2027-10-19) with fresh XSRF-TOKEN +
+- CHANGED pipeline: triage.yml:45 anchored-grep fix STILL not applied (9+ cycles past root-cause, per last repo-check); gate cannot emit fresh VALID re-confirmation.
