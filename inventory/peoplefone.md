@@ -430,3 +430,5 @@ www.peoplefone.com
 - NEW knowledge-base 2026-09-14: ACCEPTED AUTH @ auth.peoplefone.com — POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhand
 - NEW knowledge-base 2026-09-14: REJECTED BUSLOGIC @ call-api queue agents — triage-formal INVALID (spec-silent on membership validation); removed from active set
 - NEW knowledge-base 2026-09-14: ACCEPTED OTH @ pipeline — triage.yml:45 literal `[UNVALIDATED]` grep feeds gate nothing; `grep -hE '^\[HYP\]|^\[NEXT\]' leads/lead-*.md` returns 25 lines; fix verified again
+
+## 2026-09-14 14:33:56 UTC
