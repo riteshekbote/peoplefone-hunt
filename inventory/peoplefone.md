@@ -438,3 +438,12 @@ www.peoplefone.com
 ## 2026-09-14 22:47:14 UTC
 - NEW auth.peoplefone.com fresh 2026-09-14 re-probe: stateless authorize 404 still sets attacker `redirect_uri` cookie (encrypted, secure, httponly, Max-Age 34560000, exp 2027-10-19) with fresh XSRF-TOKEN +
 - CHANGED pipeline: triage.yml:45 anchored-grep fix STILL not applied (9+ cycles past root-cause, per last repo-check); gate cannot emit fresh VALID re-confirmation.
+
+## 2026-09-15 01:19:48 UTC
+- NEW auth.peoplefone.com fresh 2026-09-15 probe (09:16Z): stateless `/oauth/authorize?client_id=1&response_type=code&redirect_uri=https://attacker.example/cb` → 404 but sets encrypted attacker-value `redir
+- CHANGED pipeline: triage.yml:45 anchored-grep fix still not applied (10+ cycles past root-cause); gate cannot emit fresh VALID re-confirmation; last contentful VALID 09-12 14:13.
+- NEW Pipeline defect root-cause confirmed: triage.yml:45 literal `[UNVALIDATED]` grep vs hunt.yml `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` emission — 8+ empty runs; fix verified (anchored `^\[HYP\]|^\[NEXT\]
+- NEW auth.peoplefone.com 53rd frozen re-verify — api-doc 200, stateless authorize 404 + encrypted attacker `redirect_uri` cookie (Max-Age 34560000, exp 2027-10-19), token GET 405/POST 401/500, register 500
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) — 53rd frozen cycle, token-gated, no counter-evidence, rank holds
+- CHANGED 19 guessed subdomains all NXDOMAIN — NO wildcard DNS, no dangling CNAME targets (corrects "wildcard-dominated" claim)
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
