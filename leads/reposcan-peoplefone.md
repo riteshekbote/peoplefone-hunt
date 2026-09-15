@@ -456,3 +456,26 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-15 15:50:46 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-15 19:22:41 UTC
+[HYP] Command Injection via exec() in MX Validator
+class: OTHER
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242,245
+confidence: 35
+reasoning: getMXDomains() passes $host (derived from user-supplied email address) into exec("nslookup -querytype=mx ".$host) and exec("dig mx ".$host." | grep -v '^;' | grep ".$host). The $host is sanitized at line 239 via preg_replace("/[^a-z0-9\-\.]/", "", ...) which strips shell metacharacters, making classic command injection impractical. However, if this class is ever used in a context where the regex is bypassed or modified (e.g., subclass override, different PHP version PCRE behavior), the exec() calls become exploitable. The grep ".$host on line 245 also passes unsanitized $host as a regex argument (dots in domains match any character — minor logic flaw).
+impact: low
+verify_steps: 1) Check if this class is instantiated in any web-facing application in peoplefone's stack where email input comes from HTTP requests. 2) Confirm whether the regex sanitization at line 239 is always applied before exec(). 3) Test if a crafted domain like "x;id" could survive the regex (it cannot with current filter — low confidence).
+[HYP] Error Message Disclosure via die() in ProvisioningRPC Factory
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPC.php:17
+confidence: 50
+reasoning: ProvisioningRPC::connect() catches Throwable and calls die($t->getMessage().PHP_EOL). If an invalid $model string is passed that fails class instantiation, the full exception message (which may include file paths, class names, or PHP internal error details) is printed to output and execution terminates. This is out-of-scope per program rules ("Descriptive error messages or headers"), but the die() itself is a poor practice in a library context — any consumer calling this with an unsupported manufacturer gets a hard crash with verbose error.
+impact: informational
+verify_steps: 1) Confirm this library is used in a web context where die() output is visible to end users. 2) Verify whether any web application wraps this call and suppresses output.
+[HYP] Hardcoded Third-Party Provisioning API Endpoints
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPCDevice*.php (5 files)
+confidence: 25
+reasoning: Five device classes hardcode vendor XML-RPC API endpoints: secure-provisioning.snom.com:8083 (line 7), provisioning.e-connecting.net (line 7), prov.gigaset.net (line 7), provisioning.auerswald.de (line 7), api-dm.yealink.com:8443 (line 7). These are third-party vendor endpoints (not peoplefone's own infra) and their URLs are publicly documented by each vendor. No credentials are hardcoded — auth is passed at runtime. These reveal the specific vendor provisioning APIs peoplefone integrates with, which is low-sensitivity infrastructure reconnaissance info.
+impact: informational
+verify_steps: 1) Confirm these are indeed public vendor endpoints (check vendor documentation). 2) Determine if any of these endpoints have been deprecated or have known vulnerabilities.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
