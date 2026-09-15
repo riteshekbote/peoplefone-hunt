@@ -350,3 +350,7 @@
 - 2026-09-15 ACCEPTED OTH @ pipeline: Fix VERIFIED against repo — triage.yml:45 literal-`[UNVALIDATED]` grep feeds gate nothing; `grep -hE '^\[HYP\]|^\[NEXT\]' leads/lead-*.md` returns 25 lines, closing the 8-empty-run defect (last contentful gate 09-12 14:13). Note: bigpickle's 3 literal `[UNVALIDATED]` hits are meta-mentions within the root-cause text — confirms the accidental-substring failure mode is real and the anchored regex is the correct remedy.
 - 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (54th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (54th frozen cycle); triage HOLD.
+- 2026-09-15 ACCEPTED AUTH @ auth.peoplefone.com: 55th frozen cycle — fresh 09:16Z probe: api-doc 200 (0.90s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httponly, Max-Age 34560000, exp 2027-10-20; XSRF-TOKEN + peopoauth_session Max-Age 28800 companions); NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (55th frozen cycle).
+- 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (55th frozen cycle).
+- 2026-09-15 ACCEPTED OTH @ pipeline: triage.yml:45 fix NOT applied (literal `\[UNVALIDATED\]` grep intact, verified this cycle); gate cannot emit fresh VALID re-confirmation; last contentful VALID 09-12 14:13.
