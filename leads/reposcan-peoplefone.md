@@ -479,3 +479,5 @@ reasoning: Five device classes hardcode vendor XML-RPC API endpoints: secure-pro
 impact: informational
 verify_steps: 1) Confirm these are indeed public vendor endpoints (check vendor documentation). 2) Determine if any of these endpoints have been deprecated or have known vulnerabilities.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-15 22:26:12 UTC
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
