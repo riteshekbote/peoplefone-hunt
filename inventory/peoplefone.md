@@ -458,3 +458,9 @@ www.peoplefone.com
 - CHANGED Pipeline defect root-caused (triage.yml:45 literal `[UNVALIDATED]` grep vs hunt.yml `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` emission) — fix verified (anchored `^\[HYP\]|^\[NEXT\]` returns 25 lines) but
 - CHANGED OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 54th frozen cycle; payload ready for bugs.olivermaicher.eu submission; valid-bugs counter remains 0
 - CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 54th frozen cycle — no counter-evidence, rank holds
+
+## 2026-09-15 16:36:32 UTC
+- NEW All live surfaces frozen since 2026-09-08 09:03:31 UTC — api-doc 200, register 500 (all locales), stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000), token GET 405/POST 401/500, c
+- NEW Pipeline defect root-caused (triage.yml:45 literal `[UNVALIDATED]` grep vs hunt.yml `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` emission) — fix verified (anchored `^\[HYP\]|^\[NEXT\]` returns 25 lines) but
+- CHANGED OAuth open-redirect/login-CSRF at auth.peoplefone.com triage VALID 7.4 (9.1 conditional) — 55th frozen cycle; payload ready for bugs.olivermaicher.eu submission; valid-bugs counter remains 0
+- CHANGED Configuration API IDOR (85), SSRF 5 endpoints (78), SMS BOLA (80) remain token-gated at 55th frozen cycle — no counter-evidence, rank holds

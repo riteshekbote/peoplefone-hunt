@@ -354,3 +354,5 @@
 - 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (55th frozen cycle).
 - 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (55th frozen cycle).
 - 2026-09-15 ACCEPTED OTH @ pipeline: triage.yml:45 fix NOT applied (literal `\[UNVALIDATED\]` grep intact, verified this cycle); gate cannot emit fresh VALID re-confirmation; last contentful VALID 09-12 14:13.
+- 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (55th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (55th frozen cycle); triage HOLD.
