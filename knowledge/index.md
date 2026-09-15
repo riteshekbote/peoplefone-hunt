@@ -356,3 +356,6 @@
 - 2026-09-15 ACCEPTED OTH @ pipeline: triage.yml:45 fix NOT applied (literal `\[UNVALIDATED\]` grep intact, verified this cycle); gate cannot emit fresh VALID re-confirmation; last contentful VALID 09-12 14:13.
 - 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (55th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (55th frozen cycle); triage HOLD.
+- 2026-09-15 ACCEPTED AUTH @ auth.peoplefone.com: 56th frozen cycle — fresh 19:49Z probe: api-doc 200 (0.72s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (secure, httponly, Max-Age 34560000, exp 2027-10-20; XSRF-TOKEN + peopoauth_session Max-Age 28800 companions); NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (56th frozen cycle).
+- 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (56th frozen cycle).
