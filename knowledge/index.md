@@ -365,3 +365,16 @@
 - 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (57th frozen cycle); triage HOLD.
 - 2026-09-15 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (56th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-15 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (56th frozen cycle); triage HOLD.
+- 2026-09-16 ACCEPTED AUTH @ auth.peoplefone.com: 58th frozen cycle — fresh 01:10Z probe: api-doc 200 (0.79s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie exp 2027-10-21 + XSRF-TOKEN/peopoauth_session 28800 companions; NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-16 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (58th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-16 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (58th frozen cycle); triage HOLD.
+- 2026-09-16 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read 01:10Z; `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; fix outstanding 14+ cycles; last contentful VALID 09-12 14:13.
+- 2026-09-16 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets.
+- 2026-09-16 REJECTED MISCONFIG @ *.peoplefone.com: 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare). Corrects filed "wildcard-dominated" claim.
+- 2026-09-16 ACCEPTED AUTH @ auth.peoplefone.com: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent ids 2,3,10,100,999,0,-1 → unhandled 500. Code-theft-exchange ATO falsified for known clients; ATO escalates only via HUMAN_ONLY implicit-flow test.
+- 2026-09-16 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (57th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-16 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (57th frozen cycle); triage HOLD.
+- 2026-09-16 REJECTED BUSLOGIC @ call-api queue agents: triage-formal INVALID (spec-silent on membership validation); removed from active set.
+- 2026-09-16 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
+- 2026-09-16 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
+- 2026-09-16 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; 22:18Z triage fed 17 leads, 100% INVALID — accidental-substring mechanism live; gate cannot re-confirm OAuth; fix outstanding 13+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
