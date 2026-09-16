@@ -382,3 +382,7 @@
 - 2026-09-16 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (59th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-16 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (59th frozen cycle); triage HOLD.
 - 2026-09-16 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets; no in-scope alternative surface.
+- 2026-09-16 ACCEPTED AUTH @ auth.peoplefone.com: 60th frozen cycle — fresh 11:48Z probes: api-doc 200 / token 405 GET / stateless authorize 404 + encrypted attacker `redirect_uri` cookie exp 2027-10-21 11:48:55Z (secure, httponly, Max-Age 34560000) + XSRF-TOKEN/peopoauth_session 28800 / register 500 fresh; NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-16 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (60th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-16 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (60th frozen cycle); triage HOLD.
+- 2026-09-16 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; anchored `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; 10:01Z run 100% INVALID meta-leads; fix outstanding 15+ cycles; last contentful VALID 09-12 14:13.

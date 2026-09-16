@@ -482,3 +482,12 @@ www.peoplefone.com
 - CHANGED Knowledge base 2026-09-16 re-confirms: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhandled 500
 - CHANGED 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare) — corrects "wildcard-dominated" claim
 - CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+
+## 2026-09-16 11:50:15 UTC
+- CHANGED configuration-api.peoplefone.com/customer/voip/v1/{identifier}: 60th frozen cycle — fresh 11:48Z probes confirm all surfaces static since 09-08 09:03:31Z (api-doc 200 / register 500 fresh / stateless 
+- CHANGED auth.peoplefone.com: 60th frozen re-verify 11:48Z — stateless authorize 404 STILL `Set-Cookie: redirect_uri=<encrypted attacker value>; secure; httponly; Max-Age=34560000; expires=2027-10-21` with XSR
+- CHANGED pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; 10:01Z run fed only pipeline meta-leads → 100% INVALID; fix (anchored `^\[HYP\]|^\[NEXT\]`) outstand
+- NEW All live surfaces byte-identical frozen since 2026-09-08 09:03:31 UTC (58+ cycles): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, exp 2
+- NEW Pipeline defect persists: triage.yml:45 literal `\[UNVALIDATED\]` grep intact (repo-check 2026-09-16 01:10Z); `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; gate cannot emit fresh VALID re-confirma
+- CHANGED Frozen cycle increment: Configuration API IDOR 58th, SSRF 57th, OAuth 57th (was 57/56/56)
+- CHANGED Knowledge base re-confirms: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhandled 500
