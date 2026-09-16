@@ -474,3 +474,11 @@ www.peoplefone.com
 ## 2026-09-15 22:49:38 UTC
 
 ## 2026-09-16 01:11:19 UTC
+
+## 2026-09-16 06:10:40 UTC
+- NEW Frozen cycle increment: Configuration API IDOR now 58th, SSRF 57th, OAuth 57th (was 57/56/56 in last leads) — all surfaces byte-identical since 2026-09-08 09:03:31 UTC
+- NEW Pipeline defect persists: triage.yml:45 literal `\[UNVALIDATED\]` grep still intact (repo-check 2026-09-16 01:10Z); `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; gate cannot emit fresh VALID re-co
+- NEW auth.peoplefone.com fresh probe 2026-09-16 01:10Z: api-doc 200 (0.79s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (Max-Age 34560000, exp 2027-10-21) + XSRF-TOKEN/peopoauth_ses
+- CHANGED Knowledge base 2026-09-16 re-confirms: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhandled 500
+- CHANGED 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare) — corrects "wildcard-dominated" claim
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
