@@ -65,3 +65,6 @@
 
 - 1 lead(s) marked VALID at 2026-09-16 15:01:12 UTC
   - | **Q6** Not on always-rejected list | **YES** — not on rejection list, but also not a valid finding |
+
+- 1 lead(s) marked VALID at 2026-09-16 21:53:07 UTC
+  - | Q7 | **NO** | No reasonable triager would accept an internal hunt-bot pipeline defect as a valid bounty finding against a VoIP/telecom company. This is housekeeping, not security research. |
