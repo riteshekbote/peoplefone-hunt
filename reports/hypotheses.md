@@ -1516,3 +1516,7 @@
 - LEARN: ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 
 - LEARN: ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the
 - LEARN: ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; 22:18Z triage fed 17 leads, 100% INVALID — ac
+
+## RANKED HYPOTHESES 2026-09-16 20:02:19 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Submit the OAuth finding to bugs.olivermaicher.eu now — 61st frozen cycle, gate VALID 7.4/9.1 (09-12 14:13), valid-bugs=0; report remains the only risk-m
