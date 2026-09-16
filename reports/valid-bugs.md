@@ -62,3 +62,6 @@
 
 - 1 lead(s) marked VALID at 2026-09-14 22:15:47 UTC
   - | Q7 Would a reasonable triager accept it? | **FAIL** - No triager would accept an internal automation bug as a valid security report |
+
+- 1 lead(s) marked VALID at 2026-09-16 15:01:12 UTC
+  - | **Q6** Not on always-rejected list | **YES** — not on rejection list, but also not a valid finding |
