@@ -499,3 +499,20 @@ www.peoplefone.com
 ## 2026-09-16 22:45:44 UTC
 
 ## 2026-09-17 01:12:13 UTC
+
+## 2026-09-17 06:15:00 UTC
+- NEW Frozen cycle increment: Configuration API IDOR now 58th, SSRF 57th, OAuth 57th (was 57/56/56 in last leads) — all surfaces byte-identical since 2026-09-08 09:03:31 UTC
+- NEW Pipeline defect persists: triage.yml:45 literal `\[UNVALIDATED\]` grep still intact (repo-check 2026-09-16 01:10Z); `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; gate cannot emit fresh VALID re-co
+- NEW auth.peoplefone.com fresh probe 2026-09-16 01:10Z: api-doc 200 (0.79s); stateless authorize 404 + encrypted attacker `redirect_uri` cookie (Max-Age 34560000, exp 2027-10-21) + XSRF-TOKEN/peopoauth_ses
+- CHANGED Knowledge base 2026-09-16 re-confirms: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhandled 500
+- CHANGED 19 guessed subdomains all NXDOMAIN → NO wildcard DNS; no dangling CNAME targets (all → managed Cloudflare) — corrects "wildcard-dominated" claim
+- CHANGED call-api.peoplefone.com/services/api-doc/ 404 reconfirmed; config-api docs 404 reconfirmed; all 8-spec backends match 401/404-gated pattern
+- NEW All live surfaces byte-identical frozen since 2026-09-08 09:03:31 UTC (58+ cycles): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 34560000, exp 2
+- NEW Pipeline defect persists: triage.yml:45 literal `\[UNVALIDATED\]` grep intact (repo-check 2026-09-16 01:10Z); `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; gate cannot emit fresh VALID re-confirma
+- CHANGED Frozen cycle increment: Configuration API IDOR 58th, SSRF 57th, OAuth 57th (was 57/56/56)
+- CHANGED Knowledge base re-confirms: POST /oauth/token no client_secret → invalid_client JSON for clients 1/4/5 (confidential); nonexistent IDs 2,3,10,100,999,0,-1 → unhandled 500
+- NEW auth.peoplefone.com/de_CH/register permanently HTTP 500 across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB) and bare /register → 404 — self-service account creation (minting lever) permanently 
+- NEW Pipeline defect persists 15+ cycles: `.github/workflows/triage.yml:45` still greps literal `\[UNVALIDATED\]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` — 0 matches → mimo receives empty lea
+- CHANGED Frozen cycle increment: Configuration API IDOR 63rd, SSRF 63rd, OAuth 63rd — all surfaces byte-identical since 2026-09-08 09:03:31 UTC (api-doc 200, register 500, stateless authorize 404+attacker redi
+- CHANGED OAuth open-redirect/login-CSRF finding remains triage-confirmed VALID 7.4 (9.1 conditional) from 09-12 14:13 but gate cannot emit fresh re-confirmation; valid-bugs counter still 0
+- CHANGED 19 guessed subdomains all NXDOMAIN reconfirmed → NO wildcard DNS exists; all CNAMEs → managed Cloudflare CDN; no dangling targets — corrects prior "wildcard-dominated" claim

