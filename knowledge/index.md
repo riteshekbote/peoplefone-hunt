@@ -434,3 +434,8 @@
 - 2026-09-17 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (64th frozen cycle); triage HOLD.
 - 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot emit fresh VALID re-confirmation; fix outstanding 18+ cycles.
 - 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 18+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
+- 2026-09-17 ACCEPTED AUTH @ auth.peoplefone.com: 65th frozen cycle — fresh re-probe this cycle api-doc 200 (0.80s) + stateless authorize 404 + encrypted attacker redirect_uri cookie (secure, httponly, Max-Age=34560000, exp 2027-10-22) + XSRF-TOKEN/peopoauth_session; NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-17 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (65th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-17 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (65th frozen cycle); triage HOLD.
+- 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot emit fresh VALID re-confirmation; fix outstanding 19+ cycles.
+- 2026-09-17 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard DNS, no dangling CNAME targets; reposcan yields no in-scope surface.

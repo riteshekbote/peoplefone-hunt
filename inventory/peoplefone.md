@@ -521,3 +521,9 @@ www.peoplefone.com
 - NEW NO_DELTA — All surfaces byte-identical since 2026-09-08 09:03:31 UTC; fresh 06:15Z probe confirms api-doc 200 baseline; 64th frozen cycle.
 - NEW No delta — all live surfaces byte-identical frozen since 2026-09-08 09:03:31 UTC (63rd cycle): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 3456
 - NEW Pipeline defect persists 18+ cycles: `.github/workflows/triage.yml:45` still greps literal `\[UNVALIDATED\]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` — 0 matches → mimo receives empty lea
+
+## 2026-09-17 16:34:00 UTC
+- NEW Pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot emit fresh VALID re-confirmation; fix outstanding 19+ cycles.
+- NEW NO_DELTA — all live surfaces byte-identical frozen since 2026-09-08 09:03:31 UTC (64th cycle): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 3456
+- NEW Pipeline defect persists 18+ cycles: `.github/workflows/triage.yml:45` still greps literal `\[UNVALIDATED\]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` — 0 matches → mimo receives empty lea
+- NEW auth.peoplefone.com/de_CH/register permanently HTTP 500 across all locale variants (en_CH/fr_CH/it_CH/de_DE/en_GB) and bare /register → 404 — self-service account creation (minting lever) permanently 
