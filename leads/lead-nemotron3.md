@@ -4561,3 +4561,4 @@ testability: AUTH_HELPED
 [RISK] peoplefone: 91 — The single highest-impact chain is live-evidenced and triage-confirmed: an unauthenticated attacker can craft an authorize URL with arbitrary redirect_uri and implicit/PKCE grants against client_id=1; if the portal client is public-client capable, this is silent ATO over the real customer portal (billings, recordings, PBX data, PII) plus a guaranteed open-redirect/login-CSRF primitive otherwise (triage VALID 7.4/9.1). All three API hypothesis classes (IDOR 85, SSRF 78, SMS BOLA 80) remain live behind one token gate that an authorized operator can open via the verified public `de_CH/register` endpoint (currently transient 500). Probe results and corrected OAuth repro appended to probe-results.md.
 ## 2026-09-16 20:02:11 UTC [target] (model nemotron3)
 ## 2026-09-16 22:45:25 UTC [target] (model nemotron3)
+## 2026-09-17 01:11:54 UTC [target] (model nemotron3)

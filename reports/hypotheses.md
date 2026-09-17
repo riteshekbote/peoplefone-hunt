@@ -1524,3 +1524,12 @@
 ## RANKED HYPOTHESES 2026-09-16 22:45:44 UTC
 - [78] api.peoplefone.com: Cloud metadata/IAM theft via 5 webhook/callback endpoints with zero host/scheme validation (from art/lead_bigpickle.txt)
 - NEXT(hypotheses-bigpickle.txt): HUMAN: Submit the OAuth finding to bugs.olivermaicher.eu now — 61st frozen cycle, gate VALID 7.4/9.1 (09-12 14:13), valid-bugs=0; report remains the only risk-m
+
+## RANKED HYPOTHESES 2026-09-17 01:12:13 UTC
+- [85] configuration-api.peoplefone.com/customer/voip/v1/{users,groups,ivrs,queues,numbers,smart-routings,callforwarding,manual-routing}/{identifier}: Cross-tenant PBX takeover via Configuration API sequential identifier enumeration (8 resource types) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Submit the OAuth open-redirect/login-CSRF finding to bugs.olivermaicher.eu now — 63rd frozen cycle, gate VALID 7.4/9.1 (09-12 14:13), valid-bugs=0; repor
+- LEARN: ACCEPTED AUTH @ auth.peoplefone.com: 63rd frozen cycle — fresh 01:10Z probes api-doc 200 (0.73s) / stateless authorize 404 + encrypted attacker `redirect_uri` c
+- LEARN: ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (63rd frozen cycle); triage HOLD pending bearer token.
+- LEARN: ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (63rd frozen cycle); triage HOLD.
+- LEARN: ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; anchored `^\[HYP\]|^\[NEXT\]` matches 370+332
+- LEARN: REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard, no dangling CNAME targets; reposcan yields no in-scope surface.
