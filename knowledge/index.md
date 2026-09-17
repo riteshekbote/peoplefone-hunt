@@ -439,3 +439,4 @@
 - 2026-09-17 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (65th frozen cycle); triage HOLD.
 - 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot emit fresh VALID re-confirmation; fix outstanding 19+ cycles.
 - 2026-09-17 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard DNS, no dangling CNAME targets; reposcan yields no in-scope surface.
+- 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 19+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
