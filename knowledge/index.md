@@ -429,3 +429,8 @@
 - 2026-09-17 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
 - 2026-09-17 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
 - 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 15+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
+- 2026-09-17 ACCEPTED AUTH @ auth.peoplefone.com: 64th frozen cycle — fresh 06:15Z api-doc 200 baseline; NO_DELTA; gate VALID stands at 09-12 14:13.
+- 2026-09-17 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (64th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-17 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (64th frozen cycle); triage HOLD.
+- 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot emit fresh VALID re-confirmation; fix outstanding 18+ cycles.
+- 2026-09-17 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 18+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
