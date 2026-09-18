@@ -508,3 +508,23 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-17 23:13:18 UTC
 [HYP] <none>
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 01:18:31 UTC
+class: OTHER
+asset: `peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-245`
+confidence: 30
+reasoning: `getMXDomains()` extracts the domain from a user-supplied email, passes it through `preg_replace("/[^a-z0-9\-\.]/", "", ...)`, then feeds it to `exec("nslookup -querytype=mx ".$host)` and `exec("dig mx ".$host." | grep ...")`. The regex strips all shell metacharacters (`;|&`$\`` etc.), making injection impractical. However, `exec()` with externally-influenced input is a security anti-pattern; a regex bypass (e.g., encoding edge-case) would yield OS command injection.
+impact: Low — effectively mitigated by regex; non-exploitable in current form
+verify_steps: Confirm no upstream caller passes pre-sanitized input that could reintroduce metacharacters; verify PHP `escapeshellarg()` is not used elsewhere (it is not — defense-in-depth absent)
+class: SSRF
+asset: `peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php` — `addPhone(string $mac, string $url)`
+confidence: 25
+reasoning: All five device classes accept an arbitrary `$url` parameter and pass it directly to vendor XML-RPC APIs (e.g., `redirect.registerPhone`, `autoprov.registerDevice`, `DeviceRegister`) without any URL validation or allowlisting. If the calling application passes attacker-controlled input to this parameter, phones could be redirected to malicious provisioning servers (phone provision MITM). This is a caller-side issue, not a direct SSRF on the library server.
+impact: Low — depends entirely on caller validation; library alone does not expose a server-side request
+verify_steps: Identify all production consumers of `ProvisioningRPC::connect()->addPhone()` and verify they validate/allowlist the `$url` parameter before passing it
+class: OTHER
+asset: `peoplefone/provisioning-rpc/src/ProvisioningRPCDevice{Snom,Panasonic,Gigaset,Auerswald,Yealink}.php:14-24`
+confidence: 5
+reasoning: All five device classes define `__construct(array $client_auth=['username','password'])` with string-literal placeholder defaults. These are not real credentials — they are scaffolding defaults for documentation purposes. No real secrets are present. However, this pattern risks accidental credential leakage if a caller forgets to override and commits the default.
+impact: Informational — no real secrets leaked; purely a code hygiene concern
+verify_steps: Confirm no production code instantiates these classes without overriding the default `$client_auth`
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
