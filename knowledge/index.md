@@ -448,3 +448,8 @@
 - 2026-09-18 ACCEPTED OTH @ auth.peoplefone.com: stateless authorize sets `redirect_uri` cookie (httponly, secure, 1-year expiry) with attacker-controlled value even on 404 response — server processes redirect_uri param partially in stateless mode; behavioral detail supports warm-session 302 reproduction path.
 - 2026-09-18 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
 - 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 19+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
+- 2026-09-18 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA 68th frozen cycle — register 500 all locales / token GET 405 + POST 401 known / stateless authorize 404 + attacker-value redirect_uri cookie / api-doc 200; consistent with 00:30 triage VALID; no new surface, probes add nothing.
+- 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence 68th frozen cycle; rank holds top; token-gated.
+- 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence 68th frozen cycle; retained pending token.
+- 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo context 20+ cycles; anchored fix verified but unapplied; gate cannot re-confirm OAuth.
+- 2026-09-18 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard DNS, no dangling CNAME targets.
