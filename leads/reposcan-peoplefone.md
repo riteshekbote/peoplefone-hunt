@@ -528,3 +528,12 @@ reasoning: All five device classes define `__construct(array $client_auth=['user
 impact: Informational — no real secrets leaked; purely a code hygiene concern
 verify_steps: Confirm no production code instantiates these classes without overriding the default `$client_auth`
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 05:59:14 UTC
+[HYP] No in-scope public repositories found
+class: OTHER
+asset: github.com/peoplefone (non-existent)
+confidence: 100
+reasoning: The peoplefone GmbH GitHub organization does not exist as a public entity. The
+impact: None — nothing to audit.
+verify_steps: Visit https://github.com/peoplefone → 404. No public codebase to clone or scan.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
