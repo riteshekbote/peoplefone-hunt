@@ -554,3 +554,8 @@ www.peoplefone.com
 - NEW Pipeline defect persists 19+ cycles: `.github/workflows/triage.yml:45` still greps literal `\[UNVALIDATED\]` but hunt emits `[HYP]/[NEXT]/[LEARN]/[NEW]/[CHANGED]` — 0 matches → mimo receives empty lea
 - NEW No new probes since 2026-09-08 09:03:31 UTC — all surfaces byte-identical frozen (65th+ cycle): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 345
 - CHANGED Frozen cycle increment: Configuration API IDOR now 65th, SSRF 65th, OAuth 65th — all surfaces static since 2026-09-08 09:03:31 UTC
+
+## 2026-09-18 15:12:06 UTC
+- NEW No live probes since 2026-09-18 06:02Z; all surfaces byte-identical frozen 69th cycle (api-doc 200 / register 500 all locales / stateless authorize 404+attacker redirect_uri cookie / token GET 405+POS
+- NEW Pipeline gate defect unchanged: triage.yml:45 literal `\[UNVALIDATED\]` grep intact 20+ cycles; anchored `^\[HYP\]|^\[NEXT\]` fix verified but unapplied.
+- NEW OAuth report to bugs.olivermaicher.eu still UNSENT; valid-bugs counter remains 0.

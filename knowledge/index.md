@@ -453,3 +453,10 @@
 - 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence 68th frozen cycle; retained pending token.
 - 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo context 20+ cycles; anchored fix verified but unapplied; gate cannot re-confirm OAuth.
 - 2026-09-18 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard DNS, no dangling CNAME targets.
+- 2026-09-18 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA 69th frozen cycle — register 500 all locales / token GET 405 + POST 401 known / stateless authorize 404 + attacker-value redirect_uri cookie / api-doc 200; consistent with 00:30 triage VALID; no new surface.
+- 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence 69th frozen cycle; rank holds top; token-gated.
+- 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence 69th frozen cycle; retained pending token.
+- 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT 20+ cycles; anchored fix verified but unapplied.
+- 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (68th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (68th frozen cycle); triage HOLD.
+- 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 20+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
