@@ -465,3 +465,5 @@
 - 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence 70th frozen cycle; retained pending token.
 - 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (69th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (69th frozen cycle); triage HOLD.
+- 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (70th frozen cycle); triage HOLD pending bearer token.
+- 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (70th frozen cycle); triage HOLD.
