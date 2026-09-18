@@ -566,3 +566,33 @@ verify_steps: Passive: Read `src/ProvisioningRPC.php` line 17. Confirm `die()` i
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-18 20:06:16 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 22:37:41 UTC
+[HYP] SSRF via fsockopen to attacker-controlled MX host
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:266-286
+confidence: 60
+reasoning: getMXConnection() calls fsockopen($host, $this->sock_port, ...) where $host is
+impact: Medium
+verify_steps: 1) Identify any peoplefone web app or API that instantiates
+[HYP] exec() with user-derived input in MX lookup
+class: MISCONFIG
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:241-245
+confidence: 45
+reasoning: getMXDomains() passes $host (extracted from user-supplied email domain) into
+impact: Low (mitigated by regex; defense-in-depth concern)
+verify_steps: 1) Confirm regex at line 239 is always applied before exec(). 2) Verify no
+[HYP] Incomplete .gitignore — credential file not excluded
+class: MISCONFIG
+asset: peoplefone/provisioning-rpc/.gitignore
+confidence: 80
+reasoning: tests/test.php (line 7-8) includes provisioning-rpc-settings.php via
+impact: Low (no current leak; procedural risk)
+verify_steps: 1) Run `git log --all -- 'provisioning-rpc-settings.php'` across all
+[HYP] die() with exception message — information disclosure
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPC.php:17
+confidence: 50
+reasoning: ProvisioningRPC::connect() catches Throwable and calls die($t->getMessage()).
+impact: Informational (out of scope per program rules)
+verify_steps: 1) Check if any peoplefone web app wraps this call and suppresses output.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
