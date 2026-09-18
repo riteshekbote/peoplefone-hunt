@@ -541,3 +541,26 @@ TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
 ## REPOSCAN 2026-09-18 14:37:38 UTC
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 17:56:06 UTC
+[HYP] OS Command Injection via unsanitized hostname in exec()
+class: OTHER
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:242-245
+confidence: 65
+reasoning: In `getMXDomains()`, the `$host` variable (derived from an email address's domain portion) is passed directly into `exec("nslookup -querytype=mx ".$host)` and `exec("dig mx ".$host." | grep ...")` via string interpolation. Although a regex filter (`/[^a-z0-9\-\.]/`) strips most characters from `$host`, the `$user` parameter accepted by `setContact()` is only filtered with `/[^a-z0-9\-\.\@]/` and then the domain is extracted via `substr($user, strrpos($user,'@')+1)`. The regex applied to the domain in `getMXDomains()` is `/[^a-z0-9\-\.]/` which strips semicolons and pipes, making actual shell injection difficult. However, the pattern of interpolating external input into `exec()` is inherently unsafe — any future change to the regex or host extraction logic could immediately open a command injection vector. Additionally, backtick execution (`which nslookup`) on line 241 uses the same pattern.
+impact: Medium — current regex mitigates direct exploitation, but the insecure pattern is live code and fragile to future modifications
+verify_steps: Passive: Read `src/peoplefone/mailValidatorMXServer.php` lines 230-250. Confirm `exec()` receives string-interpolated `$host`. Confirm `$host` regex does not block all shell metacharacters. Active (if in scope): Craft an email domain with characters surviving the regex to test RCE.
+[HYP] SSRF potential via fsockopen to user-influenced MX hosts
+class: SSRF
+asset: peoplefone/mail-validator-mx-server/src/peoplefone/mailValidatorMXServer.php:274
+confidence: 45
+reasoning: `getMXConnections()` calls `fsockopen($host, ...)` where `$host` is resolved from the MX lookup of an email domain. If an attacker controls DNS for a target domain (or the email validation is used server-side with attacker-supplied addresses), they could point MX records to an internal host and cause the server to open TCP connections to arbitrary internal services (port 25 default, but configurable via `setConnectionPort()`). The current usage in `tests/test.php` only validates well-known public domains, limiting real-world impact for this specific library.
+impact: Low — requires the library to be used in a server-side context with attacker-controlled input and DNS control; default port is 25 (SMTP), not HTTP
+verify_steps: Passive: Read `src/peoplefone/mailValidatorMXServer.php` lines 260-280. Confirm `fsockopen()` target is derived from MX lookup. Active: Register a domain, set MX to an internal IP, pass an email address on that domain to `setContact()`.
+[HYP] die() with exception message on connection failure (information disclosure / unavailability)
+class: OTHER
+asset: peoplefone/provisioning-rpc/src/ProvisioningRPC.php:17
+confidence: 30
+reasoning: `ProvisioningRPC::connect()` wraps the device instantiation in a try/catch and calls `die($t->getMessage().PHP_EOL)` on any exception. This terminates the entire process and leaks the internal exception message (which could contain class names, connection details, or stack info depending on the underlying error). In a web context, this would cause a 500 error with potentially sensitive diagnostic info. The message itself comes from PHP class autoloading or constructor failures — no actual credentials are exposed in the current code.
+impact: Low — only triggers if an invalid manufacturer name is passed; information leak is limited to PHP error messages
+verify_steps: Passive: Read `src/ProvisioningRPC.php` line 17. Confirm `die()` is called with `$t->getMessage()`. Verify no credential data flows through the exception path.
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
