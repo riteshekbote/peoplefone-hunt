@@ -564,3 +564,5 @@ reasoning: `ProvisioningRPC::connect()` wraps the device instantiation in a try/
 impact: Low — only triggers if an invalid manufacturer name is passed; information leak is limited to PHP error messages
 verify_steps: Passive: Read `src/ProvisioningRPC.php` line 17. Confirm `die()` is called with `$t->getMessage()`. Verify no credential data flows through the exception path.
 TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 20:06:16 UTC
+TARGET_ORG not configured for peoplefone; skipping public-org deep scan.
