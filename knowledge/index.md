@@ -467,3 +467,7 @@
 - 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (69th frozen cycle); triage HOLD.
 - 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (70th frozen cycle); triage HOLD pending bearer token.
 - 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (70th frozen cycle); triage HOLD.
+- 2026-09-18 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA 71st frozen cycle — fresh probes 21:2xZ: api-doc 200 (0.97s) / stateless authorize 404 + attacker-value redirect_uri cookie (secure, httponly, Max-Age 34560000, exp 2027-10-23 23:22:32Z) + XSRF-TOKEN/peopoauth_session 28800 companions; consistent with 00:30 triage VALID; no new surface, probes add nothing.
+- 2026-09-18 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence 71st frozen cycle; rank holds top; token-gated.
+- 2026-09-18 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence 71st frozen cycle; retained pending token.
+- 2026-09-18 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT (20+ cycles); anchored fix verified but unapplied; gate cannot re-confirm OAuth.

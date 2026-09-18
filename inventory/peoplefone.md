@@ -573,3 +573,10 @@ www.peoplefone.com
 - NEW OAuth report to bugs.olivermaicher.eu still UNSENT; valid-bugs counter remains 0
 - CHANGED Frozen cycle increment: Configuration API IDOR 70th, SSRF 70th, OAuth 70th — all surfaces static since 2026-09-08 09:03:31 UTC
 - CHANGED 19 guessed subdomains all NXDOMAIN reconfirmed → NO wildcard DNS; all CNAMEs → managed Cloudflare CDN; no dangling targets
+
+## 2026-09-18 23:24:24 UTC
+- NEW No live probes since 2026-09-08 09:03:31 UTC — all surfaces byte-identical frozen (70th cycle): api-doc 200, register 500 all locales, stateless authorize 404+attacker redirect_uri cookie (Max-Age 345
+- NEW Pipeline gate defect persists 20+ cycles: `.github/workflows/triage.yml:45` literal `\[UNVALIDATED\]` grep intact; anchored `^\[HYP\]|^\[NEXT\]` fix verified but unapplied; gate cannot emit fresh VALI
+- NEW OAuth report to bugs.olivermaicher.eu still UNSENT; valid-bugs counter remains 0
+- CHANGED Frozen cycle increment: Configuration API IDOR 70th, SSRF 70th, OAuth 70th — all surfaces static since 2026-09-08 09:03:31 UTC
+- CHANGED 19 guessed subdomains all NXDOMAIN reconfirmed → NO wildcard DNS; all CNAMEs → managed Cloudflare CDN; no dangling targets
