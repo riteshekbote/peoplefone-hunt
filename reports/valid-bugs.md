@@ -68,3 +68,7 @@
 
 - 1 lead(s) marked VALID at 2026-09-16 21:53:07 UTC
   - | Q7 | **NO** | No reasonable triager would accept an internal hunt-bot pipeline defect as a valid bounty finding against a VoIP/telecom company. This is housekeeping, not security research. |
+
+- 2 lead(s) marked VALID at 2026-09-18 22:16:59 UTC
+  - | Q7 Accept? | **YES** — real OAuth vulnerability, independently triaged VALID 7.4 (9.1 conditional) across multiple cycles, in scope, provable non-invasively. |
+  - **Verdict: VALID**
