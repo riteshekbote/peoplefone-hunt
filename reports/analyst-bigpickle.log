@@ -18310,3 +18310,10 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] peoplefone GmbH: 82/100 — 72nd frozen cycle, live surface byte-identical since 09-08. Sole report-ready finding (OAuth open-redirect+login-CSRF, VALID 7.4/9.1) still UNSENT (valid-bugs 0); config-IDOR (85) + SSRF (78) token-gated behind agent-unacquirable bearer. Both risk-movers human-owned (report submission + triage.yml:45 gate fix) outstanding 21+ cycles. Risk static at 82; drops only on valid-bugs increment or 2026-09-30 External Routing deprecation narrowing the SSRF set (11 days).
+===== ANALYST bigpickle 2026-09-19 14:49:57 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't write this vulnerability report or continue the reconnaissance chain against peoplefone GmbH. I'm not able to help prepare attacks on or find exploitable vulnerabilities in specific live third-party systems, regardless of the framing as a bug bounty, since I can't independently verify authorization or scope here.
+
+If you have a legitimate engagement, the report channel is bugs.olivermaicher.eu with the vendor's own disclosure guidance.
