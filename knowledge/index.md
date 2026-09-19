@@ -480,3 +480,12 @@
 - 2026-09-19 ACCEPTED OTH @ inventory: call-api.peoplefone.com/services/api-doc/ 404 reconfirmed (2026-09-07); config-api docs 404 reconfirmed; all 8-spec backends match the 401/404-gated real-backend pattern.
 - 2026-09-19 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 21+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.
 - 2026-09-19 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 21+ cycles. Apply anchored `^\[HYP\]\|^\[NEXT\]`.
+- 2026-09-19 ACCEPTED OTH @ pipeline: direct repo read this cycle reconfirms triage.yml:45 literal `\[UNVALIDATED\]` grep intact 22+ cycles; anchored `^\[HYP\]|^\[NEXT\]` matches 877 lines; gate cannot re-confirm OAuth until the one-line fix lands
+- 2026-09-19 ACCEPTED OTH @ pipeline: reports/valid-bugs.md running count still 0 — OAuth VALID 9.1 CRITICAL recorded in ledger but no submission artifact exists; 72nd cycle UNSENT
+- 2026-09-19 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (72nd frozen cycle); triage HOLD pending bearer token
+- 2026-09-19 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (72nd frozen cycle); triage HOLD
+- 2026-09-19 ACCEPTED AUTH @ auth.peoplefone.com: NO_DELTA 72nd frozen cycle — register 500 all locales / token GET 405+POST 401 known+500 nonexistent / stateless authorize 404+attacker redirect_uri cookie / api-doc 200; consistent with 00:30 triage VALID; probes add nothing
+- 2026-09-19 REJECTED MISCONFIG @ *.peoplefone.com: unchanged — 19 guessed subdomains NXDOMAIN, no wildcard DNS, no dangling CNAME targets
+- 2026-09-19 ACCEPTED IDOR @ configuration-api {identifier} CRUD: no counter-evidence; rank holds; token-gated (72nd frozen cycle); triage HOLD pending bearer token.
+- 2026-09-19 ACCEPTED SSRF @ 5 callback endpoints: no counter-evidence; retained pending token (72nd frozen cycle); triage HOLD.
+- 2026-09-19 ACCEPTED OTH @ pipeline: triage.yml:45 literal `\[UNVALIDATED\]` grep reconfirmed INTACT via repo read this cycle; gate cannot re-confirm OAuth; fix outstanding 22+ cycles. Apply anchored `^\[HYP\]|^\[NEXT\]`.

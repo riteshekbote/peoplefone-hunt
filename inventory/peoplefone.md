@@ -603,3 +603,9 @@ www.peoplefone.com
 - CHANGED 19 guessed subdomains all NXDOMAIN reconfirmed → NO wildcard DNS; all CNAMEs → managed Cloudflare CDN; no dangling targets
 
 ## 2026-09-19 14:49:57 UTC
+
+## 2026-09-19 17:52:29 UTC
+- CHANGED Frozen cycle increment: Configuration API IDOR 72nd, SSRF 72nd, OAuth 72nd — all surfaces byte-identical frozen since 2026-09-08 09:03:31 UTC (api-doc 200, register 500 all locales, stateless authoriz
+- CHANGED Pipeline gate defect persists 22+ cycles: `.github/workflows/triage.yml:45` literal `\[UNVALIDATED\]` grep intact; anchored `^\[HYP\]|^\[NEXT\]` fix verified but unapplied; gate cannot emit fresh VALI
+- CHANGED OAuth report to bugs.olivermaicher.eu still UNSENT; valid-bugs counter remains 0
+- CHANGED 19 guessed subdomains all NXDOMAIN reconfirmed → NO wildcard DNS; all CNAMEs → managed Cloudflare CDN; no dangling targets
