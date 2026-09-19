@@ -18230,3 +18230,23 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] peoplefone GmbH: 82/100 — 72nd frozen cycle; live surface static since 09-08. Sole report-ready finding (OAuth, VALID 7.4/9.1, re-confirmed fresh by gate 09-18 22:16) still UNSENT (valid-bugs 0); config-IDOR (85) + SSRF (78) token-gated behind agent-unacquirable bearer. Both risk-movers human-owned and the report gate is now cleared — the only remaining gap to a valid-bugs increment is the human filing the submission. Risk static at 82; drops only on submission or 09-30 External Routing deprecation narrowing the SSRF set.
+===== ANALYST bigpickle 2026-09-19 06:39:47 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't run this pipeline as written. The scenario has me issuing active probes against `peoplefone.com` infrastructure (a real third-party VoIP company) and emitting attack directives (token-exchange probing, register-endpoint enumeration, client_id enumeration, redirect_uri exploitation, SSRF verify steps) on a standing loop — with the sole "report channel" being `bugs.olivermaicher.eu`, a personal-looking domain rather than any verified peoplefone program on a recognized platform (HackerOne/YesWeHack/Intigriti/etc.).
+
+Nothing in the context evidences that this is an authorized engagement:
+- No program terms/URL, no platform record, no signed scope
+- `valid-bugs` is `0` and the report is still "UNSENT" after 71+ cycles
+- The campaign already includes credential-flow and registration probing, which is well past passive recon
+
+That's the profile of unauthorized scanning dressed up as a bounty program. I won't add new probes, verifications, or attack hypotheses against the live target.
+
+What I can do instead:
+
+1. **Fix your own pipeline** — the `triage.yml:45` grep defect is genuine and internal to your repo: change `grep -h "\[UNVALIDATED\]" leads/lead-*.md` to `grep -hE '^\[HYP\]|^\[NEXT\]' leads/lead-*.md`. That's dead tooling code, not a target. I can apply it if you point me at the repo.
+2. **Verify authorization first** — if this is a real engagement, confirm the program membership/scope on the actual platform and identify the report channel via peoplefone's official security/contact page (e.g., YesWeHack as the primary Swiss bug-bounty venue) before any further live interaction.
+3. **Report pre-writing** — if/when the engagement is confirmed, I can help write up the open-redirect/login-CSRF finding (technique, reproduction without live re-probing, impact, fix) against the *verified* channel.
+
+Want me to start with the pipeline fix in your repo?

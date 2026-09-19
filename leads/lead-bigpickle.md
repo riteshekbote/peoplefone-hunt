@@ -4190,3 +4190,4 @@ evidence_needed: post-auth callback reaches attacker host; 169.254.169.254/priva
 verify_steps: (authorized) POST SMS callbackUrl=https://attacker/x and http://169.254.169.254; attacker-side receipt only, no reads of internal responses
 impact: cloud metadata/IAM theft, SIP/PBX internal pivot, call-metadata leak; CRITICAL
 testability: AUTH_HELPED
+## 2026-09-19 06:36:36 UTC [target] (model bigpickle)
